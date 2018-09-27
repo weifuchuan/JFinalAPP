@@ -1,0 +1,86 @@
+<html>
+
+<head>
+  <link href="https://cdn.bootcss.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
+  <style>
+    html, 
+    body{
+      width:100%; 
+      height: 100%;
+      background-color: rgb(26, 19, 19);
+    }
+    body{
+      display: flex;
+      display: -webkit-flex; 
+
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    #result{
+      display: flex; 
+      display: -webkit-flex; 
+      align-items: center; 
+      justify-content: center; 
+      width: 60vw; 
+      height: 60vw;
+    } 
+  </style>
+</head>
+
+<body>
+
+  <div id="result">
+
+  </div>
+  <button class="am-btn am-btn-primary" type="button" id="select-btn">选择图片</button>
+  <input id="fileBtn" type="file" accept="image/*" multiple="false" style="visibility: hidden" />
+
+  <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+  <script src="https://alloyteam.github.io/AlloyCrop/asset/transform.js"></script>
+  <script src="https://alloyteam.github.io/AlloyCrop/asset/alloy-finger.js"></script>
+  <script src="https://alloyteam.github.io/AlloyCrop/alloy-crop.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("fileBtn").on("change", function select() {
+        console.log("fuck")
+        var fileBtn = document.getElementById("fileBtn");
+        var file = fileBtn.files[0];
+        console.log(file)
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+          new AlloyCrop({
+            image_src: reader.result,
+            // className: 'crop-box',
+            circle: false, // optional parameters , the default value is false
+            width: 200, // crop width
+            height: 200, // crop height
+            output: 2, // output resolution --> 400*200
+            ok: function (base64, canvas) {
+              console.log(base64);
+            },
+            cancel: function () {},
+            ok_text: "保存", // optional parameters , the default value is ok
+            cancel_text: "取消" // optional parameters , the default value is cancel
+          });
+        };
+      })
+
+
+      $("#select-btn").on("click", function () {
+        $("#fileBtn").trigger("click");
+      });
+
+      function showToolPanel() {}
+
+      function hideToolPanel() {}
+
+
+    })
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+import React from 'react';
+import { View, StyleSheet, ViewStyle, Text, TextStyle, Image, ImageStyle } from 'react-native';
+import { observer } from 'mobx-react';
+import { Item } from './kit';
+import { Card } from 'react-native-material-ui';
+import { baseUrl } from '../../store/req';
+
+interface Props {
+	item: Item;
+	onPress: (item: Item) => void;
+}
+
+@observer
+export default class ItemComp extends React.Component<Props> {
+	render() {
+		const item = this.props.item;
+		return (
+			<Card onPress={() => this.props.onPress(item)}>
+				<View style={styles.container}>
+					<View style={styles.avatarAndTitle}>
+						<Image source={{ uri: `${baseUrl}${item.avatar}` }} style={styles.avatar} />
+						<Text style={styles.title}>{item.title}</Text>
+					</View>
+					<Text style={styles.content}>{item.content.trim() + '...'}</Text>
+				</View>
+			</Card>
+		);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		padding: 6,
+		flex: 1
+	} as ViewStyle,
+	avatarAndTitle: {
+		flexDirection: 'row'
+	} as ViewStyle,
+	avatar: {
+		width: 50,
+		height: 50
+	} as ImageStyle,
+	title: {
+		flex: 1,
+		marginLeft: 6,
+		color: '#000000',
+		fontSize: 20
+	} as TextStyle,
+	content: {
+		marginTop: 6,
+		fontSize: 15
+	} as TextStyle
+});
