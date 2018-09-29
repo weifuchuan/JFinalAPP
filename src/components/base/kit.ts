@@ -22,3 +22,7 @@ export function measure(
 		);
 	});
 }
+
+export function getNoCacheValue() {
+	return new Date().getMinutes().toString()[0];
+}

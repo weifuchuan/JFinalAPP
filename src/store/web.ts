@@ -1,4 +1,4 @@
-import { Ret } from './types';
+import { Ret } from '../types';
 import qs from 'qs';
 import * as req from './req';
 export { req };
@@ -69,6 +69,16 @@ export async function reg(nickName: string, userName: string, password: string, 
 	}
 }
 
+export async function updatePassword(oldPassword:string,newPassword:string):Promise<Ret>{
+	const resp=await req.POST_FORM("/my/setting/updatePassword", {oldPassword,newPassword})
+	const result = resp.data;
+	if (result['state'] && result['state'] === 'ok') {
+		return Ret.ok();
+	} else {
+		return Ret.fail().set('msg', result['msg']);
+	}
+}
+
 export async function reply(target: 'share' | 'feedback', articleId: number, replyContent: string): Promise<Ret> {
 	const resp = await req.POST_FORM(`/${target}/saveReply`, { articleId, replyContent });
 	const result = resp.data;
@@ -109,12 +119,38 @@ export async function like(refType: string, refId: number, isAdd: boolean): Prom
 	}
 }
 
-export async function addArticle(target: 'share' | 'feedback', title: string, content: string, projectId: number) {
+export async function addArticle(
+	target: 'share' | 'feedback' | 'project',
+	title: string,
+	content: string,
+	project: number | string
+) {
 	const form = {} as any;
 	form[`${target}.title`] = title;
 	form[`${target}.content`] = content;
-	form[`${target}.projectId`] = projectId;
+	if (target === 'project') form[`${target}.name`] = project;
+	else form[`${target}.projectId`] = project;
 	const resp = await req.POST_FORM(`/my/${target}/save`, form);
+	const result = resp.data;
+	if (result['state'] && result['state'] === 'ok') {
+		return Ret.ok();
+	} else {
+		return Ret.fail().set('msg', result['msg']);
+	}
+}
+
+export async function updateArticle(
+	target: 'share' | 'feedback' | 'project',
+	title: string,
+	content: string,
+	project: number | string
+) {
+	const form = {} as any;
+	form[`${target}.title`] = title;
+	form[`${target}.content`] = content;
+	if (target === 'project') form[`${target}.name`] = project;
+	else form[`${target}.projectId`] = project;
+	const resp = await req.POST_FORM(`/my/${target}/update`, form);
 	const result = resp.data;
 	if (result['state'] && result['state'] === 'ok') {
 		return Ret.ok();

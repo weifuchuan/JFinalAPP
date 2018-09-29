@@ -25,8 +25,8 @@ export default class Router {
 	static feedbackPage(id: number) {
 		Actions.push('feedbackPage', { id });
 	}
-	static addArticle(type: 'share' | 'feedback') {
-		Actions.push('addArticle', { type });
+	static editArticle(type: 'share' | 'feedback'|"project",isEdit?:boolean,id?:number) {
+		Actions.push('editArticle', { type,isEdit,id });
 	}
 	static login(replace: boolean = false) {
 		if (replace) Actions.replace('login');
@@ -42,14 +42,17 @@ export default class Router {
 	static uploadAvatar() {
 		Actions.push('uploadAvatar');
 	}
-	static updatePassword(){
-		Actions.push("updatePassword"); 
+	static updatePassword() {
+		Actions.push('updatePassword');
+	}
+	static myArticles(type: 'feedback' | 'project' | 'share', accountId?: number) {
+		Actions.push('myArticles', { type, accountId });
 	}
 	static pop() {
 		Actions.pop();
 	}
 	static push(key: string, props?: any) {
 		Actions.push(key, props);
-  }
-  static _ = Actions; 
+	}
+	static _ = Actions;
 }

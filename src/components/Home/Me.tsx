@@ -26,10 +26,10 @@ import {
 } from 'react-native-material-ui';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, measure } from '../base/kit';
 import { observable, autorun, action, IReactionDisposer, runInAction } from 'mobx';
-import { Account, NewsFeed } from '../../store/types';
+import { Account, NewsFeed } from '../../types';
 import StatusBar from '../base/StatusBar';
 import { BACK_WHITE } from '../base/color';
-import { Drawer, Badge, ActionSheet } from 'antd-mobile-rn';
+import { Drawer, Badge, ActionSheet, Modal } from 'antd-mobile-rn';
 import { retryDo } from '../../kit';
 import { req } from '../../store/web';
 import NewsfeedList from '../NewsfeedList';
@@ -66,23 +66,35 @@ export default class Me extends React.Component<Props> {
 
 	private readonly drawerItems = [
 		{
-			text: '我的分享',
+			text: (self: any) => `关注(${self.followCnt})`,
+			type: 'follow'
+		},
+		{
+			text: (self: any) => `粉丝(${self.fansCnt})`,
+			type: 'fans'
+		},
+		{
+			text: (self: any) => `赞(${self.likeCnt})`,
+			type: 'like'
+		},
+		{
+			text: () => '我的分享',
 			type: 'share'
 		},
 		{
-			text: '我的反馈',
+			text: () => '我的反馈',
 			type: 'feedback'
 		},
 		{
-			text: '我的项目',
+			text: () => '我的项目',
 			type: 'project'
 		},
 		{
-			text: '我的私信',
+			text: () => '我的私信',
 			type: 'message'
 		},
 		{
-			text: '我的收藏',
+			text: () => '我的收藏',
 			type: 'favorite'
 		}
 	];
@@ -113,7 +125,7 @@ export default class Me extends React.Component<Props> {
 					position="left"
 					open={this.openDrawer}
 					onOpenChange={(isOpen) => (this.openDrawer = isOpen)}
-					drawerWidth={240}
+					drawerWidth={260}
 					sidebar={
 						<View style={styles.sidebar}>
 							<View style={styles.drawerAccountView}>
@@ -140,27 +152,17 @@ export default class Me extends React.Component<Props> {
 								</Touchable>
 							</View>
 							<ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-								<View style={{ width: 240 }}>
+								<View style={{ width: 260 }}>
 									{this.drawerItems.map((item) => {
 										return (
-											<Touchable onPress={() => {
-												switch(item.type){
-													case "share":
-													break;
-													case "feedback":
-													break;
-													case "project":
-													break;
-													case "message":
-													break;
-													case "favorite":
-													break;
-												}
-											}} key={item.type}>
-												<View
-													style={styles.drawerItem}
-												>
-													<Text style={{ fontSize: 18 }}>{item.text}</Text>
+											<Touchable
+												onPress={() => {
+													this.onDrawerItemPress(item);
+												}}
+												key={item.type}
+											>
+												<View style={styles.drawerItem}>
+													<Text style={{ fontSize: 18 }}>{item.text(this)}</Text>
 													<MaterialIcons name={'chevron-right'} size={26} />
 												</View>
 											</Touchable>
@@ -177,36 +179,23 @@ export default class Me extends React.Component<Props> {
 								<Touchable onPress={() => (this.openDrawer = true)}>
 									<Image
 										source={{ uri: `${req.baseUrl}/upload/avatar/${me.avatar}` }}
-										style={{
-											width: 40,
-											height: 40,
-											borderRadius: 5,
-											borderColor: '#fff',
-											borderWidth: 1.5
-										}}
+										style={styles.toolbarLeftAvatar}
 									/>
 								</Touchable>
 							}
 							centerElement={me.nickName}
 							rightElement={
-								<TouchableOpacity onPress={this.onNoticePress}>
-									<View
-										style={{ padding: 10 }}
-										onLayout={async (e: any) => {
-											const res = await measure(e);
-											runInAction(() => {
-												res.x = res.pageX;
-												res.y = (StatusBar.source.currentHeight || 0) + res.pageY;
-												res.width = res.width;
-												res.height = res.height;
-											});
-										}}
-									>
-										<Badge dot size="small" text={this.reminds.length}>
-											<Text style={{ fontSize: 16, color: '#fff' }}>通知</Text>
-										</Badge>
-									</View>
-								</TouchableOpacity>
+								this.reminds.length === 0 ? (
+									<Text style={{ fontSize: 16, color: '#fff', padding: 10 }}>通知</Text>
+								) : (
+									<TouchableOpacity onPress={this.onNoticePress}>
+										<View style={{ padding: 10 }} onLayout={this.onNoticeLayout}>
+											<Badge dot size="small">
+												<Text style={{ fontSize: 16, color: '#fff' }}>通知</Text>
+											</Badge>
+										</View>
+									</TouchableOpacity>
+								)
 							}
 							style={styles.toolbarStyle}
 						/>
@@ -311,11 +300,31 @@ export default class Me extends React.Component<Props> {
 				} else if (index === 1) {
 					Router.updatePassword();
 				} else if (index === 2) {
-					this.props.store!.quit();
+					Modal.alert('确认退出登录？', '退出后无法使用已登录的用户能使用的功能。', [
+						{
+							text: '确认',
+							onPress: () => {
+								this.props.store!.quit();
+								req.GET('/logout');          
+							}
+						},
+						{ text: '取消', onPress: () => {} }
+					]);
 				} else {
 				}
+				this.openDrawer = false;
 			}
 		);
+	};
+
+	private onNoticeLayout = async (e: any) => {
+		const res = await measure(e);
+		runInAction(() => {
+			res.x = res.pageX;
+			res.y = (StatusBar.source.currentHeight || 0) + res.pageY;
+			res.width = res.width;
+			res.height = res.height;
+		});
 	};
 
 	private onNoticePress = () => {
@@ -352,8 +361,32 @@ export default class Me extends React.Component<Props> {
 		);
 	};
 
-	closers: IReactionDisposer[] = [];
+	private onDrawerItemPress(item: { text: (...params: any[]) => string; type: string }) {
+		switch (item.type) {
+			case 'follow':
+				break;
+			case 'fans':
+				break;
+			case 'like':
+				break;
+			case 'share':
+				Router.myArticles('share');
+				break;
+			case 'feedback':
+				Router.myArticles('feedback');
+				break;
+			case 'project':
+				Router.myArticles('project');
+				break;
+			case 'message':
+				break;
+			case 'favorite':
+				break;
+		}
+		this.openDrawer = false;
+	}
 
+	closers: IReactionDisposer[] = [];
 	componentDidMount() {
 		this.closers.push(
 			autorun(async () => {
@@ -376,9 +409,13 @@ export default class Me extends React.Component<Props> {
 							});
 						}
 
-						const userFriendNums = $('.user-friend-num > a');
+						const userFriendNums = $('.user-friend-num > a').toArray();
+						runInAction(() => {
+							this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
+							this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
+							this.likeCnt = Number.parseInt($(userFriendNums[2]).text().match(/\d+/)![0]);
+						});
 					});
-					// this.forceUpdate();
 				}
 			})
 		);
@@ -411,6 +448,13 @@ const styles = {
 		flex: 1,
 		backgroundColor: BACK_WHITE
 	} as ViewStyle,
+	toolbarLeftAvatar: {
+		width: 40,
+		height: 40,
+		borderRadius: 5,
+		borderColor: '#fff',
+		borderWidth: 1.5
+	} as ImageStyle,
 	unloggedContainer: {
 		width: SCREEN_WIDTH,
 		position: 'absolute',
@@ -470,10 +514,10 @@ const styles = {
 		paddingHorizontal: 10,
 		paddingBottom: 10
 	} as ViewStyle,
-	drawerItem:{
-		width: 240,
-		height:42, 
-		flexDirection:"row",
+	drawerItem: {
+		width: 260,
+		height: 42,
+		flexDirection: 'row',
 		paddingHorizontal: 10,
 		paddingVertical: 5,
 		marginVertical: 5,

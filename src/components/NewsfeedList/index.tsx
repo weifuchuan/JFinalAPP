@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { View, ViewStyle, FlatList } from 'react-native';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
-import { NewsFeed } from '../../store/types';
+import { NewsFeed } from '../../types';
 import { req } from '../../store/web';
 import RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
 import Newsfeed from './Newsfeed';
@@ -18,8 +18,7 @@ interface Props {
 }
 
 type Uri = string;
-type Offset = number;
-const cache = new Map<Uri, [NewsFeed[], Offset]>();
+const cache = new Map<Uri, NewsFeed[]>();
 
 @inject('store')
 @observer
@@ -64,6 +63,7 @@ export default class NewsfeedList extends React.Component<Props> {
 				this.newsfeeds.push(...nfs);
 				this.refreshState = RefreshState.Idle;
 			});
+			cache.set(this.props.uri, this.newsfeeds);
 		}
 	};
 
@@ -81,6 +81,7 @@ export default class NewsfeedList extends React.Component<Props> {
 				this.newsfeeds.push(...nfs);
 				this.refreshState = RefreshState.Idle;
 			});
+			cache.set(this.props.uri, this.newsfeeds);
 		}
 	};
 
@@ -89,28 +90,54 @@ export default class NewsfeedList extends React.Component<Props> {
 	componentDidMount() {
 		this.closers.push(
 			autorun(async () => {
-				if (this.props.store!.me && this.props.shouldCache && cache.has(this.props.uri)) {
-					[ this.newsfeeds, this.lastOffsetY ] = cache.get(this.props.uri)!;
-					this.refreshState = RefreshState.HeaderRefreshing;
-					const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
-					const nfs = observable(this.parseHtml(html));
-					runInAction(() => {
-						this.newsfeeds.push(...nfs);
-						this.refreshState = RefreshState.Idle;
-					});
-					return;
+				if (this.props.uri.startsWith('/my')) {
+					if (this.props.store!.me) {
+						if (
+							this.props.shouldCache &&
+							cache.has(this.props.uri) &&
+							cache.get(this.props.uri)!.length > 0
+						) {
+							this.newsfeeds.push(...cache.get(this.props.uri)!);
+						} else {
+							this.refreshState = RefreshState.HeaderRefreshing;
+							const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
+							const nfs = observable(this.parseHtml(html));
+							runInAction(() => {
+								this.newsfeeds.push(...nfs);
+								this.refreshState = RefreshState.Idle;
+							});
+							return;
+						}
+					} else {
+						this.newsfeeds.splice(0, this.newsfeeds.length);
+					}
 				} else {
-					this.newsfeeds.splice(0, this.newsfeeds.length);
+					if (this.props.shouldCache && cache.has(this.props.uri) && cache.get(this.props.uri)!.length > 0) {
+						this.newsfeeds.push(...cache.get(this.props.uri)!);
+					} else {
+						this.refreshState = RefreshState.HeaderRefreshing;
+						const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
+						const nfs = observable(this.parseHtml(html));
+						runInAction(() => {
+							this.newsfeeds.push(...nfs);
+							this.refreshState = RefreshState.Idle;
+						});
+					}
 				}
+				cache.set(this.props.uri, this.newsfeeds);
 			})
 		);
+		if (this.props.uri.startsWith('/my')) this.props.store!.addListener('myReplyOk', this.onMyReplyOk);
 	}
+
+	onMyReplyOk = () => {
+		this.onHeaderRefresh(RefreshState.HeaderRefreshing);
+	};
 
 	componentWillUnmount() {
 		for (const c of this.closers) c();
-		if (this.props.store!.me && this.props.shouldCache) {
-			cache.set(this.props.uri, [ this.newsfeeds, this.lastOffsetY ]);
-		}
+		cache.set(this.props.uri, this.newsfeeds);
+		if (this.props.uri.startsWith('/my')) this.props.store!.removeListener('myReplyOk', this.onMyReplyOk);
 	}
 
 	@action

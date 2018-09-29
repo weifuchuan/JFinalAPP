@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ViewStyle, Image, Text, TextStyle, TouchableOpacity, ImageStyle, TextInput } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { Store } from '../../store';
-import { NewsFeed } from '../../store/types';
+import { NewsFeed } from '../../types';
 import { Card, Button } from 'react-native-material-ui';
 import { Button as Btn } from 'react-native-elements';
 import { observable, toJS, autorun, IReactionDisposer, runInAction } from 'mobx';
@@ -12,11 +12,12 @@ import Touchable from '../base/Touchable';
 import { req, saveNewsFeedReply } from '../../store/web';
 import { Toast } from 'antd-mobile-rn';
 import Router from '../Router';
+import { getNoCacheValue } from '../base/kit';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
 	store?: Store;
-	newsfeed: NewsFeed;
+	newsfeed: NewsFeed; 
 }
 
 interface Reply {
@@ -52,7 +53,7 @@ export default class Newsfeed extends React.Component<Props> {
 							}}
 						>
 							<View style={styles._1_1}>
-								<Image source={{ uri: `${baseUrl}${nf.accountAvatar}` }} style={styles._1_1_1} />
+								<Image source={{ uri: `${baseUrl}${nf.accountAvatar}?donotCache=${getNoCacheValue()}` }} style={styles._1_1_1} />
 								<View style={styles._1_1_2}>
 									<Text style={styles._1_1_2_nickname}>{nf.accountNickName}</Text>
 								</View>
@@ -70,7 +71,7 @@ export default class Newsfeed extends React.Component<Props> {
 								>
 									<View style={styles._1_2_2}>
 										<Image
-											source={{ uri: `${baseUrl}${nf.refParentAccountAvatar}` }}
+											source={{ uri: `${baseUrl}${nf.refParentAccountAvatar}?donotCache=${getNoCacheValue()}` }}
 											style={styles._1_2_2_avatar}
 										/>
 										<Text style={styles._1_2_2_title} numberOfLines={1}>
@@ -125,7 +126,7 @@ export default class Newsfeed extends React.Component<Props> {
 										>
 											<View style={styles._2_reply_1}>
 												<Image
-													source={{ uri: `${req.baseUrl}${reply.avatar}` }}
+													source={{ uri: `${req.baseUrl}${reply.avatar}?donotCache=${getNoCacheValue()}` }}
 													style={{ width: 16, height: 16, marginRight: 6 }}
 												/>
 												<Text>{reply.nickName}</Text>
@@ -159,6 +160,7 @@ export default class Newsfeed extends React.Component<Props> {
 					this.replyContent = `@${this.props.newsfeed.accountNickName} `;
 					this.repling = false;
 				});
+				this.props.store!.emit("myReplyOk")
 			} else {
 				Toast.fail(ret.get('msg'), 2);
 				this.repling = false;

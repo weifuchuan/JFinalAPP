@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { Item } from './kit';
 import { Card } from 'react-native-material-ui';
 import { baseUrl } from '../../store/req';
+import { getNoCacheValue } from '../base/kit';
 
 interface Props {
 	item: Item;
@@ -18,7 +19,7 @@ export default class ItemComp extends React.Component<Props> {
 			<Card onPress={() => this.props.onPress(item)}>
 				<View style={styles.container}>
 					<View style={styles.avatarAndTitle}>
-						<Image source={{ uri: `${baseUrl}${item.avatar}` }} style={styles.avatar} />
+						<Image source={{ uri: `${baseUrl}${item.avatar}?donotCache=${getNoCacheValue()}` }} style={styles.avatar} />
 						<Text style={styles.title}>{item.title}</Text>
 					</View>
 					<Text style={styles.content}>{item.content.trim() + '...'}</Text>

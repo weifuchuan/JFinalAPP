@@ -5,7 +5,7 @@ import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { Actions, Router, Scene, SceneProps, Stack, Tabs } from 'react-native-router-flux';
 import { Store } from '../store/index';
-import AddArticle from './AddArticle';
+import EditArticle from './EditArticle';
 import { BACK_WHITE, ICON_BLUE } from './base/color';
 import StatusBar from './base/StatusBar';
 import FeedbackPage from './ContentPage/Feedback';
@@ -21,6 +21,7 @@ import Reg from './Reg';
 import User from './User';
 import UploadAvatar from './UploadAvatar';
 import UpdatePassword from './UpdatePassword';
+import MyArticles from './MyArticles';
 
 @inject('store')
 @observer
@@ -93,8 +94,8 @@ export default class App extends React.Component<{
 						onExit={this.popStatusBarStyle}
 					/>
 					<Scene
-						key={'addArticle'}
-						component={AddArticle}
+						key={'editArticle'}
+						component={EditArticle}
 						onEnter={this.pushArticleStatusBarStyle}
 						onExit={this.popStatusBarStyle}
 					/>
@@ -126,7 +127,7 @@ export default class App extends React.Component<{
 						key={'uploadAvatar'}
 						component={UploadAvatar}
 						onEnter={(props: any) => {
-							this.pushArticleStatusBarStyle();
+							this.pushBlackStatusBarStyle();
 							if (!this.props.store!.me) {
 								Actions.login();
 							}
@@ -134,8 +135,19 @@ export default class App extends React.Component<{
 						onExit={this.popStatusBarStyle}
 					/>
 					<Scene
-						key={"updatePassword"}
+						key={'updatePassword'}
 						component={UpdatePassword}
+						onEnter={(props: any) => {
+							this.pushCommonStatusBarStyle();
+							if (!this.props.store!.me) {
+								Actions.login();
+							}
+						}}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'myArticles'}
+						component={MyArticles}
 						onEnter={(props: any) => {
 							this.pushArticleStatusBarStyle();
 							if (!this.props.store!.me) {
@@ -184,6 +196,11 @@ export default class App extends React.Component<{
 	private pushArticleStatusBarStyle = () => {
 		StatusBar.pushBarStyle('light-content');
 		StatusBar.pushBackgroundColor(ICON_BLUE);
+	};
+
+	private pushBlackStatusBarStyle = () => {
+		StatusBar.pushBarStyle('light-content');
+		StatusBar.pushBackgroundColor('#000');
 	};
 
 	private popStatusBarStyle = () => {

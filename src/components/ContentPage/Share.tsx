@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { Store } from '../../store';
-import { Share as ShareModel, AccountInPage, Ret } from '../../store/types';
+import { Share as ShareModel, AccountInPage, Ret } from '../../types';
 import { observable, runInAction } from 'mobx';
 import BasePage from './BasePage';
 import { req, like, favorite, reply, deleteReply } from '../../store/web';
@@ -145,7 +145,7 @@ export default class SharePage extends React.Component<Props> {
 			}
 		} else if (payload.action === 'deleteReply') {
 			const confirm = await new Promise<boolean>((resolve) => {
-				const closer = Modal.alert('确认删除回复？', '删除无法撤销。', [
+				Modal.alert('确认删除回复？', '删除无法撤销。', [
 					{
 						text: '确认',
 						onPress: () => {
@@ -314,6 +314,16 @@ export default class SharePage extends React.Component<Props> {
 									$(document).ready(function() {
 										$("pre").addClass("prettyprint linenums");
 										prettyPrint(); 
+
+										try{
+											$("img").each(function(){
+												if ($(this).attr("src").match(/\?\w+=/)){
+													$(this).attr("src", $(this).attr("src")+"&noCache="+Math.random()); 
+												}else{
+													$(this).attr("src", $(this).attr("src")+"?noCache="+Math.random()); 
+												}
+											});
+										}catch(e){}
 
 										$("#author").on("tap", function(){ 
 											send({action:"openUser", id: ${this.author.id}}); 

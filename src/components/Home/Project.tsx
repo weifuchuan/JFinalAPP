@@ -10,7 +10,7 @@ import { BACK_WHITE, LOADING_BLUE } from '../base/color';
 import _RefreshListView, { RefreshStateType } from '../base/RefreshListView';
 import { RefreshState } from '../base/RefreshListView';
 import { SCREEN_WIDTH } from '../base/kit';
-import ItemComp from './ItemComp'; 
+import ItemComp from './ItemComp';
 import PageSelect from './PageSelect';
 import Router from '../Router';
 
@@ -30,7 +30,7 @@ export default class Project extends React.Component<Props> {
 	@observable loading: boolean = false;
 	@observable refreshState: RefreshStateType = RefreshState.Idle;
 	pageToItems: Map<number, Item[]> = new Map();
-  list: FlatList<Item> | null=null;
+	list: FlatList<Item> | null = null;
 
 	render() {
 		return (
@@ -42,7 +42,7 @@ export default class Project extends React.Component<Props> {
 							<ItemComp
 								item={item}
 								onPress={(item) => {
-									Router.projectPage(item.id );
+									Router.projectPage(item.id);
 								}}
 							/>
 						);
@@ -179,8 +179,8 @@ export default class Project extends React.Component<Props> {
 				this.projectItems.push(...result.items);
 			});
 			this.pageToItems.set(result.currPage, result.items);
-    }
-    this.list!.scrollToOffset({animated:true, offset:0}); 
+		}
+		this.list!.scrollToOffset({ animated: true, offset: 0 });
 		this.loading = false;
 	};
 
@@ -220,10 +220,15 @@ export default class Project extends React.Component<Props> {
 		} catch (err) {
 			console.log(err);
 		}
-		
+		this.props.store!.addListener('editArticleOk', this.onEditArticleOk);
 	}
 
+	onEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
+		if (type === 'project') this.topRefresh(RefreshState.HeaderRefreshing);
+	};
+
 	componentWillUnmount() {
+		this.props.store!.removeListener('editArticleOk', this.onEditArticleOk);
 		const storage = this.props.store!.localStorage;
 		storage.save({
 			key: 'projectItemsCache',

@@ -1,9 +1,8 @@
 import Storage from '../storage';
 import { AsyncStorage, NativeEventEmitter } from 'react-native';
-import { Account } from './types';
+import { Account } from '../types';
 import { toJS, observable } from 'mobx';
 import { req } from './web';
-import CheerioAPI from 'cheerio';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 export class Store extends NativeEventEmitter {
@@ -15,15 +14,14 @@ export class Store extends NativeEventEmitter {
 				key: 'me',
 				data: toJS(this.me)
 			});
-	} 
-
-	async quit(){
-		try{
-			this.me = undefined; 
-			await storage.remove({ key: 'me' });
-		}catch(e){}
 	}
 
+	async quit() {
+		try {
+			this.me = undefined;
+			await storage.remove({ key: 'me' });
+		} catch (e) {}
+	}
 
 	get localStorage(): Storage {
 		return storage;
@@ -61,6 +59,7 @@ global.storage = storage;
 					.trim() === me.nickName
 			) {
 				// logged
+				me.avatar = avatar.substring('/upload/avatar/'.length) + '?donotCache=' + new Date().getTime();
 				store.me = observable(me);
 			}
 		}

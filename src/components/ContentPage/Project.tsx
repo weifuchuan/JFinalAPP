@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { Store } from '../../store';
-import { Project as ProjectModel, AccountInPage } from '../../store/types';
+import { Project as ProjectModel, AccountInPage } from '../../types';
 import { observable, runInAction } from 'mobx';
 import BasePage from './BasePage';
 import { req, favorite, like } from '../../store/web';
@@ -216,6 +216,17 @@ export default class Project extends React.Component<Props> {
 									$(document).ready(function() {
 										$("pre").addClass("prettyprint linenums");
 										prettyPrint();
+
+										try{
+											$("img").each(function(){
+												if ($(this).attr("src").match(/\?\w+=/)){
+													$(this).attr("src", $(this).attr("src")+"&noCache="+Math.random()); 
+												}else{
+													$(this).attr("src", $(this).attr("src")+"?noCache="+Math.random()); 
+												}
+											});
+										}catch(e){}
+
 										$("#author").on("tap", function(){ 
 											send({action:"openUser", id: ${this.author.id}}); 
 										}); 

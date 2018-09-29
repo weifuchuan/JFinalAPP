@@ -72,7 +72,7 @@ export default class Feedback extends React.Component<Props> {
 	add = () => {
 		if (!this.props.store!.me) Router.login();
 		else {
-			Router.addArticle('feedback');
+			Router.editArticle('feedback');
 		}
 	};
 
@@ -232,9 +232,15 @@ export default class Feedback extends React.Component<Props> {
 		} catch (err) {
 			console.log(err);
 		}
+		this.props.store!.addListener('editArticleOk', this.onEditArticleOk);
 	}
 
+	onEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
+		if (type === 'feedback') this.topRefresh(RefreshState.HeaderRefreshing);
+	};
+
 	componentWillUnmount() {
+		this.props.store!.removeListener('editArticleOk', this.onEditArticleOk);
 		const storage = this.props.store!.localStorage;
 		storage.save({
 			key: 'feedbackItemsCache',
