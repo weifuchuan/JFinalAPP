@@ -186,29 +186,31 @@ export default class AddArticle extends React.Component<Props> {
 		<script src="https://cdn.bootcss.com/simditor/2.3.6/lib/simditor.min.js"></script>
 		<script>
 			$(document).ready(function () {
-				window.editor = new Simditor({
-					textarea: $('#content'),
-					toolbar: [
-						'title',
-						'bold',
-						'italic',
-						'underline',
-						'strikethrough',
-						'fontScale',
-						'color',
-						'ol',
-						'ul',
-						'blockquote',
-						'code',
-						'table',
-						'link',
-						'image',
-						'hr',
-						'indent',
-						'outdent',
-						'alignment',
-					], 
-				});
+				try{
+					window.editor = new Simditor({
+						textarea: $('#content'),
+						toolbar: [
+							'title',
+							'bold',
+							'italic',
+							'underline',
+							'strikethrough',
+							'fontScale',
+							'color',
+							'ol',
+							'ul',
+							'blockquote',
+							'code',
+							'table',
+							'link',
+							'image',
+							'hr',
+							'indent',
+							'outdent',
+							'alignment',
+						], 
+					});
+				}catch(e){}
 				setTimeout(function(){
 					send({ action: "ready" }); 
 				}, 300); 

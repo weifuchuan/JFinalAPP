@@ -8,6 +8,7 @@ import { Toolbar } from 'react-native-material-ui';
 import WebView from '../base/WebView';
 import { req } from '../../store/web';
 import { observable, runInAction } from 'mobx';
+import { Modal } from 'antd-mobile-rn';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -35,7 +36,9 @@ class Friends extends Component<Props> {
 				<WebView
 					on={this.on}
 					source={{ html: this.html, baseUrl: req.baseUrl }}
-					ref={(r) => (this.webview = r)}
+          ref={(r) => (this.webview = r)}
+          originWhitelist={[]}
+          startInLoadingState 
 				/>
 			</View>
 		);
@@ -43,7 +46,13 @@ class Friends extends Component<Props> {
 
 	on = async (payload: any) => {
 		if (payload.action === 'openUser') {
-			const id: number = payload.id;
+      const id: number = payload.id;
+      if (this.props.store!.me && this.props.store!.me!.id === payload.id) {
+				Modal.alert('跳转到我的主页？', '将无法返回此页', [
+					{ text: '确认', onPress: () => Router.me() },
+					{ text: '取消', onPress: () => null }
+				]);
+			} else 
 			Router.user(id);
 		} else if (payload.action === 'addFriend') {
 			return (await req.GET('/friend/add', { friendId: payload.id })).data;
@@ -70,15 +79,13 @@ class Friends extends Component<Props> {
         ${$('div.friends').html()!}
       </div>
       <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
-      <script > 
-        alert("fuc22k");
-        $(document).ready(function(){
-          alert("fuck");
+      <script >  
+        $(document).ready(function(){ 
           var cnt = 0; 
           $('a[href^="/user/"]').each(function(){
             try{
               var href = $(this).attr('href');
-              if (/^\/user\/\d+$/.test(href)){
+              if (/^\\/user\\/\\d+$/.test(href)){
                 cnt++;
                 $(this).attr('href', null);
                 var id = Number.parseInt(href.substring(href.lastIndexOf('/') + 1)); 
@@ -89,13 +96,12 @@ class Friends extends Component<Props> {
                 });
               }
             }catch(e){}
-          });
-          alert(cnt);
+          }); 
           $('span[onclick]').each(function(){
             try{
               var onclick = $(this).attr('onclick');
               $(this).attr('onclick', null); 
-              var id = Number.parseInt(onclick.match(/\d+/)[0]); 
+              var id = Number.parseInt(onclick.match(/\\d+/)[0]); 
               var isAddFriend = onclick.startsWith('addFriend'); 
               $(this).on('click', function (){
                 var self = this; 
@@ -147,8 +153,9 @@ class Friends extends Component<Props> {
 		const $ = cheerio.load(html);
 		runInAction(() => {
 			if (this.props.accountId) this.nickName = $('span.nick-name').text();
-			this.html = this.htmlBuild($);
-		});
+      this.html = this.htmlBuild($);
+    });
+    console.log(this.html); 
 	};
 
 	componentDidMount() {

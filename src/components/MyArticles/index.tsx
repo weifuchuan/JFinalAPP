@@ -45,13 +45,15 @@ export default class MyArticles extends React.Component<Props> {
 					onLeftElementPress={() => Router.pop()}
 					style={{ container: { backgroundColor: ICON_BLUE } }}
 					rightElement={
-						<Button
-							text={`创建${title}`}
-							style={{ text: { color: '#fff' } }}
-							onPress={() => {
-								Router.editArticle(this.props.type);
-							}}
-						/>
+						this.props.accountId ? <View/> : (
+							<Button
+								text={`创建${title}`}
+								style={{ text: { color: '#fff' } }}
+								onPress={() => {
+									Router.editArticle(this.props.type);
+								}}
+							/>
+						)
 					}
 				/>
 				<RefreshListView

@@ -15,6 +15,9 @@ import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../base/kit';
 import { retryDo } from '../../kit';
 import Router from '../Router';
+import { Observer } from 'mobx-react/native';
+import { Toast } from 'antd-mobile-rn';
+const Overlay2 = require('teaset').Overlay;
 
 interface Props {
 	store?: Store;
@@ -31,6 +34,9 @@ export default class Login extends React.Component<Props> {
 	@observable captchaImg: string = whiteImg;
 	@observable loging: boolean = false;
 	@observable errorMsg: string = '';
+	overlayKey: any;
+	@observable retrievePasswordEmail: string = '';
+	@observable retrieving: boolean = false;
 
 	constructor(props: Props) {
 		super(props);
@@ -170,7 +176,62 @@ export default class Login extends React.Component<Props> {
 		reader.readAsDataURL(blob);
 	};
 
-	private forgetPassword = async () => {};
+	private forgetPassword = async () => {
+		this.overlayKey = Overlay2.show(
+			<Overlay2.PopView
+				type="zoomIn"
+				overlayOpacity={0.5}
+				style={{ alignItems: 'center', justifyContent: 'center' }}
+			>
+				<Observer>
+					{() => (
+						<View
+							style={{
+								backgroundColor: '#fff',
+								width: SCREEN_WIDTH * 0.9,
+								paddingVertical: 20,
+								borderRadius: 10,
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}
+						>
+							<Input
+								value={this.retrievePasswordEmail}
+								onChangeText={(text: string) => (this.retrievePasswordEmail = text)}
+								placeholder="填写注册邮箱"
+								inputStyle={{ fontSize: 16 } as TextStyle}
+								leftIcon={<IconMaterialCommunityIcons name="email" size={24} color="black" />}
+								textContentType={'emailAddress'}
+								keyboardType={'email-address'}
+							/>
+							<Button
+								title={'找回密码'}
+								disabled={
+									!/^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{1,8})$/.test(
+										this.retrievePasswordEmail
+									)
+								}
+								loading={this.retrieving}
+								titleStyle={{ fontWeight: '700' }}
+								containerStyle={{ marginTop: 10 }}
+								onPress={async () => {
+									const res = (await req.POST_FORM('/login/sendRetrievePasswordEmail', {
+										email: this.retrievePasswordEmail
+									})).data;
+									if (res.state === 'ok') {
+										Toast.success(res.msg);
+										Overlay2.hide(this.overlayKey);
+									} else {
+										Toast.fail(res.msg, 2);
+									}
+								}}
+							/>
+						</View>
+					)}
+				</Observer>
+			</Overlay2.PopView>
+		);
+	};
 
 	private back = () => {
 		Router.pop();

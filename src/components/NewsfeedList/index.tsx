@@ -1,7 +1,7 @@
 import React from 'react';
-import { action, observable, runInAction, autorun, IReactionDisposer } from 'mobx';
+import { action, observable, runInAction, autorun, IReactionDisposer, toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { View, ViewStyle, FlatList,Text } from 'react-native';
+import { View, ViewStyle, FlatList, Text } from 'react-native';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { NewsFeed } from '../../types';
@@ -43,11 +43,6 @@ export default class NewsfeedList extends React.Component<Props> {
 					onFooterRefresh={this.onFooterRefresh}
 					style={{ flex: 1 }}
 					listRef={(r) => (this.list = r)}
-					ListEmptyComponent={() => (
-						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-							<Text>无</Text>
-						</View>
-					)}
 				/>
 			</View>
 		);
@@ -57,14 +52,13 @@ export default class NewsfeedList extends React.Component<Props> {
 	onHeaderRefresh = async (refreshState: RefreshStateType) => {
 		if (refreshState === RefreshState.HeaderRefreshing) {
 			this.refreshState = refreshState;
+			this.newsfeeds.splice(0, this.newsfeeds.length);
 			const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
 			const nfs = observable(this.parseHtml(html));
 			runInAction(() => {
-				this.newsfeeds.splice(0, this.newsfeeds.length);
 				this.newsfeeds.push(...nfs);
 				this.refreshState = RefreshState.Idle;
 			});
-			cache.set(this.props.uri, this.newsfeeds);
 		}
 	};
 
@@ -82,39 +76,31 @@ export default class NewsfeedList extends React.Component<Props> {
 				this.newsfeeds.push(...nfs);
 				this.refreshState = RefreshState.Idle;
 			});
-			cache.set(this.props.uri, this.newsfeeds);
 		}
 	};
 
 	private closers: IReactionDisposer[] = [];
 
 	componentDidMount() {
-		this.closers.push(
-			autorun(async () => {
-				if (this.props.uri.startsWith('/my')) {
-					if (this.props.store!.me) {
-						if (
-							this.props.shouldCache &&
-							cache.has(this.props.uri) &&
-							cache.get(this.props.uri)!.length > 0
-						) {
-							this.newsfeeds.push(...cache.get(this.props.uri)!);
-						} else {
-							this.onHeaderRefresh(RefreshState.HeaderRefreshing);
-						}
+		(async () => {
+			if (this.props.uri.startsWith('/my')) {
+				if (this.props.store!.me) {
+					if (this.props.shouldCache && cache.has(this.props.uri)) {
+						this.newsfeeds = observable(cache.get(this.props.uri)!);
 					} else {
-						this.newsfeeds.splice(0, this.newsfeeds.length);
+						await this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 					}
 				} else {
-					if (this.props.shouldCache && cache.has(this.props.uri) && cache.get(this.props.uri)!.length > 0) {
-						this.newsfeeds.push(...cache.get(this.props.uri)!);
-					} else {
-						this.onHeaderRefresh(RefreshState.HeaderRefreshing);
-					}
+					this.newsfeeds.splice(0, this.newsfeeds.length);
 				}
-				cache.set(this.props.uri, this.newsfeeds);
-			})
-		);
+			} else {
+				if (this.props.shouldCache && cache.has(this.props.uri)) {
+					this.newsfeeds = observable(cache.get(this.props.uri)!);
+				} else {
+					await this.onHeaderRefresh(RefreshState.HeaderRefreshing);
+				}
+			}
+		})();
 		if (this.props.uri.startsWith('/my')) this.props.store!.addListener('myReplyOk', this.onMyReplyOk);
 	}
 
@@ -122,9 +108,13 @@ export default class NewsfeedList extends React.Component<Props> {
 		this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 	};
 
+	cache = () => {
+		if (this.props.shouldCache) cache.set(this.props.uri, toJS(this.newsfeeds));
+	};
+
 	componentWillUnmount() {
 		for (const c of this.closers) c();
-		cache.set(this.props.uri, this.newsfeeds);
+		this.cache();
 		if (this.props.uri.startsWith('/my')) this.props.store!.removeListener('myReplyOk', this.onMyReplyOk);
 	}
 
@@ -201,3 +191,5 @@ export default class NewsfeedList extends React.Component<Props> {
 		return nfs;
 	};
 }
+
+let counter = 0;

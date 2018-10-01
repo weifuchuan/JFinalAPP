@@ -24,6 +24,8 @@ import UpdatePassword from './UpdatePassword';
 import MyArticles from './MyArticles';
 import MyFavorite from './MyFavorite';
 import Friends from './Friends';
+import Message from './Message';
+import SendMessage from './Message/SendMessage';
 
 @inject('store')
 @observer
@@ -117,7 +119,7 @@ export default class App extends React.Component<{
 						key={'user'}
 						component={User}
 						onEnter={(props: any) => {
-							this.pushCommonStatusBarStyle();
+							this.pushUserBlueStatusBar();
 							if (this.props.store!.me && this.props.store!.me!.id === props.id) {
 								Actions.jump('me');
 								this.props.store!.emit('selectHomeBottomNav', 'me');
@@ -167,6 +169,18 @@ export default class App extends React.Component<{
 					<Scene
 						key={'friends'}
 						component={Friends}
+						onEnter={this.pushArticleStatusBarStyle}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'message'}
+						component={Message}
+						onEnter={this.pushArticleStatusBarStyle}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'sendMessage'}
+						component={SendMessage}
 						onEnter={this.pushArticleStatusBarStyle}
 						onExit={this.popStatusBarStyle}
 					/>

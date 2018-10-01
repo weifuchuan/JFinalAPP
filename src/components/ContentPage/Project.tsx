@@ -10,7 +10,7 @@ import { retryDo } from '../../kit';
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../base/kit';
 import { ICON_BLUE } from '../base/color'; 
 import { baseUrl } from '../../store/req';
-import { Toast } from 'antd-mobile-rn';
+import { Toast, Modal } from 'antd-mobile-rn';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 import { ActionSheet } from 'antd-mobile-rn';
 import Router from '../Router';
@@ -118,6 +118,12 @@ export default class Project extends React.Component<Props> {
 
 	onWebViewEmit = (payload: any) => {
 		if (payload.action === 'openUser') {
+			if (this.props.store!.me && this.props.store!.me!.id === payload.id) {
+				Modal.alert('跳转到我的主页？', '将无法返回此页', [
+					{ text: '确认', onPress: () => Router.me() },
+					{ text: '取消', onPress: () => null }
+				]);
+			} else 
 			Router.user(payload.id);
 		} else if (payload.action === 'openProject') {
 			if (payload.id) {

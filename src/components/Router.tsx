@@ -54,11 +54,20 @@ export default class Router {
 	static friends(type: 'fans' | 'follow', accountId?: number) {
 		Actions.push('friends', { type, accountId });
 	}
+	static message() {
+		Actions.push('message');
+	}
+	static sendMessage(id: number) {
+		Actions.push('sendMessage', { id });
+	}
 	static pop() {
 		Actions.pop();
 	}
 	static push(key: string, props?: any) {
 		Actions.push(key, props);
+	}
+	static refresh(props?: any) {
+		Actions.refresh(props);
 	}
 	static _ = Actions;
 }

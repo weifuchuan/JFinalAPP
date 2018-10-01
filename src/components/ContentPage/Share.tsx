@@ -116,6 +116,12 @@ export default class SharePage extends React.Component<Props> {
 
 	onWebViewEmit = async (payload: any): Promise<any> => {
 		if (payload.action === 'openUser') {
+			if (this.props.store!.me && this.props.store!.me!.id === payload.id) {
+				Modal.alert('跳转到我的主页？', '将无法返回此页', [
+					{ text: '确认', onPress: () => Router.me() },
+					{ text: '取消', onPress: () => null }
+				]);
+			} else 
 			Router.user( payload.id );
 		} else if (payload.action === 'openProject') {
 			if (payload.id) {

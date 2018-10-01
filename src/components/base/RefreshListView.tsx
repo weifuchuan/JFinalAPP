@@ -192,7 +192,7 @@ export default class RefreshListView<Item = any> extends Component<Props<Item>> 
 	};
 
 	static defaultProps = {
-		footerRefreshingText: '玩命加载中…',
+		footerRefreshingText: '加载中…',
 		footerFailureText: '点击重新加载',
 		footerNoMoreDataText: '已加载全部数据',
 		footerEmptyDataText: '服务器没有数据'

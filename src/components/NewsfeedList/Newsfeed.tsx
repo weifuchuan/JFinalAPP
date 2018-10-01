@@ -10,14 +10,14 @@ import { baseUrl } from '../../store/req';
 import HTML from '../base/RNRenderHTML';
 import Touchable from '../base/Touchable';
 import { req, saveNewsFeedReply } from '../../store/web';
-import { Toast } from 'antd-mobile-rn';
+import { Toast, Modal } from 'antd-mobile-rn';
 import Router from '../Router';
 import { getNoCacheValue } from '../base/kit';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
 	store?: Store;
-	newsfeed: NewsFeed; 
+	newsfeed: NewsFeed;
 }
 
 interface Reply {
@@ -53,7 +53,10 @@ export default class Newsfeed extends React.Component<Props> {
 							}}
 						>
 							<View style={styles._1_1}>
-								<Image source={{ uri: `${baseUrl}${nf.accountAvatar}?donotCache=${getNoCacheValue()}` }} style={styles._1_1_1} />
+								<Image
+									source={{ uri: `${baseUrl}${nf.accountAvatar}?donotCache=${getNoCacheValue()}` }}
+									style={styles._1_1_1}
+								/>
 								<View style={styles._1_1_2}>
 									<Text style={styles._1_1_2_nickname}>{nf.accountNickName}</Text>
 								</View>
@@ -71,7 +74,9 @@ export default class Newsfeed extends React.Component<Props> {
 								>
 									<View style={styles._1_2_2}>
 										<Image
-											source={{ uri: `${baseUrl}${nf.refParentAccountAvatar}?donotCache=${getNoCacheValue()}` }}
+											source={{
+												uri: `${baseUrl}${nf.refParentAccountAvatar}?donotCache=${getNoCacheValue()}`
+											}}
 											style={styles._1_2_2_avatar}
 										/>
 										<Text style={styles._1_2_2_title} numberOfLines={1}>
@@ -121,12 +126,22 @@ export default class Newsfeed extends React.Component<Props> {
 									<View style={styles._2_reply} key={index.toString()}>
 										<Touchable
 											onPress={() => {
-												Router.user(reply.accountId);
+												if (
+													this.props.store!.me &&
+													this.props.store!.me!.id === reply.accountId
+												) {
+													Modal.alert('跳转到我的主页？', '将无法返回此页', [
+														{ text: '确认', onPress: () => Router.me() },
+														{ text: '取消', onPress: () => null }
+													]);
+												} else Router.user(reply.accountId);
 											}}
 										>
 											<View style={styles._2_reply_1}>
 												<Image
-													source={{ uri: `${req.baseUrl}${reply.avatar}?donotCache=${getNoCacheValue()}` }}
+													source={{
+														uri: `${req.baseUrl}${reply.avatar}?donotCache=${getNoCacheValue()}`
+													}}
 													style={{ width: 16, height: 16, marginRight: 6 }}
 												/>
 												<Text>{reply.nickName}</Text>
@@ -160,7 +175,7 @@ export default class Newsfeed extends React.Component<Props> {
 					this.replyContent = `@${this.props.newsfeed.accountNickName} `;
 					this.repling = false;
 				});
-				this.props.store!.emit("myReplyOk")
+				this.props.store!.emit('myReplyOk');
 			} else {
 				Toast.fail(ret.get('msg'), 2);
 				this.repling = false;
@@ -175,7 +190,12 @@ export default class Newsfeed extends React.Component<Props> {
 		if (href.includes('/user')) {
 			const id = Number.parseInt(href.match(/\d+/)![0]);
 			if (id !== this.props.store!.me!.id) {
-				Router.user(id);
+				if (this.props.store!.me && this.props.store!.me!.id === id) {
+					Modal.alert('跳转到我的主页？', '将无法返回此页', [
+						{ text: '确认', onPress: () => Router.me() },
+						{ text: '取消', onPress: () => null }
+					]);
+				} else Router.user(id);
 			}
 		}
 	};

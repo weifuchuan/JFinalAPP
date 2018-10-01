@@ -34,7 +34,7 @@ import { retryDo } from '../../kit';
 import { req } from '../../store/web';
 import NewsfeedList from '../NewsfeedList';
 import Touchable from '../base/Touchable';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { TabView, TabBar, SceneMap, RouteBase } from 'react-native-tab-view';
 const { PagerExperimental } = require('react-native-tab-view');
 import Router from '../Router';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -100,6 +100,10 @@ export default class Me extends React.Component<Props> {
 			type: 'favorite'
 		}
 	];
+
+	newsfeedCache?: JSX.Element;
+	hotCache?: JSX.Element;
+	referMeCache?: JSX.Element;
 
 	render() {
 		const store = this.props.store!;
@@ -227,11 +231,7 @@ export default class Me extends React.Component<Props> {
 									]
 								}}
 								onIndexChange={(i) => (this.tabIndex = i)}
-								renderScene={SceneMap({
-									newsfeed: () => <NewsfeedList uri={'/my'} style={{ flex: 1 }} shouldCache />,
-									hot: () => <NewsfeedList uri={'/my/hot'} style={{ flex: 1 }} shouldCache />,
-									referMe: () => <NewsfeedList uri={'/my/referMe'} style={{ flex: 1 }} shouldCache />
-								})}
+								renderScene={this.renderScene}
 								initialLayout={{
 									height: 0,
 									width: Dimensions.get('window').width
@@ -296,6 +296,28 @@ export default class Me extends React.Component<Props> {
 		);
 	}
 
+	renderScene = ({ route }: { route: RouteBase }): React.ReactNode => {
+		switch (route.key) {
+			case 'newsfeed':
+				if (this.newsfeedCache) {
+					return this.newsfeedCache;
+				}
+				return (this.newsfeedCache = <NewsfeedList uri={'/my'} style={{ flex: 1 }} shouldCache />);
+			case 'hot':
+				if (this.hotCache) {
+					return this.hotCache;
+				}
+				return (this.hotCache = <NewsfeedList uri={'/my/hot'} style={{ flex: 1 }} shouldCache />);
+			case 'referMe':
+				if (this.referMeCache) {
+					return this.referMeCache;
+				}
+				return (this.referMeCache = <NewsfeedList uri={'/my/referMe'} style={{ flex: 1 }} shouldCache />);
+			default:
+				return null;
+		}
+	};
+
 	private readonly onAccountPress = () => {
 		ActionSheet.showActionSheetWithOptions(
 			{
@@ -313,9 +335,10 @@ export default class Me extends React.Component<Props> {
 					Modal.alert('确认退出登录？', '退出后无法使用已登录的用户能使用的功能。', [
 						{
 							text: '确认',
-							onPress: () => {
-								this.props.store!.quit();
-								req.GET('/logout');
+							onPress: async () => {
+								await this.props.store!.quit();
+								Router.refresh(this.props);
+								await req.GET('/logout');
 							}
 						},
 						{ text: '取消', onPress: () => {} }
@@ -351,16 +374,17 @@ export default class Me extends React.Component<Props> {
 						return (
 							<Touchable
 								key={index.toString()}
-								onPress={() => {
+								onPress={action(() => {
 									if (remind.type === 'fans') {
-										console.warn('fans');
+										Router.friends('fans');
 									} else if (remind.type === 'message') {
-										console.warn('message');
+										Router.message();
 									} else if (remind.type === 'referMe') {
-										console.warn('referMe');
+										this.tabIndex = 2;
 									}
+									this.reminds.splice(index, 1);
 									Overlay.hide(this.popoverKey);
-								}}
+								})}
 							>
 								<Text style={{ fontSize: 16, marginVertical: 5 }}>{remind.text}</Text>
 							</Touchable>
@@ -423,11 +447,9 @@ export default class Me extends React.Component<Props> {
 						}
 
 						const userFriendNums = $('.user-friend-num > a').toArray();
-						runInAction(() => {
-							this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
-							this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
-							this.likeCnt = Number.parseInt($(userFriendNums[2]).text().match(/\d+/)![0]);
-						});
+						this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
+						this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
+						this.likeCnt = Number.parseInt($(userFriendNums[2]).text().match(/\d+/)![0]);
 					});
 				}
 			})

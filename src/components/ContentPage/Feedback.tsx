@@ -8,7 +8,7 @@ import BasePage from './BasePage';
 import { req, like, favorite, reply, deleteReply } from '../../store/web';
 import { retryDo } from '../../kit';
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../base/kit';
-import { ICON_BLUE } from '../base/color'; 
+import { ICON_BLUE } from '../base/color';
 import { baseUrl } from '../../store/req';
 import { Toast, Modal, ActionSheet } from 'antd-mobile-rn';
 import Router from '../Router';
@@ -114,22 +114,27 @@ export default class FeedbackPage extends React.Component<Props> {
 
 	onWebViewEmit = async (payload: any) => {
 		if (payload.action === 'openUser') {
-			Router.user(payload.id);
+			if (this.props.store!.me && this.props.store!.me!.id === payload.id) {
+				Modal.alert('跳转到我的主页？', '将无法返回此页', [
+					{ text: '确认', onPress: () => Router.me() },
+					{ text: '取消', onPress: () => null }
+				]);
+			} else Router.user(payload.id);
 		} else if (payload.action === 'openProject') {
 			if (payload.id) {
-				Router.projectPage(payload.id); 
+				Router.projectPage(payload.id);
 			} else {
 				Router.project();
 			}
 		} else if (payload.action === 'openShare') {
 			if (payload.id) {
-				Router.sharePage(payload.id); 
+				Router.sharePage(payload.id);
 			} else {
 				Router.share();
 			}
 		} else if (payload.action === 'openFeedback') {
 			if (payload.id) {
-				Router.feedbackPage(payload.id); 
+				Router.feedbackPage(payload.id);
 			} else {
 				Router.feedback();
 			}
