@@ -81,7 +81,7 @@ export default class SharePage extends React.Component<Props> {
 				this.favorited = !this.favorited;
 				this.share.favoriteCount++;
 			});
-			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 1.5);
+			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 0.8);
 		} else {
 			Toast.fail(ret.get('msg'), 1.5);
 		}
@@ -305,10 +305,9 @@ export default class SharePage extends React.Component<Props> {
                     }
                   </style>
 
-								</div>  
-								<script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.min.js"></script>
-								<script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.auto.min.js"></script> 
-								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script><script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+								</div>   
+								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+								<script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript"> 
 									$(document).ready(function() {

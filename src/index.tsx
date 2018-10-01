@@ -2,6 +2,8 @@ import { YellowBox } from 'react-native';
 declare var global: any;
 declare var window: any;
 if (__DEV__) {
+	console.ignoredYellowBox = [ 'Warning: isMounted(...) is deprecated', 'Require cycle' ];
+
 	// ignore yellow box
 	YellowBox.ignoreWarnings([ 'Warning: isMounted(...) is deprecated', 'Require cycle' ]);
 
@@ -20,8 +22,8 @@ if (__DEV__) {
 	//  * Set __FETCH_SUPPORT__ to false is just work for fetch.
 	//  * If you're using another way you can just use the native Blob and remove the else statement
 	//  */
-		global.Blob = global.originalBlob ? global.originalBlob : global.Blob;
-		global.FileReader = global.originalFileReader ? global.originalFileReader : global.FileReader;
+	global.Blob = global.originalBlob ? global.originalBlob : global.Blob;
+	global.FileReader = global.originalFileReader ? global.originalFileReader : global.FileReader;
 	// }
 }
 

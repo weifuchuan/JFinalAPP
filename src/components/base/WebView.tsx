@@ -11,6 +11,7 @@ export interface Props extends WebViewProps {
 	handler?: string;
 	on?: (payload: any) => Promise<any>;
 }
+
 export default class WebView extends React.Component<Props> {
 	static defaultProps = {
 		handler: `function(){}`,

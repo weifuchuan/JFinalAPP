@@ -305,7 +305,7 @@ export default class Me extends React.Component<Props> {
 							text: '确认',
 							onPress: () => {
 								this.props.store!.quit();
-								req.GET('/logout');          
+								req.GET('/logout');
 							}
 						},
 						{ text: '取消', onPress: () => {} }
@@ -364,8 +364,10 @@ export default class Me extends React.Component<Props> {
 	private onDrawerItemPress(item: { text: (...params: any[]) => string; type: string }) {
 		switch (item.type) {
 			case 'follow':
+				Router.friends('follow');
 				break;
 			case 'fans':
+				Router.friends('fans');
 				break;
 			case 'like':
 				break;
@@ -381,6 +383,7 @@ export default class Me extends React.Component<Props> {
 			case 'message':
 				break;
 			case 'favorite':
+				Router.myFavorite();
 				break;
 		}
 		this.openDrawer = false;

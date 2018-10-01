@@ -1,7 +1,7 @@
 import React from 'react';
 import { action, observable, runInAction, autorun, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { View, ViewStyle, FlatList } from 'react-native';
+import { View, ViewStyle, FlatList,Text } from 'react-native';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { NewsFeed } from '../../types';
@@ -28,7 +28,6 @@ export default class NewsfeedList extends React.Component<Props> {
 	@observable currPage: number = 1;
 	@observable totalPageCnt: number = 1;
 	list: FlatList<NewsFeed> | null = null;
-	lastOffsetY = 0;
 
 	render() {
 		return (
@@ -44,9 +43,11 @@ export default class NewsfeedList extends React.Component<Props> {
 					onFooterRefresh={this.onFooterRefresh}
 					style={{ flex: 1 }}
 					listRef={(r) => (this.list = r)}
-					onScroll={(e) => {
-						this.lastOffsetY = e ? e.nativeEvent.contentOffset.y : 0;
-					}}
+					ListEmptyComponent={() => (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+							<Text>无</Text>
+						</View>
+					)}
 				/>
 			</View>
 		);
@@ -99,14 +100,7 @@ export default class NewsfeedList extends React.Component<Props> {
 						) {
 							this.newsfeeds.push(...cache.get(this.props.uri)!);
 						} else {
-							this.refreshState = RefreshState.HeaderRefreshing;
-							const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
-							const nfs = observable(this.parseHtml(html));
-							runInAction(() => {
-								this.newsfeeds.push(...nfs);
-								this.refreshState = RefreshState.Idle;
-							});
-							return;
+							this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 						}
 					} else {
 						this.newsfeeds.splice(0, this.newsfeeds.length);
@@ -115,13 +109,7 @@ export default class NewsfeedList extends React.Component<Props> {
 					if (this.props.shouldCache && cache.has(this.props.uri) && cache.get(this.props.uri)!.length > 0) {
 						this.newsfeeds.push(...cache.get(this.props.uri)!);
 					} else {
-						this.refreshState = RefreshState.HeaderRefreshing;
-						const html = await retryDo(async () => await req.GET_HTML(`${this.props.uri}`), 3);
-						const nfs = observable(this.parseHtml(html));
-						runInAction(() => {
-							this.newsfeeds.push(...nfs);
-							this.refreshState = RefreshState.Idle;
-						});
+						this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 					}
 				}
 				cache.set(this.props.uri, this.newsfeeds);

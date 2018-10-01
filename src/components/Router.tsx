@@ -25,8 +25,8 @@ export default class Router {
 	static feedbackPage(id: number) {
 		Actions.push('feedbackPage', { id });
 	}
-	static editArticle(type: 'share' | 'feedback'|"project",isEdit?:boolean,id?:number) {
-		Actions.push('editArticle', { type,isEdit,id });
+	static editArticle(type: 'share' | 'feedback' | 'project', isEdit?: boolean, id?: number) {
+		Actions.push('editArticle', { type, isEdit, id });
 	}
 	static login(replace: boolean = false) {
 		if (replace) Actions.replace('login');
@@ -47,6 +47,12 @@ export default class Router {
 	}
 	static myArticles(type: 'feedback' | 'project' | 'share', accountId?: number) {
 		Actions.push('myArticles', { type, accountId });
+	}
+	static myFavorite() {
+		Actions.push('myFavorite');
+	}
+	static friends(type: 'fans' | 'follow', accountId?: number) {
+		Actions.push('friends', { type, accountId });
 	}
 	static pop() {
 		Actions.pop();

@@ -22,6 +22,8 @@ import User from './User';
 import UploadAvatar from './UploadAvatar';
 import UpdatePassword from './UpdatePassword';
 import MyArticles from './MyArticles';
+import MyFavorite from './MyFavorite';
+import Friends from './Friends';
 
 @inject('store')
 @observer
@@ -148,12 +150,24 @@ export default class App extends React.Component<{
 					<Scene
 						key={'myArticles'}
 						component={MyArticles}
+						onEnter={this.pushArticleStatusBarStyle}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'myFavorite'}
+						component={MyFavorite}
 						onEnter={(props: any) => {
 							this.pushArticleStatusBarStyle();
 							if (!this.props.store!.me) {
 								Actions.login();
 							}
 						}}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'friends'}
+						component={Friends}
+						onEnter={this.pushArticleStatusBarStyle}
 						onExit={this.popStatusBarStyle}
 					/>
 				</Stack>

@@ -1,8 +1,8 @@
 import qs from 'qs';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// export const baseUrl = __DEV__ ? 'http://192.168.1.102:8000' : 'http://www.jfinal.com';
-export const baseUrl = 'http://192.168.1.102:8000';
+export const baseUrl = __DEV__ ? 'http://192.168.1.102:8000' : 'http://www.jfinal.com';
+// export const baseUrl = 'http://192.168.1.102:8000';
 // export const baseUrl = 'http://www.jfinal.com';
 
 export async function GET<Result = any>(

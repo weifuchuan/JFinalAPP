@@ -58,19 +58,11 @@ export default class RefreshListView<Item = any> extends Component<Props<Item>> 
 		return (
 			<FlatList
 				{...this.props}
+				data={this.props.data}
+				renderItem={this.props.renderItem}
 				ref={this.props.listRef}
-				onScroll={(e) => {
-					if (this.props.onScroll) {
-						this.props.onScroll(e);
-					}
-					this.onScroll(e);
-				}}
-				onRefresh={() => {
-					if (this.props.onRefresh) {
-						this.props.onRefresh();
-					}
-					this.onHeaderRefresh();
-				}}
+				onScroll={this.onScroll}
+				onRefresh={this.onHeaderRefresh}
 				refreshing={this.props.refreshState === RefreshState.HeaderRefreshing}
 				ListFooterComponent={this.renderFooter as any}
 			/>

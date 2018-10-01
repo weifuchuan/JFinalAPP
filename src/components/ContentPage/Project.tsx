@@ -82,7 +82,7 @@ export default class Project extends React.Component<Props> {
 				this.favorited = !this.favorited;
 				this.project.favoriteCount++;
 			});
-			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 1.5);
+			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 0.8);
 		} else {
 			Toast.fail(ret.get('msg'), 1.5);
 		}
