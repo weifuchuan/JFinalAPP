@@ -4685,6 +4685,14 @@ react-native-elements@^1.0.0-beta5:
     prop-types "^15.5.8"
     react-native-touchable-scale "2.0.0"
 
+react-native-gesture-handler@^1.0.7:
+  version "1.0.7"
+  resolved "http://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.0.7.tgz#86677c709c42d04555210cad9759b09e2c657720"
+  dependencies:
+    hoist-non-react-statics "^2.3.1"
+    invariant "^2.2.2"
+    prop-types "^15.5.10"
+
 react-native-image-crop-picker@^0.21.2:
   version "0.21.2"
   resolved "http://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.21.2.tgz#f0e7ad4615f1f7c79ba25e2e7708042e306d258e"

@@ -35,9 +35,11 @@ import { req } from '../../store/web';
 import NewsfeedList from '../NewsfeedList';
 import Touchable from '../base/Touchable';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+const { PagerExperimental } = require('react-native-tab-view');
 import Router from '../Router';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { Overlay } = require('teaset');
+import * as GestureHandler from 'react-native-gesture-handler';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -230,6 +232,14 @@ export default class Me extends React.Component<Props> {
 									hot: () => <NewsfeedList uri={'/my/hot'} style={{ flex: 1 }} shouldCache />,
 									referMe: () => <NewsfeedList uri={'/my/referMe'} style={{ flex: 1 }} shouldCache />
 								})}
+								initialLayout={{
+									height: 0,
+									width: Dimensions.get('window').width
+								}}
+								renderPager={(props) => (
+									<PagerExperimental {...props} GestureHandler={GestureHandler} />
+								)}
+								{...{ useNativeDriver: true } as any}
 							/>
 						</View>
 					</View>
