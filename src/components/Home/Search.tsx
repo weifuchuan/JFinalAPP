@@ -12,6 +12,7 @@ import HTML from '../base/RNRenderHTML';
 import Touchable from '../base/Touchable';
 import { SCREEN_WIDTH, SCREEN_HEIGHT, measure } from '../base/kit';
 import Router from '../Router';
+import { retryDo } from '../../kit';
 const { SearchInput } = require('teaset');
 const cheerio: CheerioAPI = require('react-native-cheerio');
 const getPlatformElevation = require('react-native-material-ui/src/styles/getPlatformElevation').default;
@@ -55,7 +56,7 @@ class Search extends Component<Props> {
 						value={this.searchKey}
 						placeholder="输入搜索关键字..."
 						placeholderTextColor="#aaa"
-						onChangeText={(text: string) => (this.searchKey = text)}
+						onChangeText={(text: string) => (this.searchKey = text.trim())}
 						{...{
 							onEndEditing: this.search,
 							clearButtonMode: 'always',
@@ -142,9 +143,13 @@ class Search extends Component<Props> {
 			this.refreshState = RefreshState.Idle;
 			return;
 		}
-		const html = await req.GET_HTML_COMMON('https://cn.bing.com/search', {
-			q: `site:www.jfinal.com ${this.searchKey.trim()}`
-		});
+		const html = await retryDo(
+			async () =>
+				await req.GET_HTML_COMMON('https://cn.bing.com/search', {
+					q: `site:www.jfinal.com ${this.searchKey.trim()}`
+				}),
+			3
+		);
 		const $ = cheerio.load(html);
 		runInAction(() => {
 			this.searchResultList.splice(0, this.searchResultList.length);
@@ -192,7 +197,6 @@ class Search extends Component<Props> {
 			this.nextPageUrl = 'https://cn.bing.com' + href;
 		}
 	};
- 
 }
 
 const styles = StyleSheet.create({
@@ -204,7 +208,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 32,
 		backgroundColor: BACK_WHITE,
-		marginLeft: 10,
+		marginLeft: 10
 	} as ViewStyle
 });
 
