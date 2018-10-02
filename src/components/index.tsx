@@ -122,7 +122,7 @@ export default class App extends React.Component<{
 							this.pushUserBlueStatusBar();
 							if (this.props.store!.me && this.props.store!.me!.id === props.id) {
 								Actions.jump('me');
-								this.props.store!.emit('selectHomeBottomNav', 'me');
+								this.props.store!.emitSelectHomeBottomNav('me');
 							}
 						}}
 						onExit={this.popStatusBarStyle}

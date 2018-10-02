@@ -5,6 +5,7 @@ import { toJS, observable } from 'mobx';
 import { req } from './web';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
+// global state store & event bus
 export class Store extends NativeEventEmitter {
 	@observable me?: Account;
 
@@ -26,7 +27,72 @@ export class Store extends NativeEventEmitter {
 	get localStorage(): Storage {
 		return storage;
 	}
+
+	/**
+	 * pack event bus
+	 */
+
+	readonly emitEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
+		this.emit('editArticleOk', type);
+	};
+
+	readonly onEditArticleOk = (listener: (type: 'share' | 'feedback' | 'project') => void) => {
+		this.addListener('editArticleOk', listener);
+	};
+
+	readonly offEditArticleOk = (listener: (type: 'share' | 'feedback' | 'project') => void) => {
+		this.removeListener('editArticleOk', listener);
+	};
+
+	readonly emitSelectHomeBottomNav = (active: string) => {
+		this.emit('selectHomeBottomNav', active);
+	};
+
+	readonly onSelectHomeBottomNav = (listener: (active: string) => void) => {
+		this.addListener('selectHomeBottomNav', listener);
+	};
+
+	readonly offSelectHomeBottomNav = (listener: (active: string) => void) => {
+		this.removeListener('selectHomeBottomNav', listener);
+	};
+
+	readonly emitMyReplyOk = () => {
+		this.emit('myReplyOk');
+	};
+
+	readonly onMyReplyOk = (listener: () => void) => {
+		this.addListener('myReplyOk', listener);
+	};
+
+	readonly offMyReplyOk = (listener: () => void) => {
+		this.removeListener('myReplyOk', listener);
+	};
+
+	readonly emitLogged = () => {
+		this.emit('logged');
+	};
+
+	readonly onLogged = (listener: () => void) => {
+		this.addListener('logged', listener);
+	};
+
+	readonly offLogged = (listener: () => void) => {
+		this.removeListener('logged', listener);
+	};
+
+	readonly emitLogout = () => {
+		this.emit('Logout');
+	};
+
+	readonly onLogout = (listener: () => void) => {
+		this.addListener('Logout', listener);
+	};
+
+	readonly offLogout = (listener: () => void) => {
+		this.removeListener('Logout', listener);
+	};
 }
+
 const store = new Store();
 export default store;
 

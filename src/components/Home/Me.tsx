@@ -337,8 +337,8 @@ export default class Me extends React.Component<Props> {
 							text: '确认',
 							onPress: async () => {
 								await this.props.store!.quit();
-								Router.refresh(this.props);
 								await req.GET('/logout');
+								this.props.store!.emitLogout();
 							}
 						},
 						{ text: '取消', onPress: () => {} }
@@ -467,7 +467,15 @@ export default class Me extends React.Component<Props> {
 				}
 			})
 		);
+
+		this.props.store!.onLogged(this.onLogged);
+		this.props.store!.onLogout(this.onLogout);
 	}
+
+	onLogout = () => {};
+
+	onLogged = () => { 
+	};
 
 	firstOpen = true;
 
@@ -475,6 +483,8 @@ export default class Me extends React.Component<Props> {
 		for (let closer of this.closers) {
 			closer();
 		}
+		this.props.store!.offLogged(this.onLogged);
+		this.props.store!.offLogout(this.onLogout);
 	}
 }
 

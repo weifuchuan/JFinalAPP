@@ -145,7 +145,7 @@ export default class Login extends React.Component<Props> {
 			const ret = await login(this.userName, this.password, this.captcha, this.keepLogin);
 			if (ret.isOk) {
 				this.props.store!.me = observable(ret.get('account'));
-				this.props.store!.emit('clearCache');
+				this.props.store!.emitLogged();
 				if (this.keepLogin) this.props.store!.saveMe();
 				Router.pop();
 			} else {

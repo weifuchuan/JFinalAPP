@@ -152,7 +152,7 @@ export default class MyArticles extends React.Component<Props> {
 
 	componentDidMount() {
 		this.fetchArticles();
-		this.props.store!.addListener('editArticleOk', this.onEditArticleOk);
+		this.props.store!.onEditArticleOk( this.onEditArticleOk);
 	}
 
 	onEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
@@ -160,7 +160,7 @@ export default class MyArticles extends React.Component<Props> {
 	};
 
 	componentWillUnmount() {
-		this.props.store!.removeListener('editArticleOk', this.onEditArticleOk);
+		this.props.store!.offEditArticleOk( this.onEditArticleOk);
 	}
 }
 

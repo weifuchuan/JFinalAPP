@@ -75,7 +75,7 @@ export default class AddArticle extends React.Component<Props> {
 			Toast.hide();
 			if (ret.isOk) {
 				this.props.store!.localStorage.remove({ key: 'draft', id: this.props.type });
-				this.props.store!.emit('editArticleOk', this.props.type);
+				this.props.store!.emitEditArticleOk( this.props.type);
 				Router.pop();
 			} else {
 				Toast.fail(ret.get('msg'));

@@ -101,10 +101,14 @@ export default class NewsfeedList extends React.Component<Props> {
 				}
 			}
 		})();
-		if (this.props.uri.startsWith('/my')) this.props.store!.addListener('myReplyOk', this.onMyReplyOk);
+		if (this.props.uri.startsWith('/my')) {
+			this.props.store!.onMyReplyOk(this.refresh);
+			this.props.store!.onLogged(this.refresh);
+			this.props.store!.onLogout(this.refresh);
+		}
 	}
 
-	onMyReplyOk = () => {
+	refresh = () => {
 		this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 	};
 
@@ -115,7 +119,11 @@ export default class NewsfeedList extends React.Component<Props> {
 	componentWillUnmount() {
 		for (const c of this.closers) c();
 		this.cache();
-		if (this.props.uri.startsWith('/my')) this.props.store!.removeListener('myReplyOk', this.onMyReplyOk);
+		if (this.props.uri.startsWith('/my')) {
+			this.props.store!.offMyReplyOk(this.refresh);
+			this.props.store!.offLogged(this.refresh);
+			this.props.store!.offLogout(this.refresh);
+		}
 	}
 
 	@action

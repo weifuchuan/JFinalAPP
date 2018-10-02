@@ -175,7 +175,7 @@ export default class Newsfeed extends React.Component<Props> {
 					this.replyContent = `@${this.props.newsfeed.accountNickName} `;
 					this.repling = false;
 				});
-				this.props.store!.emit('myReplyOk');
+				this.props.store!.emitMyReplyOk();
 			} else {
 				Toast.fail(ret.get('msg'), 2);
 				this.repling = false;

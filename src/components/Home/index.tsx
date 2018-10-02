@@ -57,7 +57,7 @@ export default class Home extends React.Component<Props> {
 	}
 
 	componentDidMount() { 
-		this.props.store!.addListener('selectHomeBottomNav', this.onSelectHomeBottomNav);
+		this.props.store!.onSelectHomeBottomNav(this.onSelectHomeBottomNav)
 	}
 
 	onSelectHomeBottomNav = (active: string) => {
@@ -65,7 +65,7 @@ export default class Home extends React.Component<Props> {
 	};
 
 	componentWillUnmount() {
-		this.props.store!.removeListener('selectHomeBottomNav', this.onSelectHomeBottomNav);
+		this.props.store!.offSelectHomeBottomNav(this.onSelectHomeBottomNav);
 	}
 }
 

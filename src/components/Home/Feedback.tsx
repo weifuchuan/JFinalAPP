@@ -232,7 +232,7 @@ export default class Feedback extends React.Component<Props> {
 		} catch (err) {
 			console.log(err);
 		}
-		this.props.store!.addListener('editArticleOk', this.onEditArticleOk);
+		this.props.store!.onEditArticleOk(this.onEditArticleOk);
 	}
 
 	onEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
@@ -240,7 +240,7 @@ export default class Feedback extends React.Component<Props> {
 	};
 
 	componentWillUnmount() {
-		this.props.store!.removeListener('editArticleOk', this.onEditArticleOk);
+		this.props.store!.offEditArticleOk(this.onEditArticleOk);
 		const storage = this.props.store!.localStorage;
 		storage.save({
 			key: 'feedbackItemsCache',
