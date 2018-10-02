@@ -29,7 +29,7 @@ export async function GET_COMMON<Result = any>(
 	url = params ? url + '?' + qs.stringify(params) : url;
 	return await axios.get(url, config);
 }
-     
+
 export async function GET_HTML_COMMON(url: string, params?: any): Promise<string> {
 	const resp = await GET_COMMON(url, params, {
 		responseType: 'text'

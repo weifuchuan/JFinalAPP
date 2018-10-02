@@ -69,8 +69,8 @@ export async function reg(nickName: string, userName: string, password: string, 
 	}
 }
 
-export async function updatePassword(oldPassword:string,newPassword:string):Promise<Ret>{
-	const resp=await req.POST_FORM("/my/setting/updatePassword", {oldPassword,newPassword})
+export async function updatePassword(oldPassword: string, newPassword: string): Promise<Ret> {
+	const resp = await req.POST_FORM('/my/setting/updatePassword', { oldPassword, newPassword });
 	const result = resp.data;
 	if (result['state'] && result['state'] === 'ok') {
 		return Ret.ok();
@@ -141,11 +141,13 @@ export async function addArticle(
 
 export async function updateArticle(
 	target: 'share' | 'feedback' | 'project',
+	id: number,
 	title: string,
 	content: string,
 	project: number | string
 ) {
 	const form = {} as any;
+	form[`${target}.id`] = id;
 	form[`${target}.title`] = title;
 	form[`${target}.content`] = content;
 	if (target === 'project') form[`${target}.name`] = project;

@@ -9,7 +9,7 @@ import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { req } from '../../store/web';
 import { AccountInPage } from '../../types';
-import { BACK_WHITE } from '../base/color';
+import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { SCREEN_WIDTH } from '../base/kit';
 import StatusBar from '../base/StatusBar';
 import Touchable from '../base/Touchable';
@@ -303,7 +303,7 @@ const styles = {
 	} as ViewStyle,
 	toolbarStyle: {
 		container: {
-			backgroundColor: '#2196f3',
+			backgroundColor: ICON_BLUE,
 			height: 48
 		},
 		leftElement: {

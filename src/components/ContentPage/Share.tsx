@@ -369,70 +369,70 @@ export default class SharePage extends React.Component<Props> {
 													})
 												});
 											});	
-										}
-										regEvent(); 
 
-										var logged = ${this.props.store!.me ? true : false}; 
+											var logged = ${this.props.store!.me ? true : false}; 
 
-										var replyInput = $("#replyContent");
+											var replyInput = $("#replyContent");
 
-										replyInput.on("input", function () {
-											this.style.height = this.scrollHeight+'px'; 
-										});
- 
-										$(".jf-reply-list > li").each(function(){
-											try{
-												var userName = $(this).find(".jf-reply-user-name > a").text().trim(); 
-												$(this).find(".jf-reply-link")
-													.on("tap", (function(userName){
-														return function(e){
+											regOne(replyInput.get(0), "input", function () {
+												this.style.height = this.scrollHeight+'px'; 
+											});
+	
+											$(".jf-reply-list > li").each(function(){
+												try{
+													var userName = $(this).find(".jf-reply-user-name > a").text().trim(); 
+													regOne(
+														$(this).find(".jf-reply-link").get(0), 
+														"tap", 
+														function(e){
 															e.preventDefault(); 
-															if (!logged){
+															if (!logged)
 																alert("请登录"); 
-															}else
+															else
 																replyInput.val(replyInput.val()+"@"+userName+" "); 
-														}
-													})(userName));
-											}catch(e){}												
-										});  
-										$("#submit_btn").on("tap", function(e){
-											e.preventDefault(); 
-											if (!logged){
-												alert("请登录"); 
-											}else{
-												if (replyInput.val().trim() === ''){
-													alert("请输入内容");
+														});
+												}catch(e){}												
+											});  
+											regOne($("#submit_btn").get(0), "tap", function(e){
+												e.preventDefault(); 
+												if (!logged){
+													alert("请登录"); 
 												}else{
-													send({action:"reply", value: replyInput.val()})
-														.then(function(result){ 
-															if (result.ok){
-																$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
-																replyInput.val(''); 
-																regEvent(); 
-															}else{
-																alert(result.msg); 
-															}
-														}); 
+													if (replyInput.val().trim() === ''){
+														alert("请输入内容");
+													}else{
+														send({action:"reply", value: replyInput.val()})
+															.then(function(result){ 
+																if (result.ok){
+																	$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
+																	replyInput.val(''); 
+																	regEvent(); 
+																}else{
+																	alert(result.msg); 
+																}
+															}); 
+													}
 												}
-											}
-										});	
-										
-                    $(".jf-reply-delete").each(function(){
-                      try{
-												var onclick = $(this).attr("onclick"); 
-												$(this).attr("onclick", null); 
-												var id = Number.parseInt(onclick.substring(onclick.indexOf("id=")+3).trim());
-                        $(this).on("tap", function(){
-													var self = $(this); 
-													send({action: "deleteReply", id: id}).then(function(result){
-														if (result.ok){
-															self.parents('li').remove(); 
-															regEvent(); 
-														}
+											});	
+											
+											$(".jf-reply-delete").each(function(){
+												try{
+													var onclick = $(this).attr("onclick"); 
+													$(this).attr("onclick", null); 
+													var id = Number.parseInt(onclick.substring(onclick.indexOf("id=")+3).trim());
+													regOne(this, "tap", function(){
+														var self = $(this); 
+														send({action: "deleteReply", id: id}).then(function(result){
+															if (result.ok){
+																self.parents('li').remove(); 
+																regEvent(); 
+															}
+														});
 													});
-                        });
-                      }catch(e){ }
-										}); 
+												}catch(e){ }
+											}); 
+										}
+										regEvent(); 										
 										
 										$(".jf-paginate").remove(); 
 									});

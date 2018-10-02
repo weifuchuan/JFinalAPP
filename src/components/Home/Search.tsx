@@ -34,7 +34,6 @@ class Search extends Component<Props> {
 	@observable searchResultList: SearchResult[] = [];
 	@observable nextPageUrl = '';
 	@observable inputing = false;
-	@observable history: string[] = [];
 
 	render() {
 		return (
@@ -107,7 +106,7 @@ class Search extends Component<Props> {
 									marginTop: 20
 								}}
 							>
-								<Text>搜索结果</Text>
+								<Text>无搜索结果</Text>
 							</View>
 						)}
 						ItemSeparatorComponent={() => (
@@ -123,34 +122,6 @@ class Search extends Component<Props> {
 						style={{ flex: 1, backgroundColor: '#fff' }}
 					/>
 				</View>
-				{/* {this.inputing ? (
-					<View
-						style={{
-							position: 'absolute',
-							left: 0,
-							top: 32 + 20,
-							width: SCREEN_WIDTH,
-							height: 130,
-							alignItems: 'center',
-							backgroundColor: BACK_WHITE
-						}}
-					>
-						<ScrollView style={{ flex: 1 }}>
-							<View style={{ width: SCREEN_WIDTH, flexDirection: 'row', flexWrap: 'wrap' }}>
-								{this.history.map((h, i) => (
-									<Text
-										key={i}
-										onPress={() => (this.searchKey = h)}
-										style={{ paddingHorizontal: 10, paddingVertical: 5, fontSize: 24 }}
-									>
-										{h}
-									</Text>
-								))}
-							</View>
-						</ScrollView>
-						<Button text={'清除历史记录'} onPress={() => this.history.splice(0, this.history.length)} />
-					</View>
-				) : null} */}
 			</View>
 		);
 	}
@@ -160,13 +131,6 @@ class Search extends Component<Props> {
 		if (this.searchKey.trim() === '') this.searchResultList.splice(0, this.searchResultList.length);
 		else {
 			this.onHeaderRefresh(RefreshState.HeaderRefreshing);
-			runInAction(() => {
-				const i = this.history.findIndex((h) => h.trim() === this.searchKey.trim());
-				if (i !== -1) {
-					this.history.splice(i, 1);
-					this.history.unshift(this.searchKey.trim());
-				}
-			});
 		}
 	};
 
@@ -228,18 +192,7 @@ class Search extends Component<Props> {
 			this.nextPageUrl = 'https://cn.bing.com' + href;
 		}
 	};
-
-	async componentDidMount() {
-		const localStorage = this.props.store!.localStorage;
-		try {
-			const h = (await localStorage.load({ key: 'searchHistory' })) || [];
-			this.history = observable(h);
-		} catch (e) {}
-	}
-
-	componentWillUnmount() {
-		this.props.store!.localStorage.save({ key: 'searchHistory', data: toJS(this.history) });
-	}
+ 
 }
 
 const styles = StyleSheet.create({

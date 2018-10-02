@@ -242,7 +242,7 @@ export default class App extends React.Component<{
 
 	private pushUserBlueStatusBar = () => {
 		StatusBar.pushBarStyle('light-content');
-		StatusBar.pushBackgroundColor('#2196f3');
+		StatusBar.pushBackgroundColor(ICON_BLUE);
 	};
 
 	private pushArticleStatusBarStyle = () => {

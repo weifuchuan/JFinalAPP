@@ -28,7 +28,7 @@ import { SCREEN_WIDTH, SCREEN_HEIGHT, measure } from '../base/kit';
 import { observable, autorun, action, IReactionDisposer, runInAction } from 'mobx';
 import { Account, NewsFeed } from '../../types';
 import StatusBar from '../base/StatusBar';
-import { BACK_WHITE } from '../base/color';
+import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { Drawer, Badge, ActionSheet, Modal } from 'antd-mobile-rn';
 import { retryDo } from '../../kit';
 import { req } from '../../store/web';
@@ -513,7 +513,7 @@ const styles = {
 	} as ViewStyle,
 	toolbarStyle: {
 		container: {
-			backgroundColor: '#2196f3',
+			backgroundColor: ICON_BLUE,
 			height: 48
 		},
 		leftElement: {

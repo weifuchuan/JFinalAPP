@@ -63,19 +63,30 @@ export default class AddArticle extends React.Component<Props> {
 		if (payload.action === 'ready') {
 			this.loading = false;
 			for (let f of this.readyFunctions) f();
+			this.readyFunctions.splice(0, this.readyFunctions.length);
 		} else if (payload.action === 'submit') {
 			Toast.loading('保存中..', 0);
-			const postToServer = this.props.isEdit ? updateArticle : addArticle;
-			const ret = await postToServer(
-				this.props.type,
-				payload.article.title,
-				payload.article.content,
-				payload.article.project
-			);
+			let ret;
+			if (this.props.isEdit) {
+				ret = await updateArticle(
+					this.props.type,
+					this.props.id!,
+					payload.article.title,
+					payload.article.content,
+					payload.article.project
+				);
+			} else {
+				ret = await addArticle(
+					this.props.type,
+					payload.article.title,
+					payload.article.content,
+					payload.article.project
+				);
+			}
 			Toast.hide();
 			if (ret.isOk) {
 				this.props.store!.localStorage.remove({ key: 'draft', id: this.props.type });
-				this.props.store!.emitEditArticleOk( this.props.type);
+				this.props.store!.emitEditArticleOk(this.props.type);
 				Router.pop();
 			} else {
 				Toast.fail(ret.get('msg'));
@@ -211,9 +222,6 @@ export default class AddArticle extends React.Component<Props> {
 						], 
 					});
 				}catch(e){}
-				setTimeout(function(){
-					send({ action: "ready" }); 
-				}, 300); 
 				$("#submit").click(function(){ 
 					var title = $("#title").val().trim(); 
 					var project = $("#project").val().trim(); 
@@ -233,6 +241,17 @@ export default class AddArticle extends React.Component<Props> {
 
 						}); 
 				}); 
+
+				var f = function(f){
+					if (window.send){
+						window.send({ action: "ready" }); 
+					}else{
+						setTimeout(function(){
+							f(f); 
+						}, 100);
+					}
+				}
+				f(f);
 			});
 		</script>
 		</body>
@@ -291,7 +310,6 @@ export default class AddArticle extends React.Component<Props> {
 				} catch (e) {
 					Toast.fail('网络异常！');
 				}
-			// this.loading = false;
 		})();
 		BackHandler.addEventListener('hardwareBackPress', this.onBack);
 	}
