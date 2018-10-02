@@ -70,14 +70,22 @@ class Search extends Component<Props> {
 					<RefreshListView
 						data={this.searchResultList.slice()}
 						renderItem={({ item }) => {
+							let type = '';
+							if (/\/user/.test(item.url)) {
+								type = '用户';
+							} else if (/\/project/.test(item.url)) {
+								type = '项目';
+							} else if (/\/share/.test(item.url)) {
+								type = '分享';
+							} else if (/\/feedback/.test(item.url)) {
+								type = '反馈';
+							}
 							return (
 								<Touchable
 									onPress={() => {
-										// console.warn(item.url);
 										const uri = item.url.match(/\/((user)|(project)|(share)|(feedback))\/\d+/)![0];
 										const type = uri.substring(1, uri.lastIndexOf('/'));
 										const id = Number.parseInt(uri.match(/\d+/)![0]);
-										// console.warn({type,id})
 										if (type === 'user') Router.user(id);
 										else Router.push(`${type}Page`, { id });
 									}}
@@ -90,6 +98,9 @@ class Search extends Component<Props> {
 											ptSize={1.3}
 											baseFontStyle={{ fontSize: 14 }}
 										/>
+										<Text style={{ position: 'absolute', right: 10, top: 10, color: '#0000000f' }}>
+											{type}
+										</Text>
 									</View>
 								</Touchable>
 							);
@@ -145,7 +156,7 @@ class Search extends Component<Props> {
 		}
 		const html = await retryDo(
 			async () =>
-				await req.GET_HTML_COMMON('https://cn.bing.com/search', {
+				await req.GET_FETCH_HTML('https://cn.bing.com/search', {
 					q: `site:www.jfinal.com ${this.searchKey.trim()}`
 				}),
 			3
@@ -153,26 +164,31 @@ class Search extends Component<Props> {
 		const $ = cheerio.load(html);
 		runInAction(() => {
 			this.searchResultList.splice(0, this.searchResultList.length);
-			this.parseResult($);
+			if (!this.parseResult($)) {
+				this.refreshState = RefreshState.Idle;
+				this.onFooterRefresh(RefreshState.FooterRefreshing);
+			} else this.refreshState = RefreshState.Idle;
 		});
-		this.refreshState = RefreshState.Idle;
 	};
 
 	@action
 	onFooterRefresh = async (refreshState: RefreshStateType) => {
 		this.refreshState = refreshState;
 		if (this.nextPageUrl.trim() === '') {
-			this.refreshState = RefreshState.NoMoreData;
+			if (this.searchResultList.length === 0) this.refreshState = RefreshState.Idle;
+			else this.refreshState = RefreshState.NoMoreData;
 			return;
 		}
-		const html = await req.GET_HTML_COMMON(this.nextPageUrl);
+		const html = await req.GET_FETCH_HTML(this.nextPageUrl);
 		const $ = cheerio.load(html);
-		this.parseResult($);
-		this.refreshState = RefreshState.Idle;
+		if (!this.parseResult($)) {
+			this.onFooterRefresh(RefreshState.FooterRefreshing);
+		} else this.refreshState = RefreshState.Idle;
 	};
 
 	@action
-	private parseResult = ($: CheerioStatic) => {
+	private parseResult = ($: CheerioStatic): boolean => {
+		let cnt = 0;
 		$('#b_results > li').each((index, elem) => {
 			const titleAnchor = $(elem).find('h2 > a');
 			const url = titleAnchor.attr('href');
@@ -189,13 +205,15 @@ class Search extends Component<Props> {
 				return;
 			const title = $(elem).find('h2').html()!;
 			const profile = $('div > p').html()!;
-			this.searchResultList.push({ title, profile, url });
+			this.searchResultList.push(observable({ title, profile, url }));
+			cnt++;
 		});
 		this.nextPageUrl = '';
 		const href = $('#b_results > li.b_pag > nav > ul > li:last-child > a').attr('href');
 		if (href && /^\/search\?q/.test(href)) {
 			this.nextPageUrl = 'https://cn.bing.com' + href;
 		}
+		return cnt > 7;
 	};
 }
 

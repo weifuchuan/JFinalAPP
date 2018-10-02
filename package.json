@@ -31,6 +31,7 @@
     "react-native-router-flux": "^4.0.3",
     "react-native-tab-view": "^1.2.0",
     "react-native-vector-icons": "^5.0.0",
+    "rn-fetch-blob": "^0.10.13",
     "teaset": "^0.5.9"
   },
   "devDependencies": {
