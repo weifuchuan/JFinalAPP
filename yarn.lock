@@ -4712,12 +4712,6 @@ react-native-image-crop-picker@^0.21.2:
   version "0.21.2"
   resolved "http://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.21.2.tgz#f0e7ad4615f1f7c79ba25e2e7708042e306d258e"
 
-react-native-material-bottom-navigation@^1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/react-native-material-bottom-navigation/download/react-native-material-bottom-navigation-1.0.1.tgz#da5d2f9cfe2a59ee9509275de1b57d505b204efc"
-  dependencies:
-    prop-types "^15.6.1"
-
 react-native-material-design-styles@^0.2.6:
   version "0.2.7"
   resolved "http://registry.npm.taobao.org/react-native-material-design-styles/download/react-native-material-design-styles-0.2.7.tgz#428560ef4d0659db1163c9f9b5476d886ed22d57"

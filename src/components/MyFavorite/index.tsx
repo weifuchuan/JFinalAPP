@@ -1,16 +1,15 @@
-import React from 'react';
+import { Modal, SwipeAction, Toast } from 'antd-mobile-rn';
+import { observable, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
-import { View, StyleSheet, ViewStyle, FlatList, Text } from 'react-native';
-import { BACK_WHITE, ICON_BLUE } from '../base/color';
-import { Toolbar, Button } from 'react-native-material-ui';
-import Router from '../Router';
+import React from 'react';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Toolbar } from 'react-native-material-ui';
 import { Store } from '../../store';
 import { req } from '../../store/web';
-import { observable, runInAction } from 'mobx';
-import { Modal, Toast, SwipeAction } from 'antd-mobile-rn';
+import { ICON_BLUE } from '../base/color';
+import RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
 import Touchable from '../base/Touchable';
-import RefreshListView, { RefreshState } from '../base/RefreshListView';
-import { RefreshStateType } from '../base/RefreshListView';
+import Router from '../Router';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {

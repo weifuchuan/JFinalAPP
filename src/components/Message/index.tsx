@@ -54,13 +54,8 @@ class Friends extends Component<Props> {
 				]);
 			} else 
 			Router.user(id);
-		} else if (payload.action === 'addFriend') {
-			return (await req.GET('/friend/add', { friendId: payload.id })).data;
-		} else if (payload.action === 'deleteFriend') {
-			return (await req.GET('/friend/delete', { friendId: payload.id })).data;
-		} else if (payload.action === 'openPage') {
-			this.fetch(payload.p);
-		}
+    } 
+    
 	};
 
 	htmlBuild = ($: CheerioStatic) => {

@@ -1,45 +1,24 @@
+import { ActionSheet, Badge, Drawer, Modal } from 'antd-mobile-rn';
+import { action, autorun, IReactionDisposer, observable, runInAction } from 'mobx';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import {
-	View,
-	StyleSheet,
-	ViewStyle,
-	Text,
-	ScrollView,
-	LayoutChangeEvent,
-	Image,
-	TouchableOpacity,
-	Dimensions,
-	FlatList,
-	ImageStyle,
-	NativeModules
-} from 'react-native';
-import { observer, inject } from 'mobx-react/native';
-import { Store } from '../../store';
-import {
-	Button,
-	Toolbar,
-	ToolbarStyle,
-	Drawer as Drawer2,
-	Avatar,
-	ListItemProps,
-	ListItem
-} from 'react-native-material-ui';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, measure } from '../base/kit';
-import { observable, autorun, action, IReactionDisposer, runInAction } from 'mobx';
-import { Account, NewsFeed } from '../../types';
-import StatusBar from '../base/StatusBar';
-import { BACK_WHITE, ICON_BLUE } from '../base/color';
-import { Drawer, Badge, ActionSheet, Modal } from 'antd-mobile-rn';
-import { retryDo } from '../../kit';
-import { req } from '../../store/web';
-import NewsfeedList from '../NewsfeedList';
-import Touchable from '../base/Touchable';
-import { TabView, TabBar, SceneMap, RouteBase } from 'react-native-tab-view';
-const { PagerExperimental } = require('react-native-tab-view');
-import Router from '../Router';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-const { Overlay } = require('teaset');
+import { Dimensions, Image, ImageStyle, LayoutChangeEvent, ScrollView, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import * as GestureHandler from 'react-native-gesture-handler';
+import { Button, Toolbar, ToolbarStyle } from 'react-native-material-ui';
+import { RouteBase, TabView } from 'react-native-tab-view';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { retryDo } from '../../kit';
+import { Store } from '../../store';
+import { req } from '../../store/web';
+import { Account } from '../../types';
+import { BACK_WHITE, ICON_BLUE } from '../base/color';
+import { measure, SCREEN_HEIGHT, SCREEN_WIDTH } from '../base/kit';
+import StatusBar from '../base/StatusBar';
+import Touchable from '../base/Touchable';
+import NewsfeedList from '../NewsfeedList';
+import Router from '../Router';
+const { PagerExperimental } = require('react-native-tab-view');
+const { Overlay } = require('teaset');
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
