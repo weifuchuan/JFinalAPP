@@ -43,6 +43,11 @@ export default class NewsfeedList extends React.Component<Props> {
 					onFooterRefresh={this.onFooterRefresh}
 					style={{ flex: 1 }}
 					listRef={(r) => (this.list = r)}
+					ListEmptyComponent={() => (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+							<Text>无</Text>
+						</View>
+					)}
 				/>
 			</View>
 		);

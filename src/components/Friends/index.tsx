@@ -79,6 +79,7 @@ class Friends extends Component<Props> {
         ${$('div.friends').html()!}
       </div>
       <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
       <script >  
         $(document).ready(function(){ 
           var cnt = 0; 
@@ -89,7 +90,7 @@ class Friends extends Component<Props> {
                 cnt++;
                 $(this).attr('href', null);
                 var id = Number.parseInt(href.substring(href.lastIndexOf('/') + 1)); 
-                $(this).on('click', function(e){
+                $(this).on('tap', function(e){
                   e.preventDefault(); 
                   e.stopPropagation();           
                   send({action: "openUser", id: id}); 
@@ -103,7 +104,7 @@ class Friends extends Component<Props> {
               $(this).attr('onclick', null); 
               var id = Number.parseInt(onclick.match(/\\d+/)[0]); 
               var isAddFriend = onclick.startsWith('addFriend'); 
-              $(this).on('click', function (){
+              $(this).on('tap', function (){
                 var self = this; 
                 if (isAddFriend){
                   send({action: "addFriend", id: id}).then(function(res){
@@ -132,7 +133,7 @@ class Friends extends Component<Props> {
               var href = $(this).attr('href');
               $(this).attr('href', null);
               var p = Number.parseInt(href.substring(href.lastIndexOf('=') + 1)); 
-              $(this).on('click', function(e){
+              $(this).on('tap', function(e){
                 e.preventDefault(); 
                 e.stopPropagation();
                 send({action: "openPage", p: p}); 

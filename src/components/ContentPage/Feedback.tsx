@@ -307,7 +307,8 @@ export default class FeedbackPage extends React.Component<Props> {
 									</style>
 
 								</div>    
-								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script><script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+								<script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript"> 
 									$(document).ready(function() {

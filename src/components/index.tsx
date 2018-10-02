@@ -26,6 +26,7 @@ import MyFavorite from './MyFavorite';
 import Friends from './Friends';
 import Message from './Message';
 import SendMessage from './Message/SendMessage';
+import Search from './Home/Search';
 
 @inject('store')
 @observer
@@ -66,6 +67,14 @@ export default class App extends React.Component<{
 							key={'feedback'}
 							hideNavBar
 							component={Feedback}
+							share
+							onEnter={this.pushCommonStatusBarStyle}
+							onExit={this.popStatusBarStyle}
+						/>
+						<Scene
+							key={'search'}
+							hideNavBar
+							component={Search}
 							share
 							onEnter={this.pushCommonStatusBarStyle}
 							onExit={this.popStatusBarStyle}

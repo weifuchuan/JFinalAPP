@@ -29,7 +29,7 @@ import { observable, autorun, action, IReactionDisposer, runInAction } from 'mob
 import { Account, NewsFeed, AccountInPage } from '../../types';
 import StatusBar from '../base/StatusBar';
 import { BACK_WHITE } from '../base/color';
-import { Drawer, Badge, ActionSheet, Modal } from 'antd-mobile-rn';
+import { Drawer, Badge, ActionSheet, Modal, Toast } from 'antd-mobile-rn';
 import { retryDo } from '../../kit';
 import { req } from '../../store/web';
 import NewsfeedList from '../NewsfeedList';
@@ -134,7 +134,7 @@ export default class Me extends React.Component<Props> {
 											onPress={this.handleFriend}
 											style={{
 												container: { paddingHorizontal: 0 },
-												text: { color: 'rgb(72,72,72)' }
+												text: { color: 'rgb(72,72,72)', fontWeight:"normal" }
 											}}
 										/>
 									</View>
@@ -186,7 +186,39 @@ export default class Me extends React.Component<Props> {
 		);
 	}
 
-	handleFriend = async () => {};
+	handleFriend = async () => {
+		const isAdd = this.account.relation === '粉丝' || this.account.relation === '未关注';
+		const url = isAdd ? '/friend/add?friendId=' + this.account.id : '/friend/delete?friendId=' + this.account.id;
+		const ret = (await req.GET(url)).data;
+		if (ret.state === 'ok') {
+			/**
+			 * 查询 accountId 与 friendId 之间的关系，返回值为 -1、1、2、3、4 表达的含义分别为：
+			 * -1：accountId 与 friendId 值相同
+			 * 0： accountId 与 friendId 无任何关系
+			 * 1： accountId 关注了 friendId
+			 * 2： friendId 关注了 accountId
+			 * 3： accountId 与 friendId 互相关注
+			 */
+			switch (ret.friendRelation) {
+				case 0:
+					this.account.relation = '未关注';
+					break;
+				case 1:
+					this.account.relation = '已关注';
+					break;
+				case 2:
+					this.account.relation = '粉丝';
+					break;
+				case 3:
+					this.account.relation = '互相关注';
+					break;
+				default:
+					break;
+			}
+		} else {
+			Toast.fail(ret.msg, 2);
+		}
+	};
 
 	private onDrawerItemPress(item: { text: (...params: any[]) => string; type: string }) {
 		switch (item.type) {

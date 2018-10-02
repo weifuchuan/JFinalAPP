@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { BottomNavigation } from 'react-native-material-ui';
 import { Store } from '../../store';
+import { SCREEN_WIDTH } from '../base/kit';
 
 interface Props {
 	store?: Store;
@@ -22,7 +23,7 @@ export default class Home extends React.Component<Props> {
 
 	render() {
 		return (
-			<BottomNavigation active={this.active} hidden={false}>
+			<BottomNavigation active={this.active} hidden={false} style={{ container: { width: SCREEN_WIDTH } }}>
 				{this.props.navigation.state.routes.map((route: any) => {
 					let label = '',
 						icon = '';
@@ -35,6 +36,9 @@ export default class Home extends React.Component<Props> {
 					} else if (route.key === 'feedback') {
 						label = '反馈';
 						icon = 'feedback';
+					} else if (route.key === 'search') {
+						label = '搜索';
+						icon = 'search';
 					} else if (route.key === 'me') {
 						label = '我';
 						icon = 'account-box';
@@ -49,6 +53,7 @@ export default class Home extends React.Component<Props> {
 								this.props.jumpTo(route.key);
 							}}
 							active={false}
+							style={{ container: { flex:1 } }}
 						/>
 					);
 				})}
@@ -56,8 +61,8 @@ export default class Home extends React.Component<Props> {
 		);
 	}
 
-	componentDidMount() { 
-		this.props.store!.onSelectHomeBottomNav(this.onSelectHomeBottomNav)
+	componentDidMount() {
+		this.props.store!.onSelectHomeBottomNav(this.onSelectHomeBottomNav);
 	}
 
 	onSelectHomeBottomNav = (active: string) => {

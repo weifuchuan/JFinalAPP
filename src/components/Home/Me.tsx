@@ -415,6 +415,7 @@ export default class Me extends React.Component<Props> {
 				Router.myArticles('project');
 				break;
 			case 'message':
+				Router.message(); 
 				break;
 			case 'favorite':
 				Router.myFavorite();
