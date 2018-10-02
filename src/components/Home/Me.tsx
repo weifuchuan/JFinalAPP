@@ -13,7 +13,7 @@ import {
 	ImageStyle,
 	NativeModules
 } from 'react-native';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import {
 	Button,

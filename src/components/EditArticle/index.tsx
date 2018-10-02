@@ -1,6 +1,6 @@
 import { Toast } from 'antd-mobile-rn';
 import { action, observable } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
 import { ActivityIndicator, BackHandler, StyleSheet, View, ViewStyle } from 'react-native';
 import { Toolbar } from 'react-native-material-ui';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Button, FlatList } from 'react-native';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { req } from '../../store/web';
 import { observable, runInAction, action } from 'mobx';

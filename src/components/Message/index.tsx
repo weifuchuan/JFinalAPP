@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { inject } from 'mobx-react/native';
  
+@inject("store")
 class Message extends Component {
   render() {
     return (

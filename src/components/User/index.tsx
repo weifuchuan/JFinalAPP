@@ -1,45 +1,20 @@
+import { Drawer, Toast } from 'antd-mobile-rn';
+import { autorun, IReactionDisposer, observable, runInAction } from 'mobx';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import {
-	View,
-	StyleSheet,
-	ViewStyle,
-	Text,
-	ScrollView,
-	LayoutChangeEvent,
-	Image,
-	TouchableOpacity,
-	Dimensions,
-	FlatList,
-	ImageStyle,
-	NativeModules
-} from 'react-native';
-import { observer, inject } from 'mobx-react';
-import { Store } from '../../store';
-import {
-	Button,
-	Toolbar,
-	ToolbarStyle,
-	Drawer as Drawer2,
-	Avatar,
-	ListItemProps,
-	ListItem
-} from 'react-native-material-ui';
-import { SCREEN_WIDTH, SCREEN_HEIGHT, measure } from '../base/kit';
-import { observable, autorun, action, IReactionDisposer, runInAction } from 'mobx';
-import { Account, NewsFeed, AccountInPage } from '../../types';
-import StatusBar from '../base/StatusBar';
-import { BACK_WHITE } from '../base/color';
-import { Drawer, Badge, ActionSheet, Modal, Toast } from 'antd-mobile-rn';
-import { retryDo } from '../../kit';
-import { req } from '../../store/web';
-import NewsfeedList from '../NewsfeedList';
-import Touchable from '../base/Touchable';
-import { TabView, TabBar, SceneMap, RouteBase } from 'react-native-tab-view';
-const { PagerExperimental } = require('react-native-tab-view');
-import Router from '../Router';
+import { Alert, Image, ImageStyle, ScrollView, Text, View, ViewStyle } from 'react-native';
+import { Button, Toolbar, ToolbarStyle } from 'react-native-material-ui';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-const { Overlay } = require('teaset');
-import * as GestureHandler from 'react-native-gesture-handler';
+import { retryDo } from '../../kit';
+import { Store } from '../../store';
+import { req } from '../../store/web';
+import { AccountInPage } from '../../types';
+import { BACK_WHITE } from '../base/color';
+import { SCREEN_WIDTH } from '../base/kit';
+import StatusBar from '../base/StatusBar';
+import Touchable from '../base/Touchable';
+import NewsfeedList from '../NewsfeedList';
+import Router from '../Router'; 
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -134,7 +109,7 @@ export default class Me extends React.Component<Props> {
 											onPress={this.handleFriend}
 											style={{
 												container: { paddingHorizontal: 0 },
-												text: { color: 'rgb(72,72,72)', fontWeight:"normal" }
+												text: { color: 'rgb(72,72,72)', fontWeight: 'normal' }
 											}}
 										/>
 									</View>
@@ -250,29 +225,35 @@ export default class Me extends React.Component<Props> {
 	closers: IReactionDisposer[] = [];
 	componentDidMount() {
 		(async () => {
-			const html = await retryDo(async () => {
-				return await req.GET_HTML(`/user/${this.props.id}`);
-			}, 3);
-			const $ = cheerio.load(html);
-			runInAction(() => {
-				this.account.id = this.props.id;
-				this.account.avatar = $('div.user-info.clearfix > a > img').attr('src');
-				this.account.nickName = $('span.nick-name').text();
-				this.account.relation = $('span.operation').text().trim() as any;
-				if (this.account.relation.startsWith('未关注')) {
-					this.account.relation = '未关注';
-				} else if (this.account.relation.startsWith('已关注')) {
-					this.account.relation = '已关注';
-				} else if (this.account.relation.startsWith('粉丝')) {
-					this.account.relation = '粉丝';
-				} else {
-					this.account.relation = '互相关注';
-				}
-				const userFriendNums = $('.user-friend-num > a').toArray();
-				this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
-				this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
-				this.likeCnt = Number.parseInt($(userFriendNums[2]).text().match(/\d+/)![0]);
-			});
+			try {
+				const html = await retryDo(async () => {
+					return await req.GET_HTML(`/user/${this.props.id}`);
+				}, 3);
+				const $ = cheerio.load(html);
+				runInAction(() => {
+					this.account.id = this.props.id;
+					this.account.avatar = $('div.user-info.clearfix > a > img').attr('src');
+					this.account.nickName = $('span.nick-name').text();
+					this.account.relation = $('span.operation').text().trim() as any;
+					if (this.account.relation.startsWith('未关注')) {
+						this.account.relation = '未关注';
+					} else if (this.account.relation.startsWith('已关注')) {
+						this.account.relation = '已关注';
+					} else if (this.account.relation.startsWith('粉丝')) {
+						this.account.relation = '粉丝';
+					} else {
+						this.account.relation = '互相关注';
+					}
+					const userFriendNums = $('.user-friend-num > a').toArray();
+					this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
+					this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
+					this.likeCnt = Number.parseInt($(userFriendNums[2]).text().match(/\d+/)![0]);
+				});
+			} catch (e) {
+				Alert.alert('网络请求错误', e.toString(), [ { text: 'OK', onPress: () => Router.pop() } ], {
+					cancelable: false
+				});
+			}
 		})();
 
 		this.closers.push(

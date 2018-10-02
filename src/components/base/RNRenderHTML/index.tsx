@@ -8,7 +8,7 @@ export default (props: Props) => (
 		ptSize={1.7}
 		baseFontStyle={{ fontSize: 18, color: '#000' }}
 		textSelectable
-		tagsStyles={{ a: { textDecorationLine: 'none' } }}
+		tagsStyles={{ a: { textDecorationLine: 'none' }, strong: { color: '#c00', fontWeight: 'normal' } }}
 		{...props}
 	/>
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import { View, StyleSheet, ViewStyle, Text, ImageStyle, Image, TouchableWithoutFeedback, Alert } from 'react-native';
 import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { Toolbar } from 'react-native-material-ui';

@@ -1,6 +1,6 @@
 import { Toast } from 'antd-mobile-rn';
 import { observable } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import * as React from 'react';
 import { BackHandler } from 'react-native';
 import { Actions, Router, Scene, SceneProps, Stack, Tabs } from 'react-native-router-flux';
@@ -52,7 +52,10 @@ export default class App extends React.Component<{
 							hideNavBar
 							initial
 							component={Project}
-							onEnter={this.pushCommonStatusBarStyle}
+							onEnter={() => {
+								this.pushCommonStatusBarStyle();
+								this.props.store!.emitSelectHomeBottomNav('project');
+							}}
 							onExit={this.popStatusBarStyle}
 						/>
 						<Scene
@@ -60,7 +63,10 @@ export default class App extends React.Component<{
 							hideNavBar
 							component={Share}
 							share
-							onEnter={this.pushCommonStatusBarStyle}
+							onEnter={() => {
+								this.pushCommonStatusBarStyle();
+								this.props.store!.emitSelectHomeBottomNav('share');
+							}}
 							onExit={this.popStatusBarStyle}
 						/>
 						<Scene
@@ -68,7 +74,10 @@ export default class App extends React.Component<{
 							hideNavBar
 							component={Feedback}
 							share
-							onEnter={this.pushCommonStatusBarStyle}
+							onEnter={() => {
+								this.pushCommonStatusBarStyle();
+								this.props.store!.emitSelectHomeBottomNav('feedback');
+							}}
 							onExit={this.popStatusBarStyle}
 						/>
 						<Scene
@@ -76,7 +85,10 @@ export default class App extends React.Component<{
 							hideNavBar
 							component={Search}
 							share
-							onEnter={this.pushCommonStatusBarStyle}
+							onEnter={() => {
+								this.pushCommonStatusBarStyle();
+								this.props.store!.emitSelectHomeBottomNav('search');
+							}}
 							onExit={this.popStatusBarStyle}
 						/>
 						<Scene
@@ -84,7 +96,10 @@ export default class App extends React.Component<{
 							hideNavBar
 							component={Me}
 							share
-							onEnter={this.pushUserBlueStatusBar}
+							onEnter={() => {
+								this.pushUserBlueStatusBar();
+								this.props.store!.emitSelectHomeBottomNav('me');
+							}}
 							onExit={this.popStatusBarStyle}
 						/>
 					</Tabs>

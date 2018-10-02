@@ -14,8 +14,24 @@ export async function GET<Result = any>(
 	return await axios.get(`${baseUrl}${uri}`, config);
 }
 
-export async function GET_HTML(uri: string): Promise<string> {
-	const resp = await GET(uri, null, {
+export async function GET_HTML(uri: string, params?: any): Promise<string> {
+	const resp = await GET(uri, params, {
+		responseType: 'text'
+	});
+	return resp.data;
+}
+
+export async function GET_COMMON<Result = any>(
+	url: string,
+	params?: any,
+	config?: AxiosRequestConfig
+): Promise<AxiosResponse<Result>> {
+	url = params ? url + '?' + qs.stringify(params) : url;
+	return await axios.get(url, config);
+}
+     
+export async function GET_HTML_COMMON(url: string, params?: any): Promise<string> {
+	const resp = await GET_COMMON(url, params, {
 		responseType: 'text'
 	});
 	return resp.data;

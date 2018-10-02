@@ -44,15 +44,19 @@ export class Store extends NativeEventEmitter {
 		this.removeListener('editArticleOk', listener);
 	};
 
-	readonly emitSelectHomeBottomNav = (active: string) => {
+	readonly emitSelectHomeBottomNav = (active: 'project' | 'share' | 'feedback' | 'search' | 'me') => {
 		this.emit('selectHomeBottomNav', active);
 	};
 
-	readonly onSelectHomeBottomNav = (listener: (active: string) => void) => {
+	readonly onSelectHomeBottomNav = (
+		listener: (active: 'project' | 'share' | 'feedback' | 'search' | 'me') => void
+	) => {
 		this.addListener('selectHomeBottomNav', listener);
 	};
 
-	readonly offSelectHomeBottomNav = (listener: (active: string) => void) => {
+	readonly offSelectHomeBottomNav = (
+		listener: (active: 'project' | 'share' | 'feedback' | 'search' | 'me') => void
+	) => {
 		this.removeListener('selectHomeBottomNav', listener);
 	};
 

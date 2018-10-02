@@ -1,4 +1,4 @@
-import { observer } from 'mobx-react';
+import { observer } from 'mobx-react/native';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { RightElementPressEvent, Toolbar } from 'react-native-material-ui';

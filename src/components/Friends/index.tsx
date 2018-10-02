@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Store } from '../../store';
 import Router from '../Router';
 import { ICON_BLUE } from '../base/color';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import { Toolbar } from 'react-native-material-ui';
 import WebView from '../base/WebView';
 import { req } from '../../store/web';

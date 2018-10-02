@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
 import { StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle, Text } from 'react-native';
 import { Button } from 'react-native-elements';

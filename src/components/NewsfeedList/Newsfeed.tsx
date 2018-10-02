@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ViewStyle, Image, Text, TextStyle, TouchableOpacity, ImageStyle, TextInput } from 'react-native';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { NewsFeed } from '../../types';
 import { Card, Button } from 'react-native-material-ui';

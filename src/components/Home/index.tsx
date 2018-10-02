@@ -1,10 +1,10 @@
 import { observable } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle, View } from 'react-native';
 import { BottomNavigation } from 'react-native-material-ui';
 import { Store } from '../../store';
-import { SCREEN_WIDTH } from '../base/kit';
+import { SCREEN_WIDTH, measure } from '../base/kit';
 
 interface Props {
 	store?: Store;
@@ -16,6 +16,7 @@ interface Props {
 @observer
 export default class Home extends React.Component<Props> {
 	@observable active: string = 'project';
+	fuck: BottomNavigation | null = null;
 
 	constructor(props: Props) {
 		super(props);
@@ -23,41 +24,45 @@ export default class Home extends React.Component<Props> {
 
 	render() {
 		return (
-			<BottomNavigation active={this.active} hidden={false} style={{ container: { width: SCREEN_WIDTH } }}>
-				{this.props.navigation.state.routes.map((route: any) => {
-					let label = '',
-						icon = '';
-					if (route.key === 'project') {
-						label = '项目';
-						icon = 'widgets';
-					} else if (route.key === 'share') {
-						label = '分享';
-						icon = 'share';
-					} else if (route.key === 'feedback') {
-						label = '反馈';
-						icon = 'feedback';
-					} else if (route.key === 'search') {
-						label = '搜索';
-						icon = 'search';
-					} else if (route.key === 'me') {
-						label = '我';
-						icon = 'account-box';
-					}
-					return (
-						<BottomNavigation.Action
-							key={route.key}
-							icon={icon}
-							label={label}
-							onPress={() => {
-								this.active = route.key;
-								this.props.jumpTo(route.key);
-							}}
-							active={false}
-							style={{ container: { flex:1 } }}
-						/>
-					);
-				})}
-			</BottomNavigation>
+			
+				<BottomNavigation
+					// ref={(r) => r && measure(r).then((r) => console.warn(JSON.stringify(r)))}
+					active={this.active}
+					hidden={false} 
+				>
+					{this.props.navigation.state.routes.map((route: any) => {
+						let label = '',
+							icon = '';
+						if (route.key === 'project') {
+							label = '项目';
+							icon = 'widgets';
+						} else if (route.key === 'share') {
+							label = '分享';
+							icon = 'share';
+						} else if (route.key === 'feedback') {
+							label = '反馈';
+							icon = 'feedback';
+						} else if (route.key === 'search') {
+							label = '搜索';
+							icon = 'search';
+						} else if (route.key === 'me') {
+							label = '我';
+							icon = 'account-box';
+						}
+						return (
+							<BottomNavigation.Action
+								key={route.key}
+								icon={icon}
+								label={label}
+								onPress={() => {
+									this.props.jumpTo(route.key);
+								}}
+								active={false}
+								style={{ container: { minWidth: SCREEN_WIDTH/5 } }}
+							/>
+						);
+					})}
+				</BottomNavigation> 
 		);
 	}
 
@@ -65,7 +70,7 @@ export default class Home extends React.Component<Props> {
 		this.props.store!.onSelectHomeBottomNav(this.onSelectHomeBottomNav);
 	}
 
-	onSelectHomeBottomNav = (active: string) => {
+	onSelectHomeBottomNav = (active: 'project'|"share"|"feedback"|"search"|"me") => {
 		this.active = active;
 	};
 

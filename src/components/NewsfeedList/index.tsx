@@ -1,6 +1,6 @@
 import React from 'react';
 import { action, observable, runInAction, autorun, IReactionDisposer, toJS } from 'mobx';
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react/native';
 import { View, ViewStyle, FlatList, Text } from 'react-native';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';

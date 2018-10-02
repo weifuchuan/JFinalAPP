@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle, Dimensions, Image, TouchableOpacity, TextStyle, Text } from 'react-native';
-import { observer, inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { req, login, reg } from '../../store/web';
 import { DoingStatus } from '../../store/doing_status';
