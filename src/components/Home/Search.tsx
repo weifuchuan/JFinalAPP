@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { Keyboard, StyleSheet, View, ViewStyle, Text, ScrollView, TextInputProps } from 'react-native';
 import { Button } from 'react-native-material-ui';
 import { BACK_WHITE } from '../base/color';
-import RefreshListView, { RefreshState } from '../base/RefreshListView';
-import { RefreshStateType } from '../base/RefreshListView';
+import RefreshListView from '../base/RefreshListView';
+import { RefreshStateType, RefreshState } from '../base/RefreshListView';
 import { req } from '../../store/web';
 import { Store } from '../../store';
 import HTML from '../base/RNRenderHTML';
@@ -91,16 +91,13 @@ class Search extends Component<Props> {
 									}}
 								>
 									<View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-										<HTML html={item.title} />
+										<HTML html={`<span>[${type}]&nbsp;</span>` + item.title} />
 										<HTML
 											html={item.profile}
 											emSize={14}
 											ptSize={1.3}
 											baseFontStyle={{ fontSize: 14 }}
 										/>
-										<Text style={{ position: 'absolute', right: 10, top: 10, color: '#0000000f' }}>
-											{type}
-										</Text>
 									</View>
 								</Touchable>
 							);
@@ -140,8 +137,10 @@ class Search extends Component<Props> {
 
 	search = async () => {
 		Keyboard.dismiss();
-		if (this.searchKey.trim() === '') this.searchResultList.splice(0, this.searchResultList.length);
-		else {
+		if (this.searchKey.trim() === '') {
+			this.searchResultList.splice(0, this.searchResultList.length);
+			this.refreshState = RefreshState.Idle;
+		} else {
 			this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 		}
 	};
@@ -188,7 +187,6 @@ class Search extends Component<Props> {
 
 	@action
 	private parseResult = ($: CheerioStatic): boolean => {
-		let cnt = 0;
 		$('#b_results > li').each((index, elem) => {
 			const titleAnchor = $(elem).find('h2 > a');
 			const url = titleAnchor.attr('href');
@@ -206,14 +204,13 @@ class Search extends Component<Props> {
 			const title = $(elem).find('h2').html()!;
 			const profile = $('div > p').html()!;
 			this.searchResultList.push(observable({ title, profile, url }));
-			cnt++;
 		});
 		this.nextPageUrl = '';
 		const href = $('#b_results > li.b_pag > nav > ul > li:last-child > a').attr('href');
 		if (href && /^\/search\?q/.test(href)) {
 			this.nextPageUrl = 'https://cn.bing.com' + href;
 		}
-		return cnt > 7;
+		return this.searchResultList.length > 6;
 	};
 }
 
