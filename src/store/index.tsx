@@ -1,6 +1,6 @@
 import Storage from '../storage';
 import { AsyncStorage, NativeEventEmitter } from 'react-native';
-import { Account } from '../types';
+import { Account } from './types';
 import { toJS, observable } from 'mobx';
 import { req } from './web';
 const cheerio: CheerioAPI = require('react-native-cheerio');

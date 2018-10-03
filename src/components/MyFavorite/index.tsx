@@ -120,8 +120,8 @@ export default class MyFavorite extends React.Component<Props> {
 					}
 				});
 				this.articles.push(item);
-				this.refreshState = RefreshState.Idle;
 			});
+			this.refreshState = RefreshState.Idle;
 		});
 	};
 

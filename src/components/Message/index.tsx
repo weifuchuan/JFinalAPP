@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { Store } from '../../store';
 import Router from '../Router';
 import { ICON_BLUE } from '../base/color';
@@ -7,8 +7,12 @@ import { inject, observer } from 'mobx-react/native';
 import { Toolbar } from 'react-native-material-ui';
 import WebView from '../base/WebView';
 import { req } from '../../store/web';
-import { observable, runInAction } from 'mobx';
-import { Modal } from 'antd-mobile-rn';
+import { observable, runInAction, action } from 'mobx';
+import { Modal, Toast } from 'antd-mobile-rn';
+import { NewsFeed } from '../../store/types';
+import RefreshListView, { RefreshStateType, RefreshState } from '../base/RefreshListView';
+import MessageItem from './MessageItem';
+import { retryDo } from '../../kit';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -19,143 +23,150 @@ interface Props {
 
 @inject('store')
 @observer
-class Friends extends Component<Props> {
-	@observable nickName = '我';
-	@observable html = '';
-	webview: WebView | null = null;
+class Message extends Component<Props> { 
+	@observable newsfeeds: NewsFeed[] = [];
+	@observable refreshState: RefreshStateType = RefreshState.Idle;
+	@observable currPage: number = 1;
+	@observable totalPageCnt: number = 1;
+	list: FlatList<NewsFeed> | null = null;
 
 	render() {
 		return (
 			<View style={styles.container}>
 				<Toolbar
 					leftElement={'arrow-back'}
-					centerElement={this.props.type === 'fans' ? `${this.nickName}的粉丝` : `关注${this.nickName}的人`}
+					centerElement={"我的私信"}
 					onLeftElementPress={() => Router.pop()}
 					style={{ container: { backgroundColor: ICON_BLUE } }}
 				/>
-				<WebView
-					on={this.on}
-					source={{ html: this.html, baseUrl: req.baseUrl }}
-          ref={(r) => (this.webview = r)}
-          originWhitelist={[]}
-          startInLoadingState 
+				<RefreshListView
+					data={this.newsfeeds.slice()}
+					renderItem={({ item, index }) => {
+						return (
+							<MessageItem
+								newsfeed={item}
+								onDelete={() => {
+									Modal.alert(`删除确认`, `即将删除与"${item.accountNickName}"的所有私信，确定要删除？`, [
+										{
+											text: '确认',
+											onPress: async () => {
+												const ret = (await req.GET(
+													`/my/message/deleteByFriendId?friendId=${item.accountId}`
+												)).data;
+												if (ret.state == 'ok') {
+													this.newsfeeds.splice(index, 1);
+												} else {
+													Toast.fail(ret.msg);
+												}
+											}
+										},
+										{ text: '取消', onPress: () => {} }
+									]);
+								}}
+								onSendMessage={() => {
+									Router.sendMessage(item.accountId);
+								}}
+							/>
+						);
+					}}
+					keyExtractor={(_, i) => i.toString()}
+					refreshState={this.refreshState}
+					onHeaderRefresh={this.onHeaderRefresh}
+					onFooterRefresh={this.onFooterRefresh}
+					style={{ flex: 1 }}
+					listRef={(r) => (this.list = r)}
+					ListEmptyComponent={() => (
+						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+							<Text>无</Text>
+						</View>
+					)}
 				/>
 			</View>
 		);
 	}
 
-	on = async (payload: any) => {
-		if (payload.action === 'openUser') {
-      const id: number = payload.id;
-      if (this.props.store!.me && this.props.store!.me!.id === payload.id) {
-				Modal.alert('跳转到我的主页？', '将无法返回此页', [
-					{ text: '确认', onPress: () => Router.me() },
-					{ text: '取消', onPress: () => null }
-				]);
-			} else 
-			Router.user(id);
-    } 
-    
+	@action
+	onHeaderRefresh = async (refreshState: RefreshStateType) => {
+		if (refreshState === RefreshState.HeaderRefreshing) {
+			this.refreshState = refreshState;
+			this.newsfeeds.splice(0, this.newsfeeds.length);
+			const html = await retryDo(async () => await req.GET_HTML(`/my/message`), 3);
+			const nfs = observable(this.parseHtml(html));
+			runInAction(() => {
+				this.newsfeeds.push(...nfs);
+				this.refreshState = RefreshState.Idle;
+			});
+		}
 	};
 
-	htmlBuild = ($: CheerioStatic) => {
-		return `
-    <html>
-    <head>
-      ${$('head').html()}
-      <style>          
-        .friends span {
-          visibility: visible;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="friends" > 
-        ${$('div.friends').html()!}
-      </div>
-      <script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
-      <script >  
-        $(document).ready(function(){ 
-          var cnt = 0; 
-          $('a[href^="/user/"]').each(function(){
-            try{
-              var href = $(this).attr('href');
-              if (/^\\/user\\/\\d+$/.test(href)){
-                cnt++;
-                $(this).attr('href', null);
-                var id = Number.parseInt(href.substring(href.lastIndexOf('/') + 1)); 
-                $(this).on('tap', function(e){
-                  e.preventDefault(); 
-                  e.stopPropagation();           
-                  send({action: "openUser", id: id}); 
-                });
-              }
-            }catch(e){}
-          }); 
-          $('span[onclick]').each(function(){
-            try{
-              var onclick = $(this).attr('onclick');
-              $(this).attr('onclick', null); 
-              var id = Number.parseInt(onclick.match(/\\d+/)[0]); 
-              var isAddFriend = onclick.startsWith('addFriend'); 
-              $(this).on('tap', function (){
-                var self = this; 
-                if (isAddFriend){
-                  send({action: "addFriend", id: id}).then(function(res){
-                    if (res.state === 'ok'){ 
-                      $(self).text("取消互粉"); 
-                    }else{
-                      alert(res.msg); 
-                    }
-                  }); 
-                  isAddFriend = false;
-                }else{
-                  send({action: "deleteFriend", id: id}).then(function(res){
-                    if (res.state === 'ok'){ 
-                      $(self).text("+关注"); 
-                    }else{
-                      alert(res.msg); 
-                    }
-                  }); 
-                  isAddFriend = true;
-                }
-              });
-            }catch(e){}
-          }); 
-          $('.jf-paginate a[href*="?p="]').each(function(){
-            try{
-              var href = $(this).attr('href');
-              $(this).attr('href', null);
-              var p = Number.parseInt(href.substring(href.lastIndexOf('=') + 1)); 
-              $(this).on('tap', function(e){
-                e.preventDefault(); 
-                e.stopPropagation();
-                send({action: "openPage", p: p}); 
-              }); 
-            }catch(e){}
-          });
-        })
-      </script>
-    </body>
-    </html>
-    `;
+	@action
+	onFooterRefresh = async (refreshState: RefreshStateType) => {
+		if (refreshState === RefreshState.FooterRefreshing) {
+			this.refreshState = refreshState;
+			if (this.currPage === this.totalPageCnt) {
+				this.refreshState = RefreshState.NoMoreData;
+				return;
+			}
+			const html = await retryDo(async () => await req.GET_HTML(`/my/message?p=${this.currPage + 1}`), 3);
+			const nfs = observable(this.parseHtml(html));
+			runInAction(() => {
+				this.newsfeeds.push(...nfs);
+				this.refreshState = RefreshState.Idle;
+			});
+		}
 	};
 
-	fetch = async (p?: number) => {
-		let uri = this.props.accountId ? `/user/${this.props.type}/${this.props.accountId}` : `/my/${this.props.type}`;
-		uri = p ? uri + `?p=${p}` : uri;
-		const html = await req.GET_HTML(uri);
+	@action
+	private parseHtml = (html: string): NewsFeed[] => {
 		const $ = cheerio.load(html);
-		runInAction(() => {
-			if (this.props.accountId) this.nickName = $('span.nick-name').text();
-      this.html = this.htmlBuild($);
-    });
-    console.log(this.html); 
+		const newsfeedListBox = $('.newsfeed-list-box');
+		const paginate = newsfeedListBox.find('.jf-paginate');
+		if (paginate.length > 0) {
+			const ps = paginate.find('a').toArray().map((elem) => $(elem).text().trim());
+			if (ps.length > 0) {
+				if (/^\d+$/.test(ps[ps.length - 1])) {
+					this.totalPageCnt = Number.parseInt(ps[ps.length - 1]);
+				} else {
+					this.totalPageCnt = Number.parseInt(ps[ps.length - 2]);
+				}
+			}
+			this.currPage = Number.parseInt(paginate.find('.current-page').text().trim());
+		} else {
+			this.totalPageCnt = this.currPage = 1;
+		}
+		const nfs: NewsFeed[] = [];
+		newsfeedListBox.find('.newsfeed-list > li').each((_, li) => {
+			const userHref = $(li).find('.newsfeed-user-name > a').attr('href');
+			const accountId = Number.parseInt(userHref.substring(userHref.lastIndexOf('/') + 1));
+			const accountNickName = $(li).find('.newsfeed-user-name > a').text().trim();
+			const accountAvatar = $(li).find('.newsfeed-user-img img').attr('src');
+			const createAt = $(li).find('.newsfeed-time').text().trim();
+			let content = $(li).find('.newsfeed-text').html()!.trim();
+			let refType: 'message' = 'message';
+			const onclick = $(li).find('.reply').attr('onclick');
+			const id = Number.parseInt(onclick ? onclick.match(/\d+/)![0] : '0');
+			let refId = accountId;
+			const messageCount = Number.parseInt(
+				$(li).find('div.newsfeed-item > div.newsfeed-icon > a:nth-child(2)').text().match(/\d+/)![0]
+			);
+			nfs.push({
+				id,
+				accountId,
+				accountNickName,
+				accountAvatar,
+				content,
+				refType,
+				refId,
+				createAt,
+				replies: [],
+				messageCount
+			});
+		});
+		return nfs;
 	};
 
 	componentDidMount() {
-		this.fetch();
+		this.onHeaderRefresh(RefreshState.HeaderRefreshing);
 	}
 }
 
@@ -167,4 +178,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Friends;
+export default Message;

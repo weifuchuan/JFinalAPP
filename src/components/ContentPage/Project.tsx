@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
-import { Project as ProjectModel, AccountInPage } from '../../types';
+import { Project as ProjectModel, AccountInPage } from '../../store/types';
 import { observable, runInAction } from 'mobx';
 import BasePage from './BasePage';
 import { req, favorite, like } from '../../store/web';
@@ -216,12 +216,15 @@ export default class Project extends React.Component<Props> {
 										</div>
 									</div>
 								</div>  
-								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script><script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+								<script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript">
 									$(document).ready(function() {
-										$("pre").addClass("prettyprint linenums");
-										prettyPrint();
+										setTimeout(function(){
+											$("pre").addClass("prettyprint linenums");
+											prettyPrint();
+										}, 300);
 
 										try{
 											$("img").each(function(){

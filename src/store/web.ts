@@ -1,4 +1,4 @@
-import { Ret } from '../types';
+import { Ret } from './types';
 import qs from 'qs';
 import * as req from './req';
 export { req };

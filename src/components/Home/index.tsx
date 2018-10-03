@@ -16,7 +16,6 @@ interface Props {
 @observer
 export default class Home extends React.Component<Props> {
 	@observable active: string = 'project';
-	fuck: BottomNavigation | null = null;
 
 	constructor(props: Props) {
 		super(props);
@@ -24,45 +23,40 @@ export default class Home extends React.Component<Props> {
 
 	render() {
 		return (
-			
-				<BottomNavigation
-					// ref={(r) => r && measure(r).then((r) => console.warn(JSON.stringify(r)))}
-					active={this.active}
-					hidden={false} 
-				>
-					{this.props.navigation.state.routes.map((route: any) => {
-						let label = '',
-							icon = '';
-						if (route.key === 'project') {
-							label = '项目';
-							icon = 'widgets';
-						} else if (route.key === 'share') {
-							label = '分享';
-							icon = 'share';
-						} else if (route.key === 'feedback') {
-							label = '反馈';
-							icon = 'feedback';
-						} else if (route.key === 'search') {
-							label = '搜索';
-							icon = 'search';
-						} else if (route.key === 'me') {
-							label = '我';
-							icon = 'account-box';
-						}
-						return (
-							<BottomNavigation.Action
-								key={route.key}
-								icon={icon}
-								label={label}
-								onPress={() => {
-									this.props.jumpTo(route.key);
-								}}
-								active={false}
-								style={{ container: { minWidth: SCREEN_WIDTH/5 } }}
-							/>
-						);
-					})}
-				</BottomNavigation> 
+			<BottomNavigation active={this.active} hidden={false}>
+				{this.props.navigation.state.routes.map((route: any) => {
+					let label = '',
+						icon = '';
+					if (route.key === 'project') {
+						label = '项目';
+						icon = 'widgets';
+					} else if (route.key === 'share') {
+						label = '分享';
+						icon = 'share';
+					} else if (route.key === 'feedback') {
+						label = '反馈';
+						icon = 'feedback';
+					} else if (route.key === 'search') {
+						label = '搜索';
+						icon = 'search';
+					} else if (route.key === 'me') {
+						label = '我';
+						icon = 'account-box';
+					}
+					return (
+						<BottomNavigation.Action
+							key={route.key}
+							icon={icon}
+							label={label}
+							onPress={() => {
+								this.props.jumpTo(route.key);
+							}}
+							active={false}
+							style={{ container: { minWidth: SCREEN_WIDTH / 5 } }}
+						/>
+					);
+				})}
+			</BottomNavigation>
 		);
 	}
 
@@ -70,7 +64,7 @@ export default class Home extends React.Component<Props> {
 		this.props.store!.onSelectHomeBottomNav(this.onSelectHomeBottomNav);
 	}
 
-	onSelectHomeBottomNav = (active: 'project'|"share"|"feedback"|"search"|"me") => {
+	onSelectHomeBottomNav = (active: 'project' | 'share' | 'feedback' | 'search' | 'me') => {
 		this.active = active;
 	};
 

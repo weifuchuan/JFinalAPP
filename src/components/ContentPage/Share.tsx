@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
-import { Share as ShareModel, AccountInPage, Ret } from '../../types';
+import { Share as ShareModel, AccountInPage, Ret } from '../../store/types';
 import { observable, runInAction } from 'mobx';
 import BasePage from './BasePage';
 import { req, like, favorite, reply, deleteReply } from '../../store/web';

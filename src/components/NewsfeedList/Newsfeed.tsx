@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, ViewStyle, Image, Text, TextStyle, TouchableOpacity, ImageStyle, TextInput } from 'react-native';
+import { View, ViewStyle, Image, Text, TextStyle, TouchableOpacity, ImageStyle, TextInput, Linking } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
-import { NewsFeed } from '../../types';
+import { NewsFeed } from '../../store/types';
 import { Card, Button } from 'react-native-material-ui';
 import { Button as Btn } from 'react-native-elements';
 import { observable, toJS, autorun, IReactionDisposer, runInAction } from 'mobx';
@@ -18,6 +18,7 @@ const cheerio: CheerioAPI = require('react-native-cheerio');
 interface Props {
 	store?: Store;
 	newsfeed: NewsFeed;
+	hereAccountId?: number;
 }
 
 interface Reply {
@@ -49,7 +50,11 @@ export default class Newsfeed extends React.Component<Props> {
 					<View style={styles._1}>
 						<Touchable
 							onPress={() => {
-								if (this.props.store!.me!.id !== nf.accountId) Router.user(nf.accountId);
+								if (
+									(!this.props.store!.me || this.props.store!.me!.id) !== nf.accountId &&
+									this.props.hereAccountId !== nf.accountId
+								)
+									Router.user(nf.accountId);
 							}}
 						>
 							<View style={styles._1_1}>
@@ -197,6 +202,14 @@ export default class Newsfeed extends React.Component<Props> {
 					]);
 				} else Router.user(id);
 			}
+		} else {
+			const res = href.match(/\/((project)|(newsfeed)|(share))\/\d+/);
+			if (res) {
+				const id = Number.parseInt(res[0].match(/\d+/)![0]);
+				Router.push(`${res[0].match(/((project)|(newsfeed)|(share))/)![0]}Page`, { id });
+			} else {
+				Linking.openURL(href);
+			}
 		}
 	};
 
@@ -333,5 +346,3 @@ const styles = {
 	} as ViewStyle,
 	_2_reply_2: {} as ViewStyle
 };
-declare var global: any;
-global.cheerio = cheerio;

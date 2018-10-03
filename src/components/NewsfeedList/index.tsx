@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react/native';
 import { View, ViewStyle, FlatList, Text } from 'react-native';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
-import { NewsFeed } from '../../types';
+import { NewsFeed } from '../../store/types';
 import { req } from '../../store/web';
 import RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
 import Newsfeed from './Newsfeed';
@@ -30,12 +30,16 @@ export default class NewsfeedList extends React.Component<Props> {
 	list: FlatList<NewsFeed> | null = null;
 
 	render() {
+		let hereAccountId: number | undefined;
+		if (this.props.uri.startsWith('/user')) {
+			hereAccountId = Number.parseInt(this.props.uri.match(/\d+/)![0]);
+		}
 		return (
 			<View style={this.props.style}>
 				<RefreshListView
 					data={this.newsfeeds.slice()}
 					renderItem={({ item }) => {
-						return <Newsfeed newsfeed={item} />;
+						return <Newsfeed newsfeed={item} hereAccountId={hereAccountId} />;
 					}}
 					keyExtractor={(_, i) => i.toString()}
 					refreshState={this.refreshState}

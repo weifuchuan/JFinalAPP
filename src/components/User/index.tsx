@@ -8,7 +8,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { req } from '../../store/web';
-import { AccountInPage } from '../../types';
+import { AccountInPage } from '../../store/types';
 import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { SCREEN_WIDTH } from '../base/kit';
 import StatusBar from '../base/StatusBar';

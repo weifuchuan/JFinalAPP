@@ -18,7 +18,7 @@ TypeScript。
 
 - react-native-material-ui：Toolbar、Navigation Bar、Card、Button、ActionButton
 - react-native-elements：Button、Input
-- antd-mobile-rn：抽屉、Modal、Toast
+- antd-mobile-rn：Drawer、Modal、Toast
 - react-native-render-html：（将HTML渲染为RN组件）
 - react-native-tab-view：TabView
 - teaset：Overlay、SearchInput

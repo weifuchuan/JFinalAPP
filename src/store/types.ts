@@ -69,19 +69,20 @@ export interface NewsFeed {
 	accountNickName: string;
 	accountAvatar: string;
 	content: string;
-	refType: 'project' | 'share' | 'feedback' | 'reply';
+	refType: 'project' | 'share' | 'feedback' | 'reply' | 'message';
 	refId: number;
+	messageCount?:number;
 	refParentType?: 'project' | 'share' | 'feedback';
 	refParentId?: number;
-	refParentTitle?:string; 
-	refParentAccountId?:number; 
-	refParentAccountAvatar?:string; 
+	refParentTitle?: string;
+	refParentAccountId?: number;
+	refParentAccountAvatar?: string;
 	createAt: string;
-	replies:{
+	replies: {
 		accountId: number;
 		accountAvatar: string;
 		content: string;
-	}[]; 
+	}[];
 }
 
 export class Ret {
