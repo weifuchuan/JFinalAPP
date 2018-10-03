@@ -12,9 +12,9 @@ import RefreshListView, { RefreshState, RefreshStateType } from '../base/Refresh
 import HTML from '../base/RNRenderHTML';
 import Touchable from '../base/Touchable';
 import Router from '../Router';
+import getPlatformElevation from '../base/getPlatformElevation';
 const { SearchInput } = require('teaset');
 const cheerio: CheerioAPI = require('react-native-cheerio');
-const getPlatformElevation = require('react-native-material-ui/src/styles/getPlatformElevation').default;
 
 interface Props {
 	store?: Store;
@@ -65,7 +65,7 @@ class Search extends Component<Props> {
 					/>
 					<Button text={'搜索'} onPress={this.search} style={{ container: { height: 32 } }} />
 				</View>
-				<View style={{ flex: 1, backgroundColor: '#fff' }}>
+				<View style={{ flex: 1  }}>
 					<RefreshListView
 						data={this.searchResultList.slice()}
 						renderItem={({ item }) => {
@@ -89,7 +89,9 @@ class Search extends Component<Props> {
 										else Router.push(`${type}Page`, { id });
 									}}
 								>
-									<View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+									<View
+										style={{ paddingHorizontal: 10, paddingVertical: 10, backgroundColor: '#fff' }}
+									>
 										<HTML html={`<span>[${type}]&nbsp;</span>` + item.title} />
 										<HTML
 											html={item.profile}
@@ -120,14 +122,12 @@ class Search extends Component<Props> {
 						ItemSeparatorComponent={() => (
 							<View
 								style={{
-									height: 1,
-									width: SCREEN_WIDTH - 20,
-									marginHorizontal: 10,
-									backgroundColor: '#aaaaaaaa'
+									height: 10,
+									width: SCREEN_WIDTH 
 								}}
 							/>
 						)}
-						style={{ flex: 1, backgroundColor: '#fff' }}
+						style={{ flex: 1 }}
 					/>
 				</View>
 			</View>

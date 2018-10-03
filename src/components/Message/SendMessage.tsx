@@ -1,24 +1,25 @@
-import { Modal } from 'antd-mobile-rn';
+import { Modal, Toast } from 'antd-mobile-rn';
 import { action, observable, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React, { Component } from 'react';
-import { FlatList, Image, Linking, Text, TextInput, View, ViewStyle } from 'react-native';
+import { FlatList, Image, Linking, Text, View, ViewStyle, TextStyle, TextInput } from 'react-native';
 import { Button, Toolbar } from 'react-native-material-ui';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { req } from '../../store/web';
-import { ICON_BLUE } from '../base/color';
+import { ICON_BLUE, BACK_WHITE } from '../base/color';
 import { getNoCacheValue } from '../base/kit';
 import RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
 import HTML from '../base/RNRenderHTML';
 import Touchable from '../base/Touchable';
 import Router from '../Router';
+import getPlatformElevation from '../base/getPlatformElevation';
+import { Input } from 'react-native-elements';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
 	store?: Store;
-	type: 'fans' | 'follow';
-	accountId?: number;
+	accountId: number;
 }
 
 interface Msg {
@@ -41,6 +42,8 @@ class Message extends Component<Props> {
 	@observable totalPageCnt: number = 1;
 	list: FlatList<Msg> | null = null;
 
+	@observable msgContent = '';
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -54,7 +57,7 @@ class Message extends Component<Props> {
 					data={this.msgs.slice()}
 					renderItem={({ item, index }) => {
 						return (
-							<View style={styles.reply} >
+							<View style={styles.msg}>
 								<Touchable
 									onPress={() => {
 										if (this.props.store!.me && this.props.store!.me!.id === item.accountId) {
@@ -65,20 +68,49 @@ class Message extends Component<Props> {
 										} else Router.user(item.accountId);
 									}}
 								>
-									<View style={styles.reply_1}>
+									<View style={styles.msg_1}>
 										<Image
 											source={{
 												uri: `${req.baseUrl}${item.accountAvatar}?donotCache=${getNoCacheValue()}`
 											}}
-											style={{ width: 16, height: 16, marginRight: 6 }}
+											style={{ width: 24, height: 24, marginRight: 6 }}
 										/>
 										<Text>{item.accountNickName}</Text>
 									</View>
 								</Touchable>
-								<View style={styles.reply_2}>
-									<HTML html={item.content} onLinkPress={this.onLinkPress} />
+								<View style={styles.msg_2}>
+									<HTML
+										html={item.content}
+										onLinkPress={this.onLinkPress}
+										containerStyle={{ marginTop: 5 }}
+									/>
 								</View>
-
+								<View style={styles._1_3}>
+									<Text style={styles._1_3_1}>{item.time}</Text>
+									<Button
+										text={'删除'}
+										primary
+										onPress={() => {
+											Modal.alert('删除此条私信？', '删除后无法恢复。', [
+												{
+													text: '确认',
+													onPress: async () => {
+														const ret = (await req.GET(
+															`/my/message/deleteByMessageId?messageId=${item.id}`
+														)).data;
+														if (ret.state == 'ok') {
+															this.msgs.splice(index, 1);
+														} else {
+															Toast.fail(ret.msg);
+														}
+													}
+												},
+												{ text: '取消', onPress: () => {} }
+											]);
+										}}
+										style={styles._1_3_2}
+									/>
+								</View>
 							</View>
 						);
 					}}
@@ -93,16 +125,55 @@ class Message extends Component<Props> {
 							<Text>无</Text>
 						</View>
 					)}
-					ListHeaderComponent={() => (
-						<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-							<TextInput />
-							<Button text={'发送'} />
+					ListHeaderComponent={observer(() => (
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+								marginVertical: 5,
+								padding: 5,
+								backgroundColor: '#fff',
+								...getPlatformElevation(2)
+							}}
+						>
+							<TextInput
+								value={this.msgContent}
+								onChangeText={(t) => (this.msgContent = t)}
+								multiline
+								onSubmitEditing={this.send}
+								enablesReturnKeyAutomatically
+								style={{
+									flex: 1,
+									borderColor: '#aaa',
+									borderWidth: 1,
+									borderRadius: 5,
+									paddingVertical: 0,
+								}}
+							/>
+							<Button text={'发送'} onPress={this.send} primary />
 						</View>
-					)}
+					))}
 				/>
 			</View>
 		);
 	}
+
+	send = async () => {
+		if (this.msgContent.trim() === '') return;
+		const ret = (await req.POST_FORM('/my/message/send', {
+			friendId: this.props.accountId,
+			replyContent: this.msgContent
+		})).data;
+		if (ret.state === 'ok') {
+			runInAction(() => {
+				const $ = cheerio.load(`<div>${ret.replyItem}</div>`);
+				this.msgs.unshift(this.parseItem($, $('li').toArray()[0]));
+				this.msgContent = '';
+			});
+		} else {
+			Toast.fail(ret.msg);
+		}
+	};
 
 	onLinkPress = async (cls: any, href: string, attrs: { [name: string]: string }) => {
 		if (href.includes('/user')) {
@@ -163,6 +234,7 @@ class Message extends Component<Props> {
 	@action
 	private parseHtml = (html: string): Msg[] => {
 		const $ = cheerio.load(html);
+		this.nickName = $('div.jf-breadcrumb-box > ol > li.active > a').text();
 		const paginate = $('.jf-paginate');
 		if (paginate.length > 0) {
 			const ps = paginate.find('a').toArray().map((elem) => $(elem).text().trim());
@@ -180,18 +252,23 @@ class Message extends Component<Props> {
 		const nfs: Msg[] = [];
 		$('.newsfeed-reply-list > li').each((i, li) => {
 			if (i === 0) return;
-			let id: number = Number.parseInt(
-				$(li).find(`a[onclick^="deleteByMessageId"]`).attr('onclick').match(/\d+/)![0]
-			);
-			let accountId: number = Number.parseInt($(li).find('a.user-name').attr('href').match(/\d+/)![0]);
-			let accountNickName: string = $(li).find('a.user-name').text();
-			let accountAvatar: string = $(li).find('img.avatar').attr('src');
-			let time: string = $(li).find('.jf-message-btn-box > span').text();
-			let content: string = $(li).find('.text').html()!;
-			nfs.push({ id, accountId, accountNickName, accountAvatar, time, content });
+			let msg = this.parseItem($, li);
+			nfs.push(msg);
 		});
 		return nfs;
 	};
+
+	private parseItem($: CheerioStatic, li: CheerioElement): Msg {
+		let id: number = Number.parseInt(
+			$(li).find(`a[onclick^="deleteByMessageId"]`).attr('onclick').match(/\d+/)![0]
+		);
+		let accountId: number = Number.parseInt($(li).find('a.user-name').attr('href').match(/\d+/)![0]);
+		let accountNickName: string = $(li).find('a.user-name').text();
+		let accountAvatar: string = $(li).find('img.avatar').attr('src');
+		let time: string = $(li).find('.jf-message-btn-box > span').text();
+		let content: string = $(li).find('.text').html()!.trim();
+		return { id, accountId, accountNickName, accountAvatar, time, content };
+	}
 
 	componentDidMount() {
 		this.onHeaderRefresh(RefreshState.HeaderRefreshing);
@@ -200,16 +277,36 @@ class Message extends Component<Props> {
 
 const styles = {
 	container: {
-		flex: 1, 
-	} as ViewStyle, 
-	reply: {
-		paddingVertical: 5
+		flex: 1,
+		backgroundColor: BACK_WHITE
 	} as ViewStyle,
-	reply_1: {
+	msg: {
+		paddingTop: 5,
+		paddingHorizontal: 8,
+		backgroundColor: '#fff',
+		...getPlatformElevation(2),
+		marginVertical: 5
+	} as ViewStyle,
+	msg_1: {
 		flexDirection: 'row',
 		alignItems: 'center'
 	} as ViewStyle,
-	reply_2: {} as ViewStyle
+	msg_2: {} as ViewStyle,
+	_1_3: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: -7
+	} as ViewStyle,
+	_1_3_1: {} as TextStyle,
+	_1_3_2: {
+		container: {
+			paddingHorizontal: 0
+		}
+	} as {
+		container?: ViewStyle;
+		text?: TextStyle;
+	}
 };
 
 export default Message;

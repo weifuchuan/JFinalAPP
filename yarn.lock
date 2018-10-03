@@ -588,6 +588,10 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
+"@types/react-native-push-notification@^3.0.2":
+  version "3.0.2"
+  resolved "http://registry.npm.taobao.org/@types/react-native-push-notification/download/@types/react-native-push-notification-3.0.2.tgz#ab732ada08b18e060e3a53c6ecf67dc9258edfea"
+
 "@types/react-native-tab-view@^1.0.2":
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/@types/react-native-tab-view/download/@types/react-native-tab-view-1.0.2.tgz#680c7969b0f5a1b3aaa3177c4ae35aeb81d0b1ff"
@@ -4739,6 +4743,10 @@ react-native-parse-html@^2.2.6:
   resolved "http://registry.npm.taobao.org/react-native-parse-html/download/react-native-parse-html-2.2.6.tgz#21f28f97b38407784759bc59e244b51109d9cc87"
   dependencies:
     react-native-stream "^0.1.0"
+
+react-native-push-notification@^3.1.1:
+  version "3.1.1"
+  resolved "http://registry.npm.taobao.org/react-native-push-notification/download/react-native-push-notification-3.1.1.tgz#99ce426e78e95788c298f73750cc4e68db04d7ab"
 
 react-native-render-html@^3.10.0:
   version "3.10.0"

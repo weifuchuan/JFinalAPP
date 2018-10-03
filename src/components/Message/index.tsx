@@ -5,7 +5,6 @@ import Router from '../Router';
 import { ICON_BLUE } from '../base/color';
 import { inject, observer } from 'mobx-react/native';
 import { Toolbar } from 'react-native-material-ui';
-import WebView from '../base/WebView';
 import { req } from '../../store/web';
 import { observable, runInAction, action } from 'mobx';
 import { Modal, Toast } from 'antd-mobile-rn';

@@ -57,8 +57,8 @@ export default class Router {
 	static message() {
 		Actions.push('message');
 	}
-	static sendMessage(id: number) {
-		Actions.push('sendMessage', { id });
+	static sendMessage(accountId: number) {
+		Actions.push('sendMessage', { accountId });
 	}
 	static pop() {
 		Actions.pop();
