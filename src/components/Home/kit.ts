@@ -1,4 +1,3 @@
-import CheerioAPI from 'cheerio';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 export interface Item {

@@ -1,16 +1,16 @@
+import { Toast } from 'antd-mobile-rn';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle, Text } from 'react-native';
+import { StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button } from 'react-native-elements';
 import IconMaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Store } from '../../store';
-import { BACK_WHITE, ICON_BLUE } from '../base/color';
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../base/kit';
-import Router from '../Router';
 import { updatePassword } from '../../store/web';
-import { Toast } from 'antd-mobile-rn';
+import { BACK_WHITE, ICON_BLUE } from '../base/color';
+import { SCREEN_WIDTH } from '../base/kit';
+import Router from '../Router';
 const { Input } = require('react-native-elements');
 
 interface Props {

@@ -1,19 +1,18 @@
+import { action, observable, runInAction } from 'mobx';
+import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Button, FlatList } from 'react-native';
-import { observer, inject } from 'mobx-react/native';
+import { ActivityIndicator, FlatList, StyleSheet, View, ViewStyle } from 'react-native';
+import { ActionButton } from 'react-native-material-ui';
+import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { req } from '../../store/web';
-import { observable, runInAction, action } from 'mobx';
-import { Item, takeItems, takeItems2 } from './kit';
-import { retryDo } from '../../kit';
-import { BACK_WHITE, LOADING_BLUE, ICON_BLUE } from '../base/color';
-import _RefreshListView, { RefreshStateType } from '../base/RefreshListView';
-import { RefreshState } from '../base/RefreshListView';
+import { BACK_WHITE, LOADING_BLUE } from '../base/color';
 import { SCREEN_WIDTH } from '../base/kit';
-import ItemComp from './ItemComp'; 
-import PageSelect from './PageSelect';
-import { ActionButton } from 'react-native-material-ui';
+import _RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
 import Router from '../Router';
+import ItemComp from './ItemComp';
+import { Item, takeItems } from './kit';
+import PageSelect from './PageSelect';
 
 const RefreshListView = observer(_RefreshListView);
 

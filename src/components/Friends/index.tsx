@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Store } from '../../store';
-import Router from '../Router';
-import { ICON_BLUE } from '../base/color';
-import { inject, observer } from 'mobx-react/native';
-import { Toolbar } from 'react-native-material-ui';
-import WebView from '../base/WebView';
-import { req } from '../../store/web';
-import { observable, runInAction } from 'mobx';
 import { Modal } from 'antd-mobile-rn';
+import { observable, runInAction } from 'mobx';
+import { inject, observer } from 'mobx-react/native';
+import React, { Component } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Toolbar } from 'react-native-material-ui';
+import { Store } from '../../store';
+import { req } from '../../store/web';
+import { ICON_BLUE } from '../base/color';
+import WebView from '../base/WebView';
+import Router from '../Router';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
