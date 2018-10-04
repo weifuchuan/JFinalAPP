@@ -64,8 +64,7 @@ export class Store extends NativeEventEmitter {
 
 	@action
 	parseRemids($: CheerioStatic) {
-		if ($('.remind-layer').length > 0) {
-			this.reminds.splice(0, this.reminds.length);
+		if ($('.remind-layer').length > 0) { 
 			$('.remind-layer > a').each((_, elem) => {
 				try {
 					let remind: Remind = { type: 'fans', text: '' };

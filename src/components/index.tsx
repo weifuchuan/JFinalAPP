@@ -273,11 +273,11 @@ export default class App extends React.Component<{
 			onNotification: (notification) => {
 				// process the notification
 				let msg = notification.message.toString();
-				if (msg.includes('私信')) { 
+				if (msg.includes('私信')) {
 					MyRouter.message();
-				} else if (msg.includes('粉丝')) { 
+				} else if (msg.includes('粉丝')) {
 					MyRouter.friends('fans');
-				} else if (msg.includes('@')) { 
+				} else if (msg.includes('@')) {
 					MyRouter.me(true);
 					setTimeout(() => {
 						this.props.store!.emitToReferMe();
@@ -297,16 +297,17 @@ export default class App extends React.Component<{
 
 	componentDidMount() {
 		this.close = autorun(() => {
-			this.props.store!.reminds.map((remind) => {
+			this.props.store!.reminds.mapWithoutNotifed((remind, i) => {
 				PushNotificationHandler.localNotification({
 					message: remind.text,
-					
+					playSound: false
 				});
+				this.props.store!.reminds.noti(i);
 			});
 		});
 		setInterval(async () => {
 			this.props.store!.me && this.props.store!.parseRemids(cheerio.load(await req.GET_HTML('/my')));
-		}, 1000 * 60 * 1);
+		}, __DEV__ ? 1000 * 30 : 1000 * 60 * 2);
 	}
 
 	componentWillUnmount() {

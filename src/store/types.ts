@@ -1,4 +1,5 @@
-import { observable, computed } from 'mobx';
+import { observable, computed, action } from 'mobx';
+import { ListViewComponent } from 'react-native';
 
 export interface AccountInPage {
 	id: number; // 82497;
@@ -95,17 +96,33 @@ export interface Remind {
 export class RemindList {
 	@observable private list: Remind[] = [];
 	@observable private removedRemindSet = new Map<number, boolean>();
+	@observable private notifedRemindSet = new Map<number, boolean>();
 
 	@computed
 	get length(): number {
 		return this.list.length - this.removedRemindSet.size;
 	}
 
+	@action
 	push(remind: Remind) {
-		const i = this.list.findIndex((r) => r.text === remind.text);
-		if (i === -1 || this.removedRemindSet.has(i)) {
+ 
+		let unremovedIndex = -1;
+		for (let i = 0; i < this.list.length; i++) {
+			if (!this.removedRemindSet.has(i) && this.list[i].type === remind.type) {
+				unremovedIndex = i;
+				break;
+			}
+		}
+		if (unremovedIndex !== -1) {
+			if (this.list[unremovedIndex].text === remind.text) {
+			} else {
+				this.splice(unremovedIndex);
+				this.list.push(remind);
+			}
+		} else {
 			this.list.push(remind);
 		}
+ 
 	}
 
 	map<T>(f: (value: Remind, index: number) => T): T[] {
@@ -120,11 +137,27 @@ export class RemindList {
 		return ret;
 	}
 
+	mapWithoutNotifed<T>(f: (value: Remind, index: number) => T): T[] {
+		const ret = [] as T[];
+		let i = 0;
+		for (let r of this.list) {
+			if (!this.removedRemindSet.has(i) && !this.notifedRemindSet.has(i)) {
+				ret.push(f(r, i));
+			}
+			i++;
+		}
+		return ret;
+	}
+
+	noti(i: number) {
+		this.notifedRemindSet.set(i, true);
+	}
+
+	@action
 	splice(start: number, deleteCount: number = 1) {
 		for (let i = 0; i < deleteCount; i++) {
 			this.removedRemindSet.set(i + start, true);
 		}
-		// this.list.splice(start, deleteCount);
 	}
 
 	findIndex(text: string): number {
@@ -143,7 +176,14 @@ export class RemindList {
 	clear() {
 		this.list.splice(0, this.list.length);
 		this.removedRemindSet.clear();
+		this.notifedRemindSet.clear();
 	}
+}
+
+function toArray<T = any>(iter: IterableIterator<T>): T[] {
+	const res = [];
+	for (let t of iter) res.push(t);
+	return res;
 }
 
 export class Ret {
