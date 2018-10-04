@@ -96,12 +96,7 @@ export default class Feedback extends React.Component<Props> {
 				return;
 			}
 			// 获取下一页
-			const html = await retryDo(async () => {
-				const resp = await req.GET(`/feedback?p=${this.currPage + 1}`, null, {
-					responseType: 'text'
-				});
-				return resp.data;
-			}, 3);
+			const html = await retryDo(async () => await req.GET_HTML(`/feedback?p=${this.currPage + 1}`) , 3);
 			const result = takeItems(html);
 			result.items = observable(result.items);
 			runInAction(() => {

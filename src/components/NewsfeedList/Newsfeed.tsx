@@ -1,5 +1,15 @@
 import React from 'react';
-import { View, ViewStyle, Image, Text, TextStyle, TouchableOpacity, ImageStyle, TextInput, Linking } from 'react-native';
+import {
+	View,
+	ViewStyle,
+	Image,
+	Text,
+	TextStyle,
+	TouchableOpacity,
+	ImageStyle,
+	TextInput,
+	Linking
+} from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { NewsFeed } from '../../store/types';
@@ -219,26 +229,30 @@ export default class Newsfeed extends React.Component<Props> {
 		this.closers.push(
 			autorun(async () => {
 				if (this.openReplies) {
-					const resp = await req.POST_FORM(
-						'/my/showReplyList',
-						{ newsFeedId: this.props.newsfeed.id },
-						{
-							responseType: 'text'
-						}
-					);
-					const html = resp.data as string;
-					console.log(html);
-					const $ = cheerio.load(html);
-					runInAction(() => {
-						this.replies.splice(0, this.replies.length);
-						$('.newsfeed-reply-list > li').each((_, elem) => {
-							try {
-								const li = $(elem);
-								let reply: Reply = this.parseReplyItem(li);
-								this.replies.push(observable(reply));
-							} catch (e) {}
+					try {
+						const resp = await req.POST_FORM(
+							'/my/showReplyList',
+							{ newsFeedId: this.props.newsfeed.id },
+							{
+								responseType: 'text'
+							}
+						);
+						const html = resp.data as string;
+						console.log(html);
+						const $ = cheerio.load(html);
+						runInAction(() => {
+							this.replies.splice(0, this.replies.length);
+							$('.newsfeed-reply-list > li').each((_, elem) => {
+								try {
+									const li = $(elem);
+									let reply: Reply = this.parseReplyItem(li);
+									this.replies.push(observable(reply));
+								} catch (e) {}
+							});
 						});
-					});
+					} catch (err) {
+						Toast.fail('网络异常');
+					}
 				}
 			})
 		);

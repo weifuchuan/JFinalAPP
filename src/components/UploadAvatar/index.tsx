@@ -55,25 +55,29 @@ export default class UploadAvatar extends React.Component<{ store?: Store }> {
 			return;
 		}
 		Toast.loading('上传中');
-		const resp = await req.updateFile('/my/setting/uploadAvatar', { avatar: this.newAvatar });
-		if (resp.data['state'] === 'ok') {
-			const resp = await req.POST_FORM('/my/setting/saveAvatar', { x: 0, y: 0, width: 300, height: 300 });
+		try {
+			const resp = await req.updateFile('/my/setting/uploadAvatar', { avatar: this.newAvatar });
 			if (resp.data['state'] === 'ok') {
-				const html = await req.GET_HTML('/my');
-				const $ = cheerio.load(html);
-				const src = $('.user-info.clearfix > a > img').attr('src');
-				this.props.store!.me!.avatar =
-					src.substring('/upload/avatar/'.length) + '?donotCache=' + new Date().getTime();
-				Toast.hide();
-				Toast.success('头像更新成功');
-				Router.pop();
+				const resp = await req.POST_FORM('/my/setting/saveAvatar', { x: 0, y: 0, width: 300, height: 300 });
+				if (resp.data['state'] === 'ok') {
+					const html = await req.GET_HTML('/my');
+					const $ = cheerio.load(html);
+					const src = $('.user-info.clearfix > a > img').attr('src');
+					this.props.store!.me!.avatar =
+						src.substring('/upload/avatar/'.length) + '?donotCache=' + new Date().getTime();
+					Toast.hide();
+					Toast.success('头像更新成功');
+					Router.pop();
+				} else {
+					Toast.hide();
+					Toast.fail(resp.data['msg']);
+				}
 			} else {
 				Toast.hide();
 				Toast.fail(resp.data['msg']);
 			}
-		} else {
-			Toast.hide();
-			Toast.fail(resp.data['msg']);
+		} catch (err) {
+			Toast.fail('网络异常');
 		}
 	};
 

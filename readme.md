@@ -4,11 +4,15 @@
 
 ## 基础框架
 
-React Native + Mobx。
+React Native 0.57
 
 ## 开发语言
 
 TypeScript。
+
+## 状态管理
+
+- Mobx
 
 ## 导航库
 

@@ -147,7 +147,7 @@ class Message extends Component<Props> {
 									borderColor: '#aaa',
 									borderWidth: 1,
 									borderRadius: 5,
-									paddingVertical: 0,
+									paddingVertical: 0
 								}}
 							/>
 							<Button text={'发送'} onPress={this.send} primary />
@@ -160,18 +160,22 @@ class Message extends Component<Props> {
 
 	send = async () => {
 		if (this.msgContent.trim() === '') return;
-		const ret = (await req.POST_FORM('/my/message/send', {
-			friendId: this.props.accountId,
-			replyContent: this.msgContent
-		})).data;
-		if (ret.state === 'ok') {
-			runInAction(() => {
-				const $ = cheerio.load(`<div>${ret.replyItem}</div>`);
-				this.msgs.unshift(this.parseItem($, $('li').toArray()[0]));
-				this.msgContent = '';
-			});
-		} else {
-			Toast.fail(ret.msg);
+		try {
+			const ret = (await req.POST_FORM('/my/message/send', {
+				friendId: this.props.accountId,
+				replyContent: this.msgContent
+			})).data;
+			if (ret.state === 'ok') {
+				runInAction(() => {
+					const $ = cheerio.load(`<div>${ret.replyItem}</div>`);
+					this.msgs.unshift(this.parseItem($, $('li').toArray()[0]));
+					this.msgContent = '';
+				});
+			} else {
+				Toast.fail(ret.msg);
+			}
+		} catch (err) {
+			Toast.fail('网络异常');
 		}
 	};
 

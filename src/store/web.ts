@@ -32,7 +32,6 @@ export async function login(userName: string, password: string, captcha: string,
 			return Ret.fail().set('msg', msg);
 		}
 	} catch (err) {
-		console.log(err);
 		return Ret.fail().set('msg', '网络异常');
 	}
 }
@@ -70,52 +69,72 @@ export async function reg(nickName: string, userName: string, password: string, 
 }
 
 export async function updatePassword(oldPassword: string, newPassword: string): Promise<Ret> {
-	const resp = await req.POST_FORM('/my/setting/updatePassword', { oldPassword, newPassword });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.POST_FORM('/my/setting/updatePassword', { oldPassword, newPassword });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
 
 export async function reply(target: 'share' | 'feedback', articleId: number, replyContent: string): Promise<Ret> {
-	const resp = await req.POST_FORM(`/${target}/saveReply`, { articleId, replyContent });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok().set('replyItem', result['replyItem']);
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.POST_FORM(`/${target}/saveReply`, { articleId, replyContent });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok().set('replyItem', result['replyItem']);
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
 
 export async function deleteReply(target: 'share' | 'feedback', id: number): Promise<Ret> {
-	const resp = await req.GET(`/${target}/deleteReply`, { id });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.GET(`/${target}/deleteReply`, { id });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
 
 export async function favorite(refType: string, refId: number, isAdd: boolean): Promise<Ret> {
-	const resp = await req.GET('/favorite', { refType, refId, isAdd });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.GET('/favorite', { refType, refId, isAdd });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
 
 export async function like(refType: string, refId: number, isAdd: boolean): Promise<Ret> {
-	const resp = await req.GET('/like', { refType, refId, isAdd });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.GET('/like', { refType, refId, isAdd });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
 
@@ -125,17 +144,21 @@ export async function addArticle(
 	content: string,
 	project: number | string
 ) {
-	const form = {} as any;
-	form[`${target}.title`] = title;
-	form[`${target}.content`] = content;
-	if (target === 'project') form[`${target}.name`] = project;
-	else form[`${target}.projectId`] = project;
-	const resp = await req.POST_FORM(`/my/${target}/save`, form);
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const form = {} as any;
+		form[`${target}.title`] = title;
+		form[`${target}.content`] = content;
+		if (target === 'project') form[`${target}.name`] = project;
+		else form[`${target}.projectId`] = project;
+		const resp = await req.POST_FORM(`/my/${target}/save`, form);
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常(可能原因：使用了不支持的emoji表情)');
 	}
 }
 
@@ -146,27 +169,35 @@ export async function updateArticle(
 	content: string,
 	project: number | string
 ) {
-	const form = {} as any;
-	form[`${target}.id`] = id;
-	form[`${target}.title`] = title;
-	form[`${target}.content`] = content;
-	if (target === 'project') form[`${target}.name`] = project;
-	else form[`${target}.projectId`] = project;
-	const resp = await req.POST_FORM(`/my/${target}/update`, form);
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok();
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const form = {} as any;
+		form[`${target}.id`] = id;
+		form[`${target}.title`] = title;
+		form[`${target}.content`] = content;
+		if (target === 'project') form[`${target}.name`] = project;
+		else form[`${target}.projectId`] = project;
+		const resp = await req.POST_FORM(`/my/${target}/update`, form);
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok();
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常(可能原因：使用了不支持的emoji表情)');
 	}
 }
 
 export async function saveNewsFeedReply(newsFeedId: number, replyContent: string): Promise<Ret> {
-	const resp = await req.POST_FORM('/my/saveNewsFeedReply', { newsFeedId, replyContent });
-	const result = resp.data;
-	if (result['state'] && result['state'] === 'ok') {
-		return Ret.ok().set('replyItem', result.replyItem);
-	} else {
-		return Ret.fail().set('msg', result['msg']);
+	try {
+		const resp = await req.POST_FORM('/my/saveNewsFeedReply', { newsFeedId, replyContent });
+		const result = resp.data;
+		if (result['state'] && result['state'] === 'ok') {
+			return Ret.ok().set('replyItem', result.replyItem);
+		} else {
+			return Ret.fail().set('msg', result['msg']);
+		}
+	} catch (err) {
+		return Ret.fail().set('msg', '网络异常');
 	}
 }
