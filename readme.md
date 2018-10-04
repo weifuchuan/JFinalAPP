@@ -39,3 +39,7 @@ TypeScript。
 ## 全文搜索
 
 使用[bing.com](https://cn.bing.com)搜索`site:www.jfinal.com 关键字`的结果。(使用rn-fetch-blob模拟PC端请求)
+
+## IOS
+
+没有MAC和iPhone为IOS构建APP。幸好，RN是跨平台的，此外本程序所有原生库的安装都使用自动link，应该能轻易的为IOS构建。此外还需要Xcode更改图标。
