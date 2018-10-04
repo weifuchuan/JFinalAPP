@@ -154,7 +154,7 @@ class Search extends Component<Props> {
 		}
 		const html = await retryDo(
 			async () =>
-				await req.GET_FETCH_HTML('https://cn.bing.com/search', {
+				await req.GET_HTML_PC_REQUEST('https://cn.bing.com/search', {
 					q: `site:www.jfinal.com ${this.searchKey.trim()}`
 				}),
 			3
@@ -177,7 +177,7 @@ class Search extends Component<Props> {
 			else this.refreshState = RefreshState.NoMoreData;
 			return;
 		}
-		const html = await req.GET_FETCH_HTML(this.nextPageUrl);
+		const html = await req.GET_HTML_PC_REQUEST(this.nextPageUrl);
 		const $ = cheerio.load(html);
 		if (!this.parseResult($)) {
 			this.onFooterRefresh(RefreshState.FooterRefreshing);

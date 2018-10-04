@@ -114,6 +114,7 @@ export default class NewsfeedList extends React.Component<Props> {
 			this.props.store!.onMyReplyOk(this.refresh);
 			this.props.store!.onLogged(this.refresh);
 			this.props.store!.onLogout(this.refresh);
+			this.props.store!.onToReferMe(this.refresh);
 		}
 	}
 
@@ -132,6 +133,7 @@ export default class NewsfeedList extends React.Component<Props> {
 			this.props.store!.offMyReplyOk(this.refresh);
 			this.props.store!.offLogged(this.refresh);
 			this.props.store!.offLogout(this.refresh);
+			this.props.store!.offToReferMe(this.refresh);
 		}
 	}
 

@@ -1,3 +1,5 @@
+import { observable, computed } from 'mobx';
+
 export interface AccountInPage {
 	id: number; // 82497;
 	nickName: string; // 'fuchuan';
@@ -71,7 +73,7 @@ export interface NewsFeed {
 	content: string;
 	refType: 'project' | 'share' | 'feedback' | 'reply' | 'message';
 	refId: number;
-	messageCount?:number;
+	messageCount?: number;
 	refParentType?: 'project' | 'share' | 'feedback';
 	refParentId?: number;
 	refParentTitle?: string;
@@ -83,6 +85,65 @@ export interface NewsFeed {
 		accountAvatar: string;
 		content: string;
 	}[];
+}
+
+export interface Remind {
+	type: 'fans' | 'referMe' | 'message';
+	text: string;
+}
+
+export class RemindList {
+	@observable private list: Remind[] = [];
+	@observable private removedRemindSet = new Map<number, boolean>();
+
+	@computed
+	get length(): number {
+		return this.list.length - this.removedRemindSet.size;
+	}
+
+	push(remind: Remind) {
+		const i = this.list.findIndex((r) => r.text === remind.text);
+		if (i === -1 || this.removedRemindSet.has(i)) {
+			this.list.push(remind);
+		}
+	}
+
+	map<T>(f: (value: Remind, index: number) => T): T[] {
+		const ret = [] as T[];
+		let i = 0;
+		for (let r of this.list) {
+			if (!this.removedRemindSet.has(i)) {
+				ret.push(f(r, i));
+			}
+			i++;
+		}
+		return ret;
+	}
+
+	splice(start: number, deleteCount: number = 1) {
+		for (let i = 0; i < deleteCount; i++) {
+			this.removedRemindSet.set(i + start, true);
+		}
+		// this.list.splice(start, deleteCount);
+	}
+
+	findIndex(text: string): number {
+		let i = 0;
+		for (let r of this.list) {
+			if (!this.removedRemindSet.has(i)) {
+				if (r.text === text) {
+					return i;
+				}
+			}
+			i++;
+		}
+		return -1;
+	}
+
+	clear() {
+		this.list.splice(0, this.list.length);
+		this.removedRemindSet.clear();
+	}
 }
 
 export class Ret {

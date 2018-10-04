@@ -1,8 +1,8 @@
 import { Toast } from 'antd-mobile-rn';
-import { observable } from 'mobx';
+import { observable, autorun, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import * as React from 'react';
-import { BackHandler } from 'react-native';
+import { BackHandler, PushNotificationIOS, PermissionsAndroid } from 'react-native';
 import { Actions, Router, Scene, SceneProps, Stack, Tabs } from 'react-native-router-flux';
 import { Store } from '../store/index';
 import EditArticle from './EditArticle';
@@ -27,6 +27,10 @@ import Friends from './Friends';
 import Message from './Message';
 import SendMessage from './Message/SendMessage';
 import Search from './Home/Search';
+import PushNotificationHandler from 'react-native-push-notification';
+import MyRouter from './Router';
+import { req } from '../store/web';
+const cheerio: CheerioAPI = require('react-native-cheerio');
 
 @inject('store')
 @observer
@@ -260,5 +264,52 @@ export default class App extends React.Component<{
 		StatusBar.popBarStyle();
 	};
 
-	componentDidMount() {}
+	constructor(props: any) {
+		super(props);
+
+		PushNotificationHandler.configure({
+			popInitialNotification: true,
+			requestPermissions: true,
+			onNotification: (notification) => {
+				// process the notification
+				let msg = notification.message.toString();
+				if (msg.includes('私信')) { 
+					MyRouter.message();
+				} else if (msg.includes('粉丝')) { 
+					MyRouter.friends('fans');
+				} else if (msg.includes('@')) { 
+					MyRouter.me(true);
+					setTimeout(() => {
+						this.props.store!.emitToReferMe();
+					}, 300);
+				}
+				const i = this.props.store!.reminds.findIndex(msg);
+				i !== -1 && this.props.store!.reminds.splice(i);
+				// required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+				notification.finish(PushNotificationIOS.FetchResult.NoData);
+			}
+		});
+
+		this.props.store!.init();
+	}
+
+	close?: IReactionDisposer;
+
+	componentDidMount() {
+		this.close = autorun(() => {
+			this.props.store!.reminds.map((remind) => {
+				PushNotificationHandler.localNotification({
+					message: remind.text,
+					
+				});
+			});
+		});
+		setInterval(async () => {
+			this.props.store!.me && this.props.store!.parseRemids(cheerio.load(await req.GET_HTML('/my')));
+		}, 1000 * 60 * 1);
+	}
+
+	componentWillUnmount() {
+		this.close && this.close();
+	}
 }

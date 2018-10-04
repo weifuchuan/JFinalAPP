@@ -2,7 +2,17 @@ import { ActionSheet, Badge, Drawer, Modal } from 'antd-mobile-rn';
 import { action, autorun, IReactionDisposer, observable, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { Dimensions, Image, ImageStyle, LayoutChangeEvent, ScrollView, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import {
+	Dimensions,
+	Image,
+	ImageStyle,
+	LayoutChangeEvent,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+	ViewStyle
+} from 'react-native';
 import * as GestureHandler from 'react-native-gesture-handler';
 import { Button, Toolbar, ToolbarStyle } from 'react-native-material-ui';
 import { RouteBase, TabView } from 'react-native-tab-view';
@@ -10,24 +20,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
 import { req } from '../../store/web';
-import { Account } from '../../store/types';
+import { Account, Remind } from '../../store/types';
 import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { measure, SCREEN_HEIGHT, SCREEN_WIDTH } from '../base/kit';
 import StatusBar from '../base/StatusBar';
 import Touchable from '../base/Touchable';
 import NewsfeedList from '../NewsfeedList';
 import Router from '../Router';
+import { RefreshState } from '../base/RefreshListView';
 const { PagerExperimental } = require('react-native-tab-view');
 const { Overlay } = require('teaset');
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
 	store?: Store;
-}
-
-interface Remind {
-	type: 'fans' | 'referMe' | 'message';
-	text: string;
+	toReferMe?: boolean;
 }
 
 @inject('store')
@@ -41,7 +48,6 @@ export default class Me extends React.Component<Props> {
 	@observable innerConWidth = 0;
 	@observable innerConHeight = 0;
 	@observable tabIndex = 0;
-	@observable reminds: Remind[] = [];
 	popoverKey: any;
 	@observable noticeBounds = { x: SCREEN_WIDTH - 24, y: 36, width: 0, height: 0 };
 
@@ -82,7 +88,7 @@ export default class Me extends React.Component<Props> {
 
 	newsfeedCache?: JSX.Element;
 	hotCache?: JSX.Element;
-	referMeCache?: JSX.Element;
+	referMeCache?: JSX.Element; 
 
 	render() {
 		const store = this.props.store!;
@@ -170,7 +176,7 @@ export default class Me extends React.Component<Props> {
 							}
 							centerElement={me.nickName}
 							rightElement={
-								this.reminds.length === 0 ? (
+								this.props.store!.reminds.length === 0 ? (
 									<Text style={{ fontSize: 16, color: '#fff', padding: 10 }}>通知</Text>
 								) : (
 									<TouchableOpacity onPress={this.onNoticePress}>
@@ -291,7 +297,9 @@ export default class Me extends React.Component<Props> {
 				if (this.referMeCache) {
 					return this.referMeCache;
 				}
-				return (this.referMeCache = <NewsfeedList uri={'/my/referMe'} style={{ flex: 1 }} shouldCache />);
+				return (this.referMeCache = (
+					<NewsfeedList uri={'/my/referMe'} style={{ flex: 1 }} shouldCache  />
+				));
 			default:
 				return null;
 		}
@@ -349,7 +357,7 @@ export default class Me extends React.Component<Props> {
 				popoverStyle={{ borderRadius: 5 } as ViewStyle}
 			>
 				<View style={{ width: 150, padding: 5, backgroundColor: '#fff', zIndex: 1000 }}>
-					{this.reminds.map((remind, index) => {
+					{this.props.store!.reminds.map((remind, index) => {
 						return (
 							<Touchable
 								key={index.toString()}
@@ -359,9 +367,9 @@ export default class Me extends React.Component<Props> {
 									} else if (remind.type === 'message') {
 										Router.message();
 									} else if (remind.type === 'referMe') {
-										this.tabIndex = 2;
+										this.onToReferMe();
 									}
-									this.reminds.splice(index, 1);
+									this.props.store!.reminds.splice(index, 1);
 									Overlay.hide(this.popoverKey);
 								})}
 							>
@@ -394,7 +402,7 @@ export default class Me extends React.Component<Props> {
 				Router.myArticles('project');
 				break;
 			case 'message':
-				Router.message(); 
+				Router.message();
 				break;
 			case 'favorite':
 				Router.myFavorite();
@@ -405,6 +413,8 @@ export default class Me extends React.Component<Props> {
 
 	closers: IReactionDisposer[] = [];
 	componentDidMount() {
+		if (this.props.toReferMe) this.tabIndex = 2;
+
 		this.closers.push(
 			autorun(async () => {
 				if (this.props.store!.me) {
@@ -413,19 +423,6 @@ export default class Me extends React.Component<Props> {
 					}, 3);
 					const $ = cheerio.load(html);
 					runInAction(() => {
-						if ($('.remind-layer').length > 0) {
-							this.reminds.splice(0, this.reminds.length);
-							$('.remind-layer > a').each((_, elem) => {
-								try {
-									let remind: Remind = { type: 'fans', text: '' };
-									const href = $(elem).attr('href');
-									remind.type = href.substring(href.lastIndexOf('/') + 1) as any;
-									remind.text = $(elem).text().trim();
-									this.reminds.push(observable(remind));
-								} catch (e) {}
-							});
-						}
-
 						const userFriendNums = $('.user-friend-num > a').toArray();
 						this.followCnt = Number.parseInt($(userFriendNums[0]).text().match(/\d+/)![0]);
 						this.fansCnt = Number.parseInt($(userFriendNums[1]).text().match(/\d+/)![0]);
@@ -450,11 +447,15 @@ export default class Me extends React.Component<Props> {
 
 		this.props.store!.onLogged(this.onLogged);
 		this.props.store!.onLogout(this.onLogout);
+		this.props.store!.onToReferMe(this.onToReferMe);
 	}
 
 	onLogout = () => {};
 
-	onLogged = () => { 
+	onLogged = () => {};
+
+	onToReferMe = () => {
+		this.tabIndex = 2; 
 	};
 
 	firstOpen = true;
@@ -465,6 +466,7 @@ export default class Me extends React.Component<Props> {
 		}
 		this.props.store!.offLogged(this.onLogged);
 		this.props.store!.offLogout(this.onLogout);
+		this.props.store!.offToReferMe(this.onToReferMe);
 	}
 }
 

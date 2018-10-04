@@ -312,8 +312,10 @@ export default class FeedbackPage extends React.Component<Props> {
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript"> 
 									$(document).ready(function() {
-										$("pre").addClass("prettyprint linenums");
-										prettyPrint(); 
+										setTimeout(function(){
+											$("pre").addClass("prettyprint linenums");
+											prettyPrint();
+										}, 300);
 
 										try{
 											$("img").each(function(){
@@ -325,9 +327,11 @@ export default class FeedbackPage extends React.Component<Props> {
 											});
 										}catch(e){}
 
-										$("#author").on("tap", function(){ 
-											send({action:"openUser", id: ${this.author.id}}); 
-										}); 
+										try{
+											$("#author").on("tap", function(){ 
+												send({action:"openUser", id: ${this.author.id}}); 
+											}); 
+										}catch(e){}
 										
 										var map = new Map(); 
 										function regOne(elem, eventName, handler){
@@ -339,7 +343,6 @@ export default class FeedbackPage extends React.Component<Props> {
 												map.get(elem).set(eventName, true); 
 											}
 										}
-
 										
 										function regEvent(){
 											[
@@ -349,20 +352,22 @@ export default class FeedbackPage extends React.Component<Props> {
 												{name:"user", action:"openUser"},
 											].forEach(function(item){
 												$('a[href^="' + "/" + item.name + '"]').each(function(){
-													var elem = $(this); 
-													regOne(this, "tap", function(e){
-														e.preventDefault(); 
-														e.stopPropagation();  
-														var href = elem.attr("href"); 
-														if (href==='/'+item.name){
-															send({action:item.action}); 	
-														}else{
-															send({
-																action:item.action, 
-																id: Number.parseInt(href.substring(href.lastIndexOf("/")+1))
-															}); 
-														}
-													})
+													try{
+														var elem = $(this); 
+														regOne(this, "tap", function(e){
+															e.preventDefault(); 
+															e.stopPropagation();  
+															var href = elem.attr("href"); 
+															if (href==='/'+item.name){
+																send({action:item.action}); 	
+															}else{
+																send({
+																	action:item.action, 
+																	id: Number.parseInt(href.substring(href.lastIndexOf("/")+1))
+																}); 
+															}
+														})
+													}catch(e){}
 												});
 											});	
 
@@ -389,28 +394,29 @@ export default class FeedbackPage extends React.Component<Props> {
 														});
 												}catch(e){}												
 											});  
-											regOne($("#submit_btn").get(0), "tap", function(e){
-												e.preventDefault(); 
-												if (!logged){
-													alert("请登录"); 
-												}else{
-													if (replyInput.val().trim() === ''){
-														alert("请输入内容");
+											try{
+												regOne($("#submit_btn").get(0), "tap", function(e){
+													e.preventDefault(); 
+													if (!logged){
+														alert("请登录"); 
 													}else{
-														send({action:"reply", value: replyInput.val()})
-															.then(function(result){ 
-																if (result.ok){
-																	$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
-																	replyInput.val(''); 
-																	regEvent(); 
-																}else{
-																	alert(result.msg); 
-																}
-															}); 
+														if (replyInput.val().trim() === ''){
+															alert("请输入内容");
+														}else{
+															send({action:"reply", value: replyInput.val()})
+																.then(function(result){ 
+																	if (result.ok){
+																		$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
+																		replyInput.val(''); 
+																		regEvent(); 
+																	}else{
+																		alert(result.msg); 
+																	}
+																}); 
+														}
 													}
-												}
-											});	
-											
+												});	
+											}catch(e){}
 											$(".jf-reply-delete").each(function(){
 												try{
 													var onclick = $(this).attr("onclick"); 

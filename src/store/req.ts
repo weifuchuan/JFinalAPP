@@ -22,7 +22,7 @@ export async function GET_HTML(uri: string, params?: any): Promise<string> {
 	return resp.data;
 } 
 
-export async function GET_FETCH_HTML(url: string, params?: any): Promise<string> {
+export async function GET_HTML_PC_REQUEST(url: string, params?: any): Promise<string> {
 	url = params ? url + '?' + qs.stringify(params) : url;
 	const resp = await RNFetchBlob.fetch('GET', url, {
 		'user-agent':

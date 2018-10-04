@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Button, FlatList } from 'react-native';
+import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Button, FlatList, Alert } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { req } from '../../store/web';
@@ -59,7 +59,7 @@ export default class Project extends React.Component<Props> {
 					currPage={this.currPage}
 					totalPage={this.totalPageCount}
 					onCurrPageSelect={this.onCurrPageSelect}
-				/>
+				/> 
 			</View>
 		);
 	}
@@ -220,7 +220,7 @@ export default class Project extends React.Component<Props> {
 		} catch (err) {
 			console.log(err);
 		}
-		this.props.store!.onEditArticleOk( this.onEditArticleOk);
+		this.props.store!.onEditArticleOk(this.onEditArticleOk);
 	}
 
 	onEditArticleOk = (type: 'share' | 'feedback' | 'project') => {
@@ -228,7 +228,7 @@ export default class Project extends React.Component<Props> {
 	};
 
 	componentWillUnmount() {
-		this.props.store!.offEditArticleOk( this.onEditArticleOk);
+		this.props.store!.offEditArticleOk(this.onEditArticleOk);
 		const storage = this.props.store!.localStorage;
 		storage.save({
 			key: 'projectItemsCache',

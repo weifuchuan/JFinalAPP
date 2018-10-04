@@ -13,8 +13,8 @@ export default class Router {
 	static feedback() {
 		Actions.jump('feedback');
 	}
-	static me() {
-		Actions.jump('me');
+	static me(toReferMe?:boolean) {
+		Actions.jump('me', {toReferMe});
 	}
 	static projectPage(id: number) {
 		Actions.push('projectPage', { id });
