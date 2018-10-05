@@ -1,10 +1,10 @@
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { StyleSheet, ViewStyle, View } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { BottomNavigation } from 'react-native-material-ui';
 import { Store } from '../../store';
-import { SCREEN_WIDTH, measure } from '../base/kit';
+import { SCREEN_WIDTH } from '../base/kit';
 
 interface Props {
 	store?: Store;

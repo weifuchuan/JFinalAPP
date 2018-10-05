@@ -140,14 +140,13 @@ class Message extends Component<Props> {
 								value={this.msgContent}
 								onChangeText={(t) => (this.msgContent = t)}
 								multiline
-								onSubmitEditing={this.send}
-								enablesReturnKeyAutomatically
 								style={{
 									flex: 1,
 									borderColor: '#aaa',
 									borderWidth: 1,
 									borderRadius: 5,
-									paddingVertical: 0
+									paddingVertical: 0,
+									color: '#000'
 								}}
 							/>
 							<Button text={'发送'} onPress={this.send} primary />

@@ -72,6 +72,16 @@ import com.android.build.OutputFile
  * ]
  */
 
+import groovy.json.JsonSlurper
+import java.util.regex.Pattern
+
+def getNpmVersion() {
+    def inputFile = new File("../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
+
+
 project.ext.react = [
     entryFile: "index.js"
 ]
@@ -101,8 +111,8 @@ android {
         applicationId "com.jfinal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName getNpmVersion()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -163,4 +173,23 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+task('increaseVersionCode') << {
+    def buildFile = file("build.gradle")
+    def pattern = Pattern.compile("versionCode(\\s+\\d+)")
+    def buildText = buildFile.getText()
+    def matcher = pattern.matcher(buildText)
+    matcher.find()
+    def versionCode = android.defaultConfig.versionCode
+    def buildContent = matcher.replaceAll("versionCode " + ++versionCode)
+    buildFile.write(buildContent)
+
+    System.out.println("Incrementing Version Code ===> " + versionCode)
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'generateReleaseBuildConfig') {
+        task.dependsOn 'increaseVersionCode'
+    }
 }

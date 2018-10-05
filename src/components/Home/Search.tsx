@@ -50,8 +50,9 @@ class Search extends Component<Props> {
 				>
 					<SearchInput
 						style={styles.searchInput}
-						inputStyle={{ color: '#8a6d3b', fontSize: 18 }}
+						inputStyle={{ color: '#000', fontSize: 18 }}
 						iconSize={15}
+						onSubmitEditing={this.search}
 						value={this.searchKey}
 						placeholder="输入搜索关键字..."
 						placeholderTextColor="#aaa"
@@ -65,7 +66,7 @@ class Search extends Component<Props> {
 					/>
 					<Button text={'搜索'} onPress={this.search} style={{ container: { height: 32 } }} />
 				</View>
-				<View style={{ flex: 1  }}>
+				<View style={{ flex: 1 }}>
 					<RefreshListView
 						data={this.searchResultList.slice()}
 						renderItem={({ item }) => {
@@ -90,7 +91,12 @@ class Search extends Component<Props> {
 									}}
 								>
 									<View
-										style={{ paddingHorizontal: 10, paddingVertical: 10, backgroundColor: '#fff' }}
+										style={{
+											paddingHorizontal: 10,
+											paddingVertical: 10,
+											backgroundColor: '#fff',
+											marginVertical: 5
+										}}
 									>
 										<HTML html={`<span>[${type}]&nbsp;</span>` + item.title} />
 										<HTML
@@ -118,14 +124,6 @@ class Search extends Component<Props> {
 							>
 								<Text>无搜索结果</Text>
 							</View>
-						)}
-						ItemSeparatorComponent={() => (
-							<View
-								style={{
-									height: 10,
-									width: SCREEN_WIDTH 
-								}}
-							/>
 						)}
 						style={{ flex: 1 }}
 					/>
@@ -177,7 +175,7 @@ class Search extends Component<Props> {
 			else this.refreshState = RefreshState.NoMoreData;
 			return;
 		}
-		const html = await req.GET_HTML_PC_REQUEST(this.nextPageUrl);
+		const html = await retryDo(async () => await req.GET_HTML_PC_REQUEST(this.nextPageUrl), 3);
 		const $ = cheerio.load(html);
 		if (!this.parseResult($)) {
 			this.onFooterRefresh(RefreshState.FooterRefreshing);

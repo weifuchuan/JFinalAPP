@@ -216,8 +216,7 @@ export default class Project extends React.Component<Props> {
 										</div>
 									</div>
 								</div>  
-								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
-								<script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> 
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript">
 									$(document).ready(function() {
@@ -236,7 +235,7 @@ export default class Project extends React.Component<Props> {
 											});
 										}catch(e){}
 
-										$("#author").on("tap", function(){ 
+										$("#author").on("click", function(){ 
 											send({action:"openUser", id: ${this.author.id}}); 
 										}); 
 										
@@ -260,7 +259,7 @@ export default class Project extends React.Component<Props> {
 											].forEach(function(item){
 												$('a[href^="' + "/" + item.name + '"]').each(function(){
 													var elem = $(this); 
-													regOne(this, "tap", function(evt){
+													regOne(this, "click", function(evt){
 														evt.preventDefault(); 
 														var href = elem.attr("href"); 
 														if (href==='/'+item.name){

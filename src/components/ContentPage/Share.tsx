@@ -205,7 +205,7 @@ export default class SharePage extends React.Component<Props> {
 						// 去掉输入框
 						replyList = replyList.substring(0, replyList.lastIndexOf('<li'));
 						for (let i = 0; i < htmls.length; i++) {
-							const $ = cheerio.load(html);
+							const $ = cheerio.load(htmls[i]);
 							replyList += $('.jf-reply-list').html();
 							if (i < htmls.length - 1) {
 								replyList = replyList.substring(0, replyList.lastIndexOf('<li'));
@@ -312,8 +312,7 @@ export default class SharePage extends React.Component<Props> {
                   </style>
 
 								</div>   
-								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
-								<script src="https://cdn.jsdelivr.net/npm/zepto.touch@1.0.3/zepto.touch.min.js"></script>
+								<script src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> 
 								<script type="text/javascript" src="/assets/prettify/prettify.js"></script>
 								<script type="text/javascript"> 
 									$(document).ready(function() {
@@ -333,7 +332,7 @@ export default class SharePage extends React.Component<Props> {
 										}catch(e){}
 
 										try{
-											$("#author").on("tap", function(){ 
+											$("#author").on("click", function(){ 
 												send({action:"openUser", id: ${this.author.id}}); 
 											}); 
 										}catch(e){}
@@ -359,7 +358,7 @@ export default class SharePage extends React.Component<Props> {
 												$('a[href^="' + "/" + item.name + '"]').each(function(){
 													try{
 														var elem = $(this); 
-														regOne(this, "tap", function(e){
+														regOne(this, "click", function(e){
 															e.preventDefault(); 
 															e.stopPropagation();  
 															var href = elem.attr("href"); 
@@ -389,7 +388,7 @@ export default class SharePage extends React.Component<Props> {
 													var userName = $(this).find(".jf-reply-user-name > a").text().trim(); 
 													regOne(
 														$(this).find(".jf-reply-link").get(0), 
-														"tap", 
+														"click", 
 														function(e){
 															e.preventDefault(); 
 															if (!logged)
@@ -400,7 +399,7 @@ export default class SharePage extends React.Component<Props> {
 												}catch(e){}												
 											});  
 											try{
-												regOne($("#submit_btn").get(0), "tap", function(e){
+												regOne($("#submit_btn").get(0), "click", function(e){
 													e.preventDefault(); 
 													if (!logged){
 														alert("请登录"); 
@@ -427,7 +426,7 @@ export default class SharePage extends React.Component<Props> {
 													var onclick = $(this).attr("onclick"); 
 													$(this).attr("onclick", null); 
 													var id = Number.parseInt(onclick.substring(onclick.indexOf("id=")+3).trim());
-													regOne(this, "tap", function(){
+													regOne(this, "click", function(){
 														var self = $(this); 
 														send({action: "deleteReply", id: id}).then(function(result){
 															if (result.ok){
