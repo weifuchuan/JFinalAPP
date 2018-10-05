@@ -43,3 +43,24 @@ TypeScript。
 ## IOS
 
 没有MAC和iPhone为IOS构建APP。幸好，RN是跨平台的，此外本程序所有原生库的安装都使用自动link，应该能轻易的为IOS构建。此外还需要Xcode更改图标。
+
+# 预览
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_project.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_search.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me_drawer.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/project_page.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/share_page.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/user.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/user_drawer.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/message.png)
+
