@@ -272,6 +272,22 @@ export default class Project extends React.Component<Props> {
 														}
 													})
 												});
+												$("a").each(function(){
+													try{
+														var href = $(this).attr('href');
+														var res = new RegExp('www\\.jfinal\\.com/'+item.name+'/\\\\d+').exec(href); 
+														if(res){
+															var id = Number.parseInt(res[0].match(/\\d+/)[0]); 
+															regOne(this, "click", function(evt){
+																evt.preventDefault(); 
+																send({
+																	action: item.action, 
+																	id: id
+																}); 
+															})
+														}
+													}catch(e){}
+												});
 											});	
 										}
 										regEvent(); 
