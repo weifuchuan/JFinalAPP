@@ -8,7 +8,7 @@ import BasePage from './BasePage';
 import { req, like, favorite, reply, deleteReply } from '../../store/web';
 import { retryDo } from '../../kit';
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from '../base/kit';
-import { ICON_BLUE } from '../base/color'; 
+import { ICON_BLUE } from '../base/color';
 import { baseUrl } from '../../store/req';
 import { Toast, Modal, ActionSheet } from 'antd-mobile-rn';
 import Router from '../Router';
@@ -107,9 +107,9 @@ export default class SharePage extends React.Component<Props> {
 	private onShare = () => {
 		ActionSheet.showShareActionSheetWithOptions({
 			url: `${baseUrl}/share/${this.props.id}`,
-			message: this.share.title+` ${baseUrl}/share/${this.props.id}`,
+			message: this.share.title + ` ${baseUrl}/share/${this.props.id}`,
 			title: '分享'
-		})
+		});
 	};
 
 	webviewHandler = function(payload: any) {};
@@ -121,27 +121,30 @@ export default class SharePage extends React.Component<Props> {
 					{ text: '确认', onPress: () => Router.me() },
 					{ text: '取消', onPress: () => null }
 				]);
-			} else 
-			Router.user( payload.id );
+			} else Router.user(payload.id);
 		} else if (payload.action === 'openProject') {
 			if (payload.id) {
-				Router.projectPage(payload.id );
+				Router.projectPage(payload.id);
 			} else {
 				Router.project();
 			}
 		} else if (payload.action === 'openShare') {
-			if (payload.id) { 
-				Router.sharePage(payload.id)
+			if (payload.id) {
+				Router.sharePage(payload.id);
 			} else {
 				Router.share();
 			}
 		} else if (payload.action === 'openFeedback') {
 			if (payload.id) {
-				Router.feedbackPage(payload.id );
+				Router.feedbackPage(payload.id);
 			} else {
-				Router.feedback()
+				Router.feedback();
 			}
 		} else if (payload.action === 'reply') {
+			if (!this.props.store!.me) {
+				Router.login();
+				return;
+			}
 			const text = payload.value;
 			const ret = await reply('share', this.share.id, text);
 			if (ret.isOk) {
@@ -416,24 +419,20 @@ export default class SharePage extends React.Component<Props> {
 											});  
 											try{
 												regOne($("#submit_btn").get(0), "click", function(e){
-													e.preventDefault(); 
-													if (!logged){
-														alert("请登录"); 
+													e.preventDefault();  
+													if (replyInput.val().trim() === ''){
+														alert("请输入内容");
 													}else{
-														if (replyInput.val().trim() === ''){
-															alert("请输入内容");
-														}else{
-															send({action:"reply", value: replyInput.val()})
-																.then(function(result){ 
-																	if (result.ok){
-																		$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
-																		replyInput.val(''); 
-																		regEvent(); 
-																	}else{
-																		alert(result.msg); 
-																	}
-																}); 
-														}
+														send({action:"reply", value: replyInput.val()})
+															.then(function(result){ 
+																if (result.ok){
+																	$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
+																	replyInput.val(''); 
+																	regEvent(); 
+																}else{
+																	alert(result.msg); 
+																}
+															}); 
 													}
 												});	
 											}catch(e){}

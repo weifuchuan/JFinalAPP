@@ -139,6 +139,10 @@ export default class FeedbackPage extends React.Component<Props> {
 				Router.feedback();
 			}
 		} else if (payload.action === 'reply') {
+			if (!this.props.store!.me) {
+				Router.login();
+				return;
+			}
 			const text = payload.value;
 			const ret = await reply('feedback', this.feedback.id, text);
 			if (ret.isOk) {
@@ -412,25 +416,21 @@ export default class FeedbackPage extends React.Component<Props> {
 											});  
 											try{
 												regOne($("#submit_btn").get(0), "click", function(e){
-													e.preventDefault(); 
-													if (!logged){
-														alert("请登录"); 
+													e.preventDefault();  
+													if (replyInput.val().trim() === ''){
+														alert("请输入内容");
 													}else{
-														if (replyInput.val().trim() === ''){
-															alert("请输入内容");
-														}else{
-															send({action:"reply", value: replyInput.val()})
-																.then(function(result){ 
-																	if (result.ok){
-																		$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
-																		replyInput.val(''); 
-																		regEvent(); 
-																	}else{
-																		alert(result.msg); 
-																	}
-																}); 
-														}
-													}
+														send({action:"reply", value: replyInput.val()})
+															.then(function(result){ 
+																if (result.ok){
+																	$(result.replyItem).insertBefore("ul.jf-reply-list > li:last-child")
+																	replyInput.val(''); 
+																	regEvent(); 
+																}else{
+																	alert(result.msg); 
+																}
+															}); 
+													} 
 												});	
 											}catch(e){}
 											$(".jf-reply-delete").each(function(){
