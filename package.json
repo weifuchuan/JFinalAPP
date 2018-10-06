@@ -20,7 +20,7 @@
     "mobx-react": "^5.2.8",
     "qs": "^6.5.2",
     "react": "16.5.0",
-    "react-native": "0.57.2",
+    "react-native": "0.57.1",
     "react-native-cheerio": "^1.0.0-rc.4",
     "react-native-elements": "^1.0.0-beta5",
     "react-native-gesture-handler": "^1.0.7",
