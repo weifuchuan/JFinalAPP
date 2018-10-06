@@ -66,4 +66,4 @@ TypeScript。
 
 ## License 
 
-![Apache License 2.0](https://github.com/weifuchuan/JFinal/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/weifuchuan/JFinal/blob/master/LICENSE)
