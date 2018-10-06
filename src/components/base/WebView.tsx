@@ -61,9 +61,11 @@ export default class WebView extends React.Component<Props> {
 						var msg = e.data;  
             msg = JSON.parse(msg); 
             if (msg.type === 0){ 
-              var payload = msg.payload; 
-							var result = (${this.props.handler})(payload);
-              window.postMessage(JSON.stringify({id: msg.id, result: result, type:0})); 
+							try{
+								var payload = msg.payload; 
+								var result = (${this.props.handler})(payload);
+								window.postMessage(JSON.stringify({id: msg.id, result: result, type:0})); 
+							}catch(e){}
             }else{ 
               if (id2resolve[msg.id]){ 
                 id2resolve[msg.id](msg.result); 

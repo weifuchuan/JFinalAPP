@@ -256,7 +256,6 @@ export default class AddArticle extends React.Component<Props> {
 							f(f); 
 						}, 300);
 					}
-					// alert(typeof window.send); 
 				}
 				f(f);
 			});
@@ -327,7 +326,7 @@ export default class AddArticle extends React.Component<Props> {
 					Router.pop();
 				} else this.onWebViewPostMsg({ action: 'ready' });
 			}
-		}, 1000 * 20);
+		}, 1000 * 10);
 		BackHandler.addEventListener('hardwareBackPress', this.onBack);
 	}
 
