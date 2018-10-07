@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, ViewStyle, Text, ActivityIndicator, Alert, Platform } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
 import { Feedback as FeedbackModel, AccountInPage, Ret } from '../../store/types';
@@ -103,11 +103,18 @@ export default class FeedbackPage extends React.Component<Props> {
 	};
 
 	private onShare = () => {
-		ActionSheet.showShareActionSheetWithOptions({
-			url: `${baseUrl}/feedback/${this.props.id}`,
-			message: this.feedback.title + ` ${baseUrl}/feedback/${this.props.id}`,
-			title: '分享'
-		});
+		if (Platform.OS === 'ios') {
+			ActionSheet.showShareActionSheetWithOptions({
+				url: `${baseUrl}/feedback/${this.props.id}`,
+				message: this.feedback.title,
+				title: '分享'
+			});
+		} else {
+			ActionSheet.showShareActionSheetWithOptions({
+				message: this.feedback.title + ` ${baseUrl}/feedback/${this.props.id}`,
+				title: '分享'
+			});
+		}
 	};
 
 	webviewHandler = function(payload: any) {};
