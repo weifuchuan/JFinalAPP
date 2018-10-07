@@ -48,6 +48,8 @@ TypeScript。
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_project.png)
 
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_share.png)
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_search.png)
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me.png)
@@ -57,6 +59,8 @@ TypeScript。
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/project_page.png)
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/share_page.png)
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/edit_share.png)
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/user.png)
 
