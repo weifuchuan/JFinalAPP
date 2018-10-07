@@ -68,6 +68,30 @@ TypeScript。
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/message.png)
 
+## 更新日志
+
+### 1.0.3-beta
+
+更改：
+
+1. 扁平化项目、分享、反馈、动态列表的item组件。
+
+### 1.0.2-beta
+
+更改：
+
+1. 可触摸的组件更改为全平台都使用涟漪反馈效果
+
+### 1.0.1-beta
+
+更改：
+
+1. 未登录下，提交回复跳到登录页。
+
+### 1.0.0-beta
+
+Covering almost all features of jfinal.com .
+
 ## License 
 
 [Apache License 2.0](https://github.com/weifuchuan/JFinal/blob/master/LICENSE)
