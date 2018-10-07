@@ -88,7 +88,7 @@ TypeScript。
 
 私信列表
 
-![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_list.png)
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_list.jpg)
 
 发送私信
 
