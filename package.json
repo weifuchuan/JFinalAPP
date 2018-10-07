@@ -1,6 +1,6 @@
 {
   "name": "JFinalAPP",
-  "version": "1.0.2-beta",
+  "version": "1.0.3-beta",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -16,7 +16,7 @@
     "antd-mobile-rn": "^2.2.1",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
-    "mobx": "4",
+    "mobx": "^4",
     "mobx-react": "^5.2.8",
     "qs": "^6.5.2",
     "react": "16.5.0",
@@ -30,12 +30,13 @@
     "react-native-render-html": "^3.10.0",
     "react-native-router-flux": "^4.0.3",
     "react-native-tab-view": "^1.2.0",
-    "react-native-vector-icons": "^6.0.1", 
+    "react-native-vector-icons": "^6.0.1",
     "rn-fetch-blob": "^0.10.13",
     "teaset": "^0.5.9"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.1.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
     "@types/cheerio": "^0.22.9",
     "@types/jest": "^23.3.2",
     "@types/lodash": "^4.14.116",
@@ -43,9 +44,9 @@
     "@types/react": "^16.4.14",
     "@types/react-native": "^0.57.2",
     "@types/react-native-material-ui": "^1.31.0",
+    "@types/react-native-push-notification": "^3.0.2",
     "@types/react-native-tab-view": "^1.0.2",
     "@types/react-native-vector-icons": "^4.6.3",
-    "@types/react-native-push-notification": "^3.0.2",
     "@types/react-test-renderer": "^16.0.2",
     "babel-jest": "23.6.0",
     "babel-plugin-import": "^1.9.1",

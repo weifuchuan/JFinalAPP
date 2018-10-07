@@ -57,61 +57,63 @@ class Message extends Component<Props> {
 					data={this.msgs.slice()}
 					renderItem={({ item, index }) => {
 						return (
-							<View style={styles.msg}>
-								<Touchable
-									onPress={() => {
-										if (this.props.store!.me && this.props.store!.me!.id === item.accountId) {
-											Modal.alert('跳转到我的主页？', '将无法返回此页', [
-												{ text: '确认', onPress: () => Router.me() },
-												{ text: '取消', onPress: () => null }
-											]);
-										} else Router.user(item.accountId);
-									}}
-								>
-									<View style={styles.msg_1}>
-										<Image
-											source={{
-												uri: `${req.baseUrl}${item.accountAvatar}?donotCache=${getNoCacheValue()}`
-											}}
-											style={{ width: 24, height: 24, marginRight: 6 }}
-										/>
-										<Text>{item.accountNickName}</Text>
-									</View>
-								</Touchable>
-								<View style={styles.msg_2}>
-									<HTML
-										html={item.content}
-										onLinkPress={this.onLinkPress}
-										containerStyle={{ marginTop: 5 }}
-									/>
-								</View>
-								<View style={styles._1_3}>
-									<Text style={styles._1_3_1}>{item.time}</Text>
-									<Button
-										text={'删除'}
-										primary
+							<Touchable onPress={()=>null} >
+								<View style={styles.msg}>
+									<Touchable
 										onPress={() => {
-											Modal.alert('删除此条私信？', '删除后无法恢复。', [
-												{
-													text: '确认',
-													onPress: async () => {
-														const ret = (await req.GET(
-															`/my/message/deleteByMessageId?messageId=${item.id}`
-														)).data;
-														if (ret.state == 'ok') {
-															this.msgs.splice(index, 1);
-														} else {
-															Toast.fail(ret.msg);
-														}
-													}
-												},
-												{ text: '取消', onPress: () => {} }
-											]);
+											if (this.props.store!.me && this.props.store!.me!.id === item.accountId) {
+												Modal.alert('跳转到我的主页？', '将无法返回此页', [
+													{ text: '确认', onPress: () => Router.me() },
+													{ text: '取消', onPress: () => null }
+												]);
+											} else Router.user(item.accountId);
 										}}
-										style={styles._1_3_2}
-									/>
+									>
+										<View style={styles.msg_1}>
+											<Image
+												source={{
+													uri: `${req.baseUrl}${item.accountAvatar}?donotCache=${getNoCacheValue()}`
+												}}
+												style={{ width: 24, height: 24, marginRight: 6 }}
+											/>
+											<Text>{item.accountNickName}</Text>
+										</View>
+									</Touchable>
+									<View style={styles.msg_2}>
+										<HTML
+											html={item.content}
+											onLinkPress={this.onLinkPress}
+											containerStyle={{ marginTop: 5 }}
+										/>
+									</View>
+									<View style={styles._1_3}>
+										<Text style={styles._1_3_1}>{item.time}</Text>
+										<Button
+											text={'删除'}
+											primary
+											onPress={() => {
+												Modal.alert('删除此条私信？', '删除后无法恢复。', [
+													{
+														text: '确认',
+														onPress: async () => {
+															const ret = (await req.GET(
+																`/my/message/deleteByMessageId?messageId=${item.id}`
+															)).data;
+															if (ret.state == 'ok') {
+																this.msgs.splice(index, 1);
+															} else {
+																Toast.fail(ret.msg);
+															}
+														}
+													},
+													{ text: '取消', onPress: () => {} }
+												]);
+											}}
+											style={styles._1_3_2}
+										/>
+									</View>
 								</View>
-							</View>
+							</Touchable>
 						);
 					}}
 					keyExtractor={(_, i) => i.toString()}

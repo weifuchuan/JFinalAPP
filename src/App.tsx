@@ -1,6 +1,7 @@
 import { YellowBox } from 'react-native';
 declare var global: any;
 declare var window: any;
+
 if (__DEV__) {
 	console.ignoredYellowBox = [ 'Warning: isMounted(...) is deprecated', 'Require cycle' ];
 

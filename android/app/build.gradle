@@ -111,7 +111,7 @@ android {
         applicationId "com.jfinal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
+        versionCode 18
         versionName getNpmVersion()
         ndk {
             abiFilters "armeabi-v7a", "x86"

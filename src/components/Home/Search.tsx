@@ -44,7 +44,7 @@ class Search extends Component<Props> {
 						alignItems: 'center',
 						paddingVertical: 10,
 						borderTopWidth: 0,
-						backgroundColor: BACK_WHITE,
+						backgroundColor: '#FFF',
 						...getPlatformElevation(4)
 					}}
 				>
@@ -94,8 +94,7 @@ class Search extends Component<Props> {
 										style={{
 											paddingHorizontal: 10,
 											paddingVertical: 10,
-											backgroundColor: '#fff',
-											marginVertical: 5
+											backgroundColor: '#fff'
 										}}
 									>
 										<HTML html={`<span>[${type}]&nbsp;</span>` + item.title} />
@@ -126,6 +125,8 @@ class Search extends Component<Props> {
 							</View>
 						)}
 						style={{ flex: 1 }}
+						ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+						ListHeaderComponent={() => <View style={{ height: 10 }} />}
 					/>
 				</View>
 			</View>
@@ -219,7 +220,6 @@ const styles = StyleSheet.create({
 	searchInput: {
 		flex: 1,
 		height: 32,
-		backgroundColor: BACK_WHITE,
 		marginLeft: 10
 	} as ViewStyle
 });

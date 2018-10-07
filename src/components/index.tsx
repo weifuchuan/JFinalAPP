@@ -90,7 +90,8 @@ export default class App extends React.Component<{
 							component={Search}
 							share
 							onEnter={() => {
-								this.pushCommonStatusBarStyle();
+								StatusBar.pushBackgroundColor('#fff');
+								StatusBar.pushBarStyle('dark-content');
 								this.props.store!.emitSelectHomeBottomNav('search');
 							}}
 							onExit={this.popStatusBarStyle}

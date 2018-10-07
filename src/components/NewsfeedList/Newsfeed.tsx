@@ -23,6 +23,7 @@ import { req, saveNewsFeedReply } from '../../store/web';
 import { Toast, Modal } from 'antd-mobile-rn';
 import Router from '../Router';
 import { getNoCacheValue } from '../base/kit';
+import { BACK_WHITE } from '../base/color';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -49,7 +50,7 @@ export default class Newsfeed extends React.Component<Props> {
 	render() {
 		const nf = this.props.newsfeed;
 		return (
-			<Card
+			<Touchable
 				onPress={() => {
 					if (nf.refType !== 'reply') {
 						Router.push(`${nf.refType}Page`, { id: nf.refId });
@@ -168,10 +169,19 @@ export default class Newsfeed extends React.Component<Props> {
 									</View>
 								);
 							})}
+							{/* <Button
+									text={this.openReplies ? '关闭' : '回复'}
+									primary
+									onPress={() => {
+										this.openReplies = !this.openReplies;
+										this.replyContent = `@${nf.accountNickName} `;
+									}}
+									style={styles._1_3_2}
+								/> */}
 						</View>
 					) : null}
 				</View>
-			</Card>
+			</Touchable>
 		);
 	}
 
@@ -283,7 +293,8 @@ export default class Newsfeed extends React.Component<Props> {
 const styles = {
 	container: {
 		flex: 1,
-		padding: 5
+		padding: 10,
+		backgroundColor: "#fff"
 	} as ViewStyle,
 	// 起名 is so 烦
 	_1: {} as ViewStyle,
@@ -352,11 +363,13 @@ const styles = {
 		paddingVertical: 5
 	} as ViewStyle,
 	_2_reply: {
-		paddingVertical: 5
+		paddingVertical: 5,
 	} as ViewStyle,
 	_2_reply_1: {
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center', 
+		backgroundColor: BACK_WHITE,
+		padding: 3
 	} as ViewStyle,
 	_2_reply_2: {} as ViewStyle
 };

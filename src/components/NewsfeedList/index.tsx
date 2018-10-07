@@ -52,6 +52,8 @@ export default class NewsfeedList extends React.Component<Props> {
 							<Text>无</Text>
 						</View>
 					)}
+					ListHeaderComponent={() => <View style={{ height: 10 }} />}
+					ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
 				/>
 			</View>
 		);

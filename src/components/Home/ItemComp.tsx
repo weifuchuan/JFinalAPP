@@ -5,6 +5,7 @@ import { Item } from './kit';
 import { Card } from 'react-native-material-ui';
 import { baseUrl } from '../../store/req';
 import { getNoCacheValue } from '../base/kit';
+import Touchable from '../base/Touchable';
 
 interface Props {
 	item: Item;
@@ -16,7 +17,7 @@ export default class ItemComp extends React.Component<Props> {
 	render() {
 		const item = this.props.item;
 		return (
-			<Card onPress={() => this.props.onPress(item)}>
+			<Touchable onPress={() => this.props.onPress(item)}>
 				<View style={styles.container}>
 					<View style={styles.avatarAndTitle}>
 						<Image source={{ uri: `${baseUrl}${item.avatar}?donotCache=${getNoCacheValue()}` }} style={styles.avatar} />
@@ -24,15 +25,17 @@ export default class ItemComp extends React.Component<Props> {
 					</View>
 					<Text style={styles.content}>{item.content.trim() + '...'}</Text>
 				</View>
-			</Card>
+			</Touchable>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 6,
-		flex: 1
+		paddingHorizontal: 10,
+		paddingVertical:10, 
+		flex: 1,
+		backgroundColor:"#fff",
 	} as ViewStyle,
 	avatarAndTitle: {
 		flexDirection: 'row'
