@@ -46,27 +46,57 @@ TypeScript。
 
 ## 预览
 
+首页/项目
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_project.png)
+
+首页/分享
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_share.png)
 
+首页/搜索
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_search.png)
+
+首页/我
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me.png)
 
+首页/我/抽屉
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me_drawer.png)
+
+项目页
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/project_page.png)
 
+分享页
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/share_page.png)
+
+创建分享
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/edit_share.png)
 
+用户
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/user.png)
+
+用户/抽屉
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/user_drawer.png)
 
+私信列表
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_list.png)
+
+发送私信
+
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/message.png)
+
+推送通知
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_push.png)
 
 ## 更新日志
 

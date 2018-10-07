@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, Text, TextStyle, Image, ImageStyle } from 'react-native';
 import { observer } from 'mobx-react/native';
 import { Item } from './kit';
-import { Card } from 'react-native-material-ui';
 import { baseUrl } from '../../store/req';
 import { getNoCacheValue } from '../base/kit';
 import Touchable from '../base/Touchable';
