@@ -3,6 +3,7 @@ package com.jfinal;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNVersionNumberPackage(),
             new ReactNativePushNotificationPackage(),
             new RNFetchBlobPackage(),
             new PickerPackage(),

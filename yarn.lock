@@ -682,6 +682,11 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
+"@types/react-native-version-number@^0.3.0":
+  version "0.3.0"
+  resolved "http://registry.npm.taobao.org/@types/react-native-version-number/download/@types/react-native-version-number-0.3.0.tgz#5b2183c1416593a349f797fc409808a575f8b4d5"
+  integrity sha1-WyGDwUFlk6NJ95f8QJgIpXX4tNU=
+
 "@types/react-native@*":
   version "0.57.1"
   resolved "http://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.57.1.tgz#493260b221c3404ef34c697e9cce127006935dd8"
@@ -5532,6 +5537,11 @@ react-native-vector-icons@^6.0.1:
     lodash "^4.0.0"
     prop-types "^15.6.2"
     yargs "^8.0.2"
+
+react-native-version-number@^0.3.4:
+  version "0.3.4"
+  resolved "http://registry.npm.taobao.org/react-native-version-number/download/react-native-version-number-0.3.4.tgz#4850e1a40ea719ee43092812d0693f9dc3be5f40"
+  integrity sha1-SFDhpA6nGe5DCSgS0Gk/ncO+X0A=
 
 react-native@0.57.1:
   version "0.57.1"

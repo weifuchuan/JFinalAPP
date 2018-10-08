@@ -111,7 +111,7 @@ android {
         applicationId "com.jfinal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
+        versionCode 27
         versionName getNpmVersion()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -158,6 +158,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-version-number')
     compile project(':react-native-push-notification')
     compile project(':rn-fetch-blob')
     compile project(':react-native-image-crop-picker')
