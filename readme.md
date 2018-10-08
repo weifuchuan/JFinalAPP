@@ -102,7 +102,7 @@ TypeScript。
 
 ### 1.0.6-beta
 
-添加依托于github release的安卓上的APP更新。
+添加简单的依托于github release的安卓上的APP更新。
 
 ### 1.0.5-beta
 
