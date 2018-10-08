@@ -159,11 +159,26 @@ class Search extends Component<Props> {
 			3
 		);
 		const $ = cheerio.load(html);
-		runInAction(() => {
+		runInAction(async () => {
 			this.searchResultList.splice(0, this.searchResultList.length);
 			if (!this.parseResult($)) {
-				this.refreshState = RefreshState.Idle;
-				this.onFooterRefresh(RefreshState.FooterRefreshing);
+				if (this.searchResultList.length === 0) {
+					const html = await retryDo(
+						async () =>
+							await req.GET_HTML_PC_REQUEST('https://cn.bing.com/search', {
+								q: `site:www.jfinal.com ${this.searchKey.trim()}`
+							}),
+						3
+					);
+					const $ = cheerio.load(html);
+					if (!this.parseResult($)) {
+						this.refreshState = RefreshState.Idle;
+						this.onFooterRefresh(RefreshState.FooterRefreshing);
+					} else this.refreshState = RefreshState.Idle;
+				} else {
+					this.refreshState = RefreshState.Idle;
+					this.onFooterRefresh(RefreshState.FooterRefreshing);
+				}
 			} else this.refreshState = RefreshState.Idle;
 		});
 	};
