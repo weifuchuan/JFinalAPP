@@ -53,7 +53,7 @@ export default class Project extends React.Component<Props> {
 					keyExtractor={(item) => item.id.toString()}
 					style={{ flex: 1 }}
 					ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-					ListHeaderComponent={() => <View style={{ height: 5 }} />}
+					
 				/>
 				<ActivityIndicator size="small" color={LOADING_BLUE} style={styles.loading} animating={this.loading} />
 				<PageSelect
