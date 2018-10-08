@@ -73,11 +73,16 @@ export default class FeedbackPage extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.feedback.accountId === this.props.store!.me!.id) {
+			Toast.info('不能收藏自己的文章', 1.5);
+			return;
+		}
 		const ret = await favorite('feedback', this.feedback.id, !this.favorited);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.favorited = !this.favorited;
-				this.feedback.favoriteCount++;
+				if (this.favorited) this.feedback.favoriteCount++;
+				else this.feedback.favoriteCount--;
 			});
 			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 0.8);
 		} else {
@@ -90,11 +95,16 @@ export default class FeedbackPage extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.feedback.accountId === this.props.store!.me!.id) {
+			Toast.info('不能点赞自己的文章', 1.5);
+			return;
+		}
 		const ret = await like('feedback', this.feedback.id, !this.liked);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.liked = !this.liked;
-				this.feedback.likeCount++;
+				if (this.liked) this.feedback.likeCount++;
+				else this.feedback.likeCount--;
 			});
 			Toast.success(`${this.liked ? '' : '取消'}点赞成功`, 1.5);
 		} else {

@@ -75,11 +75,16 @@ export default class SharePage extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.share.accountId === this.props.store!.me!.id) {
+			Toast.info('不能收藏自己的文章', 1.5);
+			return;
+		}
 		const ret = await favorite('share', this.share.id, !this.favorited);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.favorited = !this.favorited;
-				this.share.favoriteCount++;
+				if (this.favorited) this.share.favoriteCount++;
+				else this.share.favoriteCount--;
 			});
 			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 0.8);
 		} else {
@@ -92,11 +97,16 @@ export default class SharePage extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.share.accountId === this.props.store!.me!.id) {
+			Toast.info('不能点赞自己的文章', 1.5);
+			return;
+		}
 		const ret = await like('share', this.share.id, !this.liked);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.liked = !this.liked;
-				this.share.likeCount++;
+				if (this.liked) this.share.likeCount++;
+				else this.share.likeCount--;
 			});
 			Toast.success(`${this.liked ? '' : '取消'}点赞成功`, 1.5);
 		} else {

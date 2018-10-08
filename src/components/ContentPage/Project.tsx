@@ -76,11 +76,16 @@ export default class Project extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.project.accountId === this.props.store!.me!.id) {
+			Toast.info('不能收藏自己的文章', 1.5);
+			return;
+		}
 		const ret = await favorite('project', this.project.id, !this.favorited);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.favorited = !this.favorited;
-				this.project.favoriteCount++;
+				if (this.favorited) this.project.favoriteCount++;
+				else this.project.favoriteCount--;
 			});
 			Toast.success(`${this.favorited ? '' : '取消'}收藏成功`, 0.8);
 		} else {
@@ -93,11 +98,16 @@ export default class Project extends React.Component<Props> {
 			Router.login();
 			return;
 		}
+		if (this.project.accountId === this.props.store!.me!.id) {
+			Toast.info('不能点赞自己的文章', 1.5);
+			return;
+		}
 		const ret = await like('project', this.project.id, !this.liked);
 		if (ret.isOk) {
 			runInAction(() => {
 				this.liked = !this.liked;
-				this.project.likeCount++;
+				if (this.liked) this.project.likeCount++;
+				else this.project.likeCount--;
 			});
 			this.liked = !this.liked;
 			Toast.success(`${this.liked ? '' : '取消'}点赞成功`, 1.5);
