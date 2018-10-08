@@ -29,7 +29,7 @@ class Friends extends Component<Props> {
 			<View style={styles.container}>
 				<Toolbar
 					leftElement={'arrow-back'}
-					centerElement={this.props.type === 'fans' ? `${this.nickName}的粉丝` : `关注${this.nickName}的人`}
+					centerElement={this.props.type === 'fans' ? `${this.nickName} 的粉丝` : `${this.nickName} 关注的人`}
 					onLeftElementPress={() => Router.pop()}
 					style={{ container: { backgroundColor: ICON_BLUE } }}
 				/>

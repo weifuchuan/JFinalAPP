@@ -100,6 +100,10 @@ TypeScript。
 
 ## 更新日志
 
+### 1.0.7-beta
+
+修复小bug。
+
 ### 1.0.6-beta
 
 添加简单的依托于github release的安卓上的APP更新。
