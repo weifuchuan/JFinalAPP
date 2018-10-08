@@ -8,7 +8,9 @@ import {
 	TouchableOpacity,
 	ImageStyle,
 	TextInput,
-	Linking
+	Linking,
+	ScrollView,
+	Keyboard
 } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Store } from '../../store';
@@ -46,6 +48,7 @@ export default class Newsfeed extends React.Component<Props> {
 	@observable replies: Reply[] = [];
 	@observable replyContent = '';
 	@observable repling = false;
+	input: TextInput | null = null;
 
 	render() {
 		const nf = this.props.newsfeed;
@@ -120,21 +123,27 @@ export default class Newsfeed extends React.Component<Props> {
 					{this.openReplies ? (
 						<View style={styles._2}>
 							<View style={styles._2_1}>
-								<View style={{ borderColor: '#aaa', borderWidth: 1, borderRadius: 3, flex: 1 }}>
+								<ScrollView
+									contentContainerStyle={styles._2_1_input}
+									keyboardShouldPersistTaps={'always'}
+								>
 									<TextInput
 										value={this.replyContent}
 										onChangeText={(text) => (this.replyContent = text)}
 										multiline
 										style={{ flex: 1, padding: 0, textAlignVertical: 'center' }}
 										underlineColorAndroid="transparent"
+										ref={(r) => (this.input = r)}
 									/>
-								</View>
+								</ScrollView>
 								<Btn
 									title={'发送'}
 									onPress={this.onReply}
 									loading={this.repling}
 									raised
 									containerStyle={{ marginLeft: 5 }}
+									buttonStyle={{ width: 48, height: 37 }}
+									loadingStyle={{ width: 48, height: 37 }}
 								/>
 							</View>
 							{this.replies.map((reply, index) => {
@@ -146,10 +155,6 @@ export default class Newsfeed extends React.Component<Props> {
 													this.props.store!.me &&
 													this.props.store!.me!.id === reply.accountId
 												) {
-													Modal.alert('跳转到我的主页？', '将无法返回此页', [
-														{ text: '确认', onPress: () => Router.me() },
-														{ text: '取消', onPress: () => null }
-													]);
 												} else Router.user(reply.accountId);
 											}}
 										>
@@ -190,6 +195,8 @@ export default class Newsfeed extends React.Component<Props> {
 			Toast.info('请输入内容', 2);
 			return;
 		}
+		this.input && this.input.focus();
+		Keyboard.dismiss();
 		this.repling = true;
 		try {
 			const ret = await saveNewsFeedReply(this.props.newsfeed.id, this.replyContent);
@@ -294,7 +301,7 @@ const styles = {
 	container: {
 		flex: 1,
 		padding: 10,
-		backgroundColor: "#fff"
+		backgroundColor: '#fff'
 	} as ViewStyle,
 	// 起名 is so 烦
 	_1: {} as ViewStyle,
@@ -362,12 +369,18 @@ const styles = {
 		alignItems: 'center',
 		paddingVertical: 5
 	} as ViewStyle,
+	_2_1_input: {
+		borderColor: '#aaa',
+		borderWidth: 1,
+		borderRadius: 3,
+		flex: 1
+	} as ViewStyle,
 	_2_reply: {
-		paddingVertical: 5,
+		paddingVertical: 5
 	} as ViewStyle,
 	_2_reply_1: {
 		flexDirection: 'row',
-		alignItems: 'center', 
+		alignItems: 'center',
 		backgroundColor: BACK_WHITE,
 		padding: 3
 	} as ViewStyle,

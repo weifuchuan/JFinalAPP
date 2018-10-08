@@ -5334,7 +5334,7 @@ react-devtools-core@3.3.4:
     shell-quote "^1.6.1"
     ws "^3.3.1"
 
-react-is@^16.5.2:
+react-is@^16.5.0:
   version "16.5.2"
   resolved "http://registry.npm.taobao.org/react-is/download/react-is-16.5.2.tgz#e2a7b7c3f5d48062eb769fcb123505eb928722e3"
   integrity sha1-4qe3w/XUgGLrdp/LEjUF65KHIuM=
@@ -5409,15 +5409,6 @@ react-native-elements@^1.0.0-beta5:
     opencollective "^1.0.3"
     prop-types "^15.5.8"
     react-native-touchable-scale "2.0.0"
-
-react-native-gesture-handler@^1.0.7:
-  version "1.0.7"
-  resolved "http://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.0.7.tgz#86677c709c42d04555210cad9759b09e2c657720"
-  integrity sha1-hmd8cJxC0EVVIQytl1mwnixldyA=
-  dependencies:
-    hoist-non-react-statics "^2.3.1"
-    invariant "^2.2.2"
-    prop-types "^15.5.10"
 
 react-native-image-crop-picker@^0.21.2:
   version "0.21.2"
@@ -5654,15 +5645,15 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-test-renderer@^16.5.0:
-  version "16.5.2"
-  resolved "http://registry.npm.taobao.org/react-test-renderer/download/react-test-renderer-16.5.2.tgz#92e9d2c6f763b9821b2e0b22f994ee675068b5ae"
-  integrity sha1-kunSxvdjuYIbLgsi+ZTuZ1Bota4=
+react-test-renderer@16.5.0:
+  version "16.5.0"
+  resolved "http://registry.npm.taobao.org/react-test-renderer/download/react-test-renderer-16.5.0.tgz#1aeca0edc4f27f63265dcaed80ba82e11e762f56"
+  integrity sha1-Guyg7cTyf2MmXcrtgLqC4R52L1Y=
   dependencies:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    react-is "^16.5.2"
-    schedule "^0.5.0"
+    react-is "^16.5.0"
+    schedule "^0.3.0"
 
 react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.4"
@@ -6104,13 +6095,6 @@ schedule@^0.3.0:
   version "0.3.0"
   resolved "http://registry.npm.taobao.org/schedule/download/schedule-0.3.0.tgz#1be2ab2fc2e768536269ce7326efb478d6c045e8"
   integrity sha1-G+KrL8LnaFNiac5zJu+0eNbAReg=
-  dependencies:
-    object-assign "^4.1.1"
-
-schedule@^0.5.0:
-  version "0.5.0"
-  resolved "http://registry.npm.taobao.org/schedule/download/schedule-0.5.0.tgz#c128fffa0b402488b08b55ae74bb9df55cc29cc8"
-  integrity sha1-wSj/+gtAJIiwi1WudLud9VzCnMg=
   dependencies:
     object-assign "^4.1.1"
 

@@ -2,7 +2,7 @@ import { Modal, Toast } from 'antd-mobile-rn';
 import { action, observable, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React, { Component } from 'react';
-import { FlatList, Image, Linking, Text, View, ViewStyle, TextStyle, TextInput } from 'react-native';
+import { FlatList, Image, Linking, Text, View, ViewStyle, TextStyle, TextInput, Keyboard } from 'react-native';
 import { Button, Toolbar } from 'react-native-material-ui';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
@@ -122,6 +122,7 @@ class Message extends Component<Props> {
 					onFooterRefresh={this.onFooterRefresh}
 					style={{ flex: 1 }}
 					listRef={(r) => (this.list = r)}
+					keyboardShouldPersistTaps={'always'}
 					ListEmptyComponent={() => (
 						<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 							<Text>无</Text>
@@ -161,6 +162,7 @@ class Message extends Component<Props> {
 
 	send = async () => {
 		if (this.msgContent.trim() === '') return;
+		Keyboard.dismiss();
 		try {
 			const ret = (await req.POST_FORM('/my/message/send', {
 				friendId: this.props.accountId,

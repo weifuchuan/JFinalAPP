@@ -111,7 +111,7 @@ android {
         applicationId "com.jfinal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 22
+        versionCode 24
         versionName getNpmVersion()
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -160,7 +160,6 @@ android {
 dependencies {
     compile project(':react-native-push-notification')
     compile project(':rn-fetch-blob')
-    compile project(':react-native-gesture-handler')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])

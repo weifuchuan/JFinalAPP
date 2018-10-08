@@ -54,6 +54,7 @@ export default class NewsfeedList extends React.Component<Props> {
 					)}
 					ListHeaderComponent={() => <View style={{ height: 10 }} />}
 					ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+					keyboardShouldPersistTaps={'always'}
 				/>
 			</View>
 		);
@@ -113,10 +114,11 @@ export default class NewsfeedList extends React.Component<Props> {
 			}
 		})();
 		if (this.props.uri.startsWith('/my')) {
-			this.props.store!.onMyReplyOk(this.refresh);
 			this.props.store!.onLogged(this.refresh);
 			this.props.store!.onLogout(this.refresh);
-			this.props.store!.onToReferMe(this.refresh);
+			if (this.props.uri.startsWith('/my/referMe')) {
+				this.props.store!.onToReferMe(this.refresh);
+			}
 		}
 	}
 
@@ -132,10 +134,9 @@ export default class NewsfeedList extends React.Component<Props> {
 		for (const c of this.closers) c();
 		this.cache();
 		if (this.props.uri.startsWith('/my')) {
-			this.props.store!.offMyReplyOk(this.refresh);
 			this.props.store!.offLogged(this.refresh);
 			this.props.store!.offLogout(this.refresh);
-			this.props.store!.offToReferMe(this.refresh);
+			if (this.props.uri.startsWith('/my/referMe')) this.props.store!.offToReferMe(this.refresh);
 		}
 	}
 

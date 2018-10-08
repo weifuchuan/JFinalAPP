@@ -2,33 +2,20 @@ import { ActionSheet, Badge, Drawer, Modal } from 'antd-mobile-rn';
 import { action, autorun, IReactionDisposer, observable, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import {
-	Dimensions,
-	Image,
-	ImageStyle,
-	LayoutChangeEvent,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	View,
-	ViewStyle
-} from 'react-native';
-import * as GestureHandler from 'react-native-gesture-handler';
+import { Dimensions, Image, ImageStyle, LayoutChangeEvent, ScrollView, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Button, Toolbar, ToolbarStyle } from 'react-native-material-ui';
 import { RouteBase, TabView } from 'react-native-tab-view';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { retryDo } from '../../kit';
 import { Store } from '../../store';
+import { Account } from '../../store/types';
 import { req } from '../../store/web';
-import { Account, Remind } from '../../store/types';
 import { BACK_WHITE, ICON_BLUE } from '../base/color';
 import { measure, SCREEN_HEIGHT, SCREEN_WIDTH } from '../base/kit';
 import StatusBar from '../base/StatusBar';
 import Touchable from '../base/Touchable';
 import NewsfeedList from '../NewsfeedList';
-import Router from '../Router';
-import { RefreshState } from '../base/RefreshListView';
-const { PagerExperimental } = require('react-native-tab-view');
+import Router from '../Router'; 
 const { Overlay } = require('teaset');
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
@@ -220,11 +207,7 @@ export default class Me extends React.Component<Props> {
 								initialLayout={{
 									height: 0,
 									width: Dimensions.get('window').width
-								}}
-								renderPager={(props) => (
-									<PagerExperimental {...props} GestureHandler={GestureHandler} />
-								)}
-								{...{ useNativeDriver: true } as any}
+								}} 
 							/>
 						</View>
 					</View>
@@ -367,7 +350,9 @@ export default class Me extends React.Component<Props> {
 									} else if (remind.type === 'message') {
 										Router.message();
 									} else if (remind.type === 'referMe') {
-										this.onToReferMe();
+										setTimeout(() => {
+											this.props.store!.emitToReferMe();
+										}, 0);
 									}
 									this.props.store!.reminds.splice(index, 1);
 									Overlay.hide(this.popoverKey);

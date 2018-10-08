@@ -212,12 +212,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: BACK_WHITE,
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent:"center", 
 	} as ViewStyle,
 	logo: {
 		fontSize: 64,
-		color: ICON_BLUE,
-		marginTop: SCREEN_HEIGHT * 0.1
+		color: '#3a5795',
+		// marginTop: SCREEN_HEIGHT * 0.1
 	} as TextStyle,
 	forgetPassword: {
 		marginTop: 20,
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
 	} as ViewStyle,
 	reg: {
 		fontSize: 20,
-		color: ICON_BLUE,
+		color: '#3a5795',
 		position: 'absolute',
 		top: SCREEN_WIDTH * 0.05,
 		right: SCREEN_WIDTH * 0.05
