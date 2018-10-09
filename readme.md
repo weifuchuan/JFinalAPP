@@ -100,6 +100,10 @@ TypeScript。
 
 ## 更新日志  
 
+### 1.0.9-beta
+
+头像加圆角。
+
 ### 1.0.8-beta
 
 修复EditArticle组件的在网络状况不佳时偶尔会出现的bug。

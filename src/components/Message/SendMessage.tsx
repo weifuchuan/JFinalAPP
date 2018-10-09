@@ -57,7 +57,7 @@ class Message extends Component<Props> {
 					data={this.msgs.slice()}
 					renderItem={({ item, index }) => {
 						return (
-							<Touchable onPress={()=>null} >
+							<Touchable onPress={() => null}>
 								<View style={styles.msg}>
 									<Touchable
 										onPress={() => {
@@ -74,7 +74,7 @@ class Message extends Component<Props> {
 												source={{
 													uri: `${req.baseUrl}${item.accountAvatar}?donotCache=${getNoCacheValue()}`
 												}}
-												style={{ width: 24, height: 24, marginRight: 6 }}
+												style={{ width: 24, height: 24, marginRight: 6, borderRadius: 1.6 }}
 											/>
 											<Text>{item.accountNickName}</Text>
 										</View>

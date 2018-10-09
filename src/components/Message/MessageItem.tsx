@@ -120,7 +120,8 @@ const styles = {
 	} as ViewStyle,
 	_1_1_1: {
 		width: 32,
-		height: 32
+		height: 32,
+		borderRadius:3,
 	} as ImageStyle,
 	_1_1_2: {
 		flex: 1,

@@ -1,6 +1,6 @@
 {
   "name": "JFinalAPP",
-  "version": "1.0.8-beta",
+  "version": "1.0.9-beta",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",

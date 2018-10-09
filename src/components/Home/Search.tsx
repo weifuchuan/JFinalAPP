@@ -56,7 +56,7 @@ class Search extends Component<Props> {
 						value={this.searchKey}
 						placeholder="输入搜索关键字..."
 						placeholderTextColor="#aaa"
-						onChangeText={(text: string) => (this.searchKey = text.trim())}
+						onChangeText={(text: string) => (this.searchKey = text)}
 						{...{
 							onEndEditing: this.search,
 							clearButtonMode: 'always',
