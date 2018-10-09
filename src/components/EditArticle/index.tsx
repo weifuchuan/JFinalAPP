@@ -105,7 +105,7 @@ export default class AddArticle extends React.Component<Props> {
 	};
 
 	saveDraft = async () => {
-		if (this.props.isEdit||this.loading) return;
+		if (this.props.isEdit || this.loading) return;
 		const localStore = this.props.store!.localStorage;
 		await localStore.save({ key: 'draft', id: this.props.type, data: await this.fetchArticle() });
 	};
@@ -254,7 +254,7 @@ export default class AddArticle extends React.Component<Props> {
 					}else{
 						setTimeout(function(){
 							f(f); 
-						}, 300);
+						}, 100);
 					}
 				}
 				f(f);
@@ -326,7 +326,7 @@ export default class AddArticle extends React.Component<Props> {
 					Router.pop();
 				} else this.onWebViewPostMsg({ action: 'ready' });
 			}
-		}, 1000 * 10);
+		}, 1000 * 15);
 		BackHandler.addEventListener('hardwareBackPress', this.onBack);
 	}
 
@@ -335,7 +335,7 @@ export default class AddArticle extends React.Component<Props> {
 	}
 
 	onBack = async () => {
-		await this.saveDraft();
+		if (!this.loading) await this.saveDraft();
 		Router.pop();
 	};
 }
