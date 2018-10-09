@@ -98,7 +98,11 @@ TypeScript。
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_push.png)
 
-## 更新日志
+## 更新日志  
+
+### 1.0.8-beta
+
+修复EditArticle组件的在网络状况不佳时偶尔会出现的bug。
 
 ### 1.0.7-beta
 
