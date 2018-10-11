@@ -3,7 +3,8 @@ package com.jfinal;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.apsl.versionnumber.RNVersionNumberPackage;
+import cn.reactnative.modules.update.UpdatePackage;
+import cn.reactnative.modules.update.UpdateContext;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -20,6 +21,11 @@ public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
+    protected String getJSBundleFile() {
+        return UpdateContext.getBundleUrl(MainApplication.this);
+    }
+
+    @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
     }
@@ -28,7 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNVersionNumberPackage(),
+            new UpdatePackage(),
             new ReactNativePushNotificationPackage(),
             new RNFetchBlobPackage(),
             new PickerPackage(),

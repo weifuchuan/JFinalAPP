@@ -10,6 +10,7 @@ import {
 	TextStyle,
 	FlatList
 } from 'react-native';
+import Touchable from '../base/Touchable';
 
 interface Props {
 	currPage: number;
@@ -46,21 +47,21 @@ export default class PageSelect extends React.Component<Props, State> {
 								const style =
 									item === this.props.currPage ? styles.selectedPage : styles.unselectedPage;
 								return (
-									<TouchableOpacity
+									<Touchable
 										onPress={() => {
 											this.props.onCurrPageSelect(item);
 											this.setState({ open: false });
 										}}
 									>
 										<Text style={style}>{item}</Text>
-									</TouchableOpacity>
+									</Touchable>
 								);
 							}}
 							keyExtractor={(item) => item.toString()}
 							style={styles.pageList}
-							ref={(r) => {
+							ref={(r: FlatList<number> | null) => {
 								this.list = r;
-								if (this.list) { 
+								if (this.list) {
 									setTimeout(() => {
 										this.list &&
 											this.list.scrollToIndex({
@@ -79,14 +80,15 @@ export default class PageSelect extends React.Component<Props, State> {
 			);
 		} else {
 			return (
-				<TouchableOpacity
-					style={styles.pageButton}
+				<Touchable
 					onPress={() => {
 						this.setState({ open: true });
 					}}
 				>
-					<Text style={styles.btnText}>{this.props.btnText ? this.props.btnText : '页码'}</Text>
-				</TouchableOpacity>
+					<View style={styles.pageButton}>
+						<Text style={styles.btnText}>{this.props.btnText ? this.props.btnText : '页码'}</Text>
+					</View>
+				</Touchable>
 			);
 		}
 	}
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
 		top: SCREEN_HEIGHT * 0.15,
 		height: SCREEN_HEIGHT * 0.6,
 		width: SCREEN_WIDTH * 0.2,
-		backgroundColor: '#F8F8FF',  
+		backgroundColor: '#F8F8FF',
 		borderTopLeftRadius: 2,
 		borderBottomLeftRadius: 2
 	} as ViewStyle,

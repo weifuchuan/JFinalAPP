@@ -1,6 +1,6 @@
 {
   "name": "JFinalAPP",
-  "version": "1.0.9-beta",
+  "version": "1.0.10-beta",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -9,7 +9,10 @@
     "tsc": "tsc",
     "build-android": "cd android && ./gradlew assembleRelease",
     "build-android-clean": "cd android && ./gradlew clean && ./gradlew assembleRelease",
-    "clean": "cd android && ./gradlew clean"
+    "clean-android": "cd android && ./gradlew clean",
+    "upload-android": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk",
+    "publish-android": "pushy bundle --platform android",
+    "publish-ios": "pushy bundle --platform ios"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
@@ -29,8 +32,8 @@
     "react-native-render-html": "^3.10.0",
     "react-native-router-flux": "^4.0.3",
     "react-native-tab-view": "^1.2.0",
+    "react-native-update": "5.x",
     "react-native-vector-icons": "^6.0.1",
-    "react-native-version-number": "^0.3.4",
     "rn-fetch-blob": "^0.10.13",
     "teaset": "^0.5.9"
   },
@@ -47,7 +50,6 @@
     "@types/react-native-push-notification": "^3.0.2",
     "@types/react-native-tab-view": "^1.0.2",
     "@types/react-native-vector-icons": "^4.6.3",
-    "@types/react-native-version-number": "^0.3.0",
     "@types/react-test-renderer": "^16.0.2",
     "babel-jest": "23.6.0",
     "babel-plugin-import": "^1.9.1",

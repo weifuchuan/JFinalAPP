@@ -100,6 +100,14 @@ TypeScript。
 
 ## 更新日志  
 
+### 1.0.10-beta
+
+为Android添加热更新。
+
+热更新服务：[pushy](https://github.com/reactnativecn/react-native-pushy)
+
+** Note：pushy正在为React Native 0.57修复，暂不能使用。 **
+
 ### 1.0.9-beta
 
 头像加圆角。
