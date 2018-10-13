@@ -146,7 +146,9 @@ export default class Login extends React.Component<Props> {
 			if (ret.isOk) {
 				this.props.store!.me = observable(ret.get('account'));
 				this.props.store!.emitLogged();
-				if (this.keepLogin) this.props.store!.saveMe();
+				if (this.keepLogin) {
+					this.props.store!.saveMe();
+				}
 				Router.pop();
 			} else {
 				this.refreshCaptchaImg();

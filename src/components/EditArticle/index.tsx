@@ -39,7 +39,9 @@ export default class AddArticle extends React.Component<Props> {
 			<View style={styles.container}>
 				<Toolbar
 					leftElement={'arrow-back'}
-					centerElement={`${this.props.isEdit ? '编辑' : '创建'}${this.props.type === 'share' ? '分享' : '反馈'}`}
+					centerElement={`${this.props.isEdit ? '编辑' : '创建'}${this.props.type === 'project'
+						? '项目'
+						: this.props.type === 'share' ? '分享' : '反馈'}`}
 					onLeftElementPress={async () => {
 						await this.saveDraft();
 						Router.pop();
