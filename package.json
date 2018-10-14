@@ -1,6 +1,6 @@
 {
   "name": "JFinalAPP",
-  "version": "1.0.11-beta",
+  "version": "1.0.12-beta",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -22,8 +22,8 @@
     "mobx": "^4",
     "mobx-react": "^5.2.8",
     "qs": "^6.5.2",
-    "react": "16.5.0",
-    "react-native": "0.57.0",
+    "react": "16.6.0-alpha.8af6728",
+    "react-native": "0.57.3",
     "react-native-cheerio": "^1.0.0-rc.4",
     "react-native-elements": "^1.0.0-beta5",
     "react-native-image-crop-picker": "^0.21.2",
@@ -55,8 +55,8 @@
     "babel-plugin-import": "^1.9.1",
     "cross-env": "^5.2.0",
     "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.48.0",
-    "react-test-renderer": "16.5.0",
+    "metro-react-native-babel-preset": "0.48.1",
+    "react-test-renderer": "16.6.0-alpha.8af6728",
     "typescript": "^3.1.1"
   },
   "jest": {
