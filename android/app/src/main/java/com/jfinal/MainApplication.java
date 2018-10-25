@@ -3,6 +3,7 @@ package com.jfinal;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import cn.reactnative.modules.update.UpdatePackage;
 import cn.reactnative.modules.update.UpdateContext;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCWebViewPackage(),
             new UpdatePackage(),
             new ReactNativePushNotificationPackage(),
             new RNFetchBlobPackage(),

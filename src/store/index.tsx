@@ -1,4 +1,4 @@
-import Storage from '../storage';
+import Storage from '@/storage';
 import { AsyncStorage, NativeEventEmitter } from 'react-native';
 import { Account, Remind, RemindList } from './types';
 import { toJS, observable, runInAction, action } from 'mobx';

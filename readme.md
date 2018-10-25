@@ -100,6 +100,12 @@ TypeScript。
 
 ## 更新日志  
 
+### 1.0.13-beta
+
+1. 初步优化代码结构。
+2. 升级WebView为react-native-webview。
+3. 文章内增加“在浏览器内打开”功能。
+
 ### 1.0.12-beta
 
 升级到0.57.3。

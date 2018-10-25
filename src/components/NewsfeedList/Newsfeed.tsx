@@ -4,8 +4,7 @@ import {
 	ViewStyle,
 	Image,
 	Text,
-	TextStyle,
-	TouchableOpacity,
+	TextStyle, 
 	ImageStyle,
 	TextInput,
 	Linking,
@@ -13,19 +12,19 @@ import {
 	Keyboard
 } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
-import { Store } from '../../store';
-import { NewsFeed } from '../../store/types';
+import { Store } from '@/store';
+import { NewsFeed } from '@/store/types';
 import { Card, Button } from 'react-native-material-ui';
 import { Button as Btn } from 'react-native-elements';
 import { observable, toJS, autorun, IReactionDisposer, runInAction } from 'mobx';
-import { baseUrl } from '../../store/req';
-import HTML from '../base/RNRenderHTML';
-import Touchable from '../base/Touchable';
-import { req, saveNewsFeedReply } from '../../store/web';
+import { baseUrl } from '@/kit/req';
+import HTML from '@/components/RNRenderHTML';
+import Touchable from '@/components/Touchable';
+import { req, saveNewsFeedReply } from '@/store/web';
 import { Toast, Modal } from 'antd-mobile-rn';
-import Router from '../Router';
-import { getNoCacheValue } from '../base/kit';
-import { BACK_WHITE } from '../base/color';
+import Router from '@/router';
+import { getNoCacheValue } from '@/components/kit';
+import { BACK_WHITE } from '@/themes/color';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {

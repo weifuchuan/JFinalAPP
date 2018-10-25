@@ -1,6 +1,5 @@
-import { Ret } from './types';
-import qs from 'qs';
-import * as req from './req';
+import { Ret } from './types'; 
+import * as req from '@/kit/req';
 export { req };
 
 export async function login(userName: string, password: string, captcha: string, keepLogin: boolean): Promise<Ret> {

@@ -4,11 +4,11 @@ import { Modal } from 'antd-mobile-rn';
 import { Provider } from 'mobx-react';
 import * as React from 'react';
 import { Alert, Linking, YellowBox } from 'react-native';
-import _updateConfig from './../update.json';
-import App from './components';
+import App from './pages';
 import store from './store';
 import { req } from './store/web';
 declare var global: any;
+const _updateConfig = require('./../update.json');
 
 if (__DEV__) {
 	console.ignoredYellowBox = [ 'Warning: isMounted(...) is deprecated', 'Require cycle' ];

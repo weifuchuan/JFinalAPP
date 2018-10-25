@@ -10,7 +10,17 @@
     "noEmit": true,
     "strict": true,
     "target": "esnext",
-    "experimentalDecorators":true,
-    "resolveJsonModule": true
-  }
+    "experimentalDecorators": true,
+    // "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"] 
+    }
+  },
+  "exclude": [
+    "node_modules" 
+  ],
+  "include": [
+    "src/**/*"
+  ]
 }

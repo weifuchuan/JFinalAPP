@@ -2,11 +2,11 @@ import React from 'react';
 import { action, observable, runInAction, autorun, IReactionDisposer, toJS } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import { View, ViewStyle, FlatList, Text } from 'react-native';
-import { retryDo } from '../../kit';
-import { Store } from '../../store';
-import { NewsFeed } from '../../store/types';
-import { req } from '../../store/web';
-import RefreshListView, { RefreshState, RefreshStateType } from '../base/RefreshListView';
+import { retryDo } from '@/kit';
+import { Store } from '@/store';
+import { NewsFeed } from '@/store/types';
+import { req } from '@/store/web';
+import RefreshListView, { RefreshState, RefreshStateType } from '@/components/RefreshListView';
 import Newsfeed from './Newsfeed';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
