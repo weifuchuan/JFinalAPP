@@ -25,6 +25,9 @@ export default class Router {
 	static feedbackPage(id: number) {
 		Actions.push('feedbackPage', { id });
 	}
+	static doc(uri?:string){
+		Actions.push("doc", {uri}); 
+	}
 	static editArticle(type: 'share' | 'feedback' | 'project', isEdit?: boolean, id?: number) {
 		Actions.push('editArticle', { type, isEdit, id });
 	}

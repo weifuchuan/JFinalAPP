@@ -79,15 +79,26 @@ class Search extends Component<Props> {
 								type = '分享';
 							} else if (/\/feedback/.test(item.url)) {
 								type = '反馈';
+							} else if (/\/doc/.test(item.url)) {
+								type = '文档';
 							}
 							return (
 								<Touchable
 									onPress={() => {
-										const uri = item.url.match(/\/((user)|(project)|(share)|(feedback))\/\d+/)![0];
-										const type = uri.substring(1, uri.lastIndexOf('/'));
-										const id = Number.parseInt(uri.match(/\d+/)![0]);
-										if (type === 'user') Router.user(id);
-										else Router.push(`${type}Page`, { id });
+										// 不是文档
+										if (!/\/doc/.test(item.url)) {
+											const uri = item.url.match(
+												/\/((user)|(project)|(share)|(feedback))\/\d+/
+											)![0];
+											const type = uri.substring(1, uri.lastIndexOf('/'));
+											const id = Number.parseInt(uri.match(/\d+/)![0]);
+											if (type === 'user') Router.user(id);
+											else Router.push(`${type}Page`, { id });
+										} else {
+											// 文档
+											const uri = item.url.match(/\/doc.*$/)![0];
+											Router.doc(uri);
+										}
 									}}
 								>
 									<View
@@ -210,7 +221,8 @@ class Search extends Component<Props> {
 					/\/user\/\d+/.test(url) ||
 					/\/project\/\d+/.test(url) ||
 					/\/share\/\d+/.test(url) ||
-					/\/feedback\/\d+/.test(url)
+					/\/feedback\/\d+/.test(url) ||
+					/\/doc(\/\d+-\d+)?$/.test(url)
 				)
 			)
 				return;

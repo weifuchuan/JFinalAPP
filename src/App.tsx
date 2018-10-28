@@ -1,15 +1,4 @@
-// import { req } from './store/web';
-// import VersionNumber from 'react-native-version-number';
-import { Modal } from 'antd-mobile-rn';
-import { Provider } from 'mobx-react';
-import * as React from 'react';
-import { Alert, Linking, YellowBox } from 'react-native';
-import App from './pages';
-import store from './store';
-import { req } from './store/web';
 declare var global: any;
-const _updateConfig = require('./../update.json');
-
 if (__DEV__) {
 	console.ignoredYellowBox = [ 'Warning: isMounted(...) is deprecated', 'Require cycle' ];
 	// ignore yellow box
@@ -21,6 +10,15 @@ if (__DEV__) {
 	global.Blob = global.originalBlob ? global.originalBlob : global.Blob;
 	global.FileReader = global.originalFileReader ? global.originalFileReader : global.FileReader;
 }
+
+import { Modal } from 'antd-mobile-rn';
+import { Provider } from 'mobx-react';
+import * as React from 'react';
+import { Alert, Linking, YellowBox } from 'react-native';
+import App from './pages';
+import store from './store';
+import { req } from './store/web';
+const _updateConfig = require('./../update.json');
 
 const { appKey } = _updateConfig['android'];
 const {
@@ -53,8 +51,7 @@ export default class extends React.Component {
 	componentDidMount() {
 		try {
 			this.checkUpdate();
-		} catch (e) {}
-		// console.warn(require('react-native-update'));
+		} catch (e) {} 
 		if (!__DEV__) {
 			try {
 				(async () => {
@@ -163,42 +160,4 @@ export default class extends React.Component {
 			});
 	};
 }
-
-/*
-simple update
-
-(async () => {
-				const html = await req.GET_HTML_PC_REQUEST('https://github.com/weifuchuan/JFinalAPP/releases');
-				const $ = cheerio.load(html);
-				const newVersion = $(
-					'div.release-entry:nth-child(1) div.release-header > ul > li:nth-child(1) > a > span'
-				);
-				if (newVersion.length > 0) {
-					if (VersionNumber.appVersion && VersionNumber.appVersion !== newVersion.text().trim()) {
-						for (let elem of $('div.release-entry:nth-child(1) details ul > li').toArray()) {
-							try {
-								if (/\.apk$/.test($(elem).find('a').attr('href'))) {
-									Modal.alert(
-										'版本更新',
-										`发现新版本"${newVersion.text().trim()}"(本机为${VersionNumber.appVersion})，是否更新？`,
-										[
-											{
-												text: '更新',
-												onPress: () => {
-													Linking.openURL(
-														`https://github.com${$(elem).find('a').attr('href')}`
-													);
-												}
-											},
-											{ text: '取消', onPress: () => null }
-										]
-									);
-									break;
-								}
-							} catch (e) {}
-						}
-					}
-				}
-			})();
-
-*/
+ 

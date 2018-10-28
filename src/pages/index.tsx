@@ -30,6 +30,7 @@ import Search from './Home/Search';
 import Share from './Home/Share';
 import Login from './Login';
 import Reg from './Reg';
+import Doc from './Doc';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 @inject('store')
@@ -129,6 +130,12 @@ export default class App extends React.Component<{
 					<Scene
 						key={'editArticle'}
 						component={EditArticle}
+						onEnter={this.pushArticleStatusBarStyle}
+						onExit={this.popStatusBarStyle}
+					/>
+					<Scene
+						key={'doc'}
+						component={Doc}
 						onEnter={this.pushArticleStatusBarStyle}
 						onExit={this.popStatusBarStyle}
 					/>

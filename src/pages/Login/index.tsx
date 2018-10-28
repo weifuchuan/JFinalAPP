@@ -148,7 +148,10 @@ export default class Login extends React.Component<Props> {
 				this.props.store!.emitLogged();
 				if (this.keepLogin) {
 					this.props.store!.saveMe();
-					this.props.store!.localStorage.save({ key: 'lastLoggedUserName', data: this.userName });
+					this.props.store!.localStorage.save({
+						key: 'lastLoggedUserNameAndPassword',
+						data: { username: this.userName, password: this.password }
+					});
 				}
 				Router.pop();
 			} else {
@@ -269,7 +272,10 @@ export default class Login extends React.Component<Props> {
 
 		this.props.store!.localStorage
 			.load({ key: 'lastLoggedUserName' })
-			.then((email) => typeof email === 'string' && (this.userName = email))
+			.then(
+				({ username, password }) =>
+					typeof username === 'string' && ((this.userName = username), (this.password = password))
+			)
 			.catch((e) => null);
 	}
 

@@ -155,7 +155,13 @@ export default class SharePage extends React.Component<Props> {
 			} else {
 				Router.feedback();
 			}
-		} else if (payload.action === 'reply') {
+		}else if (payload.action === 'openDoc') {
+			if (payload.uri) {
+				Router.doc(payload.uri);
+			} else {
+				Router.doc();
+			}
+		}  else if (payload.action === 'reply') {
 			if (!this.props.store!.me) {
 				Router.login();
 				return;
@@ -375,41 +381,61 @@ export default class SharePage extends React.Component<Props> {
 												{name:"share", action:"openShare"}, 
 												{name:"feedback", action:"openFeedback"},
 												{name:"user", action:"openUser"},
+												{name:"doc", action:"openDoc"},
 											].forEach(function(item){
-												$('a[href^="' + "/" + item.name + '"]').each(function(){
-													try{
-														var elem = $(this); 
-														regOne(this, "click", function(e){
-															e.preventDefault(); 
-															e.stopPropagation();  
-															var href = elem.attr("href"); 
-															if (href==='/'+item.name){
-																send({action:item.action}); 	
-															}else{
-																send({
-																	action:item.action, 
-																	id: Number.parseInt(href.substring(href.lastIndexOf("/")+1))
-																}); 
-															}
-														})
-													}catch(e){}
-												});
-												$("a").each(function(){
-													try{
-														var href = $(this).attr('href');
-														var res = new RegExp('www\\.jfinal\\.com/'+item.name+'/\\\\d+').exec(href); 
-														if(res){
-															var id = Number.parseInt(res[0].match(/\\d+/)[0]); 
-															regOne(this, "click", function(evt){
-																evt.preventDefault(); 
-																send({
-																	action: item.action, 
-																	id: id
-																}); 
+												if(item.name !== 'doc'){
+													$('a[href^="' + "/" + item.name + '"]').each(function(){
+														try{
+															var elem = $(this); 
+															regOne(this, "click", function(e){
+																e.preventDefault(); 
+																e.stopPropagation();  
+																var href = elem.attr("href"); 
+																if (href==='/'+item.name){
+																	send({action:item.action}); 	
+																}else{
+																	send({
+																		action:item.action, 
+																		id: Number.parseInt(href.substring(href.lastIndexOf("/")+1))
+																	}); 
+																}
 															})
-														}
-													}catch(e){}
-												});
+														}catch(e){}
+													});
+													$("a").each(function(){
+														try{
+															var href = $(this).attr('href');
+															var res = new RegExp('www\\.jfinal\\.com/'+item.name+'/\\\\d+').exec(href); 
+															if(res){
+																var id = Number.parseInt(res[0].match(/\\d+/)[0]); 
+																regOne(this, "click", function(evt){
+																	evt.preventDefault(); 
+																	send({
+																		action: item.action, 
+																		id: id
+																	}); 
+																})
+															}
+														}catch(e){}
+													});
+												}else{
+													$("a").each(function(){
+														try{
+															var href = $(this).attr('href');
+															var res = /((^(http:\\/\\/)?www.jfinal.com)|^)\\/doc.*$/.exec(href); 
+															if(res){
+																var uri = href.match(/\\/doc.*/)[0]; 
+																regOne(this, "click", function(evt){
+																	evt.preventDefault(); 
+																	send({
+																		action: item.action, 
+																		uri: uri
+																	}); 
+																})
+															}
+														}catch(e){}
+													});
+												}
 											});	
 
 											var logged = ${this.props.store!.me ? true : false}; 
