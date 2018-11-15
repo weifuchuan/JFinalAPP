@@ -154,8 +154,7 @@ export default class AddArticle extends React.Component<Props> {
 		<link href="https://cdn.bootcss.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
 		<link href="https://cdn.bootcss.com/simditor/2.3.6/styles/simditor.min.css" rel="stylesheet">
 
-		<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-		<!--<script src="https://simditor.tower.im/assets/scripts/mobilecheck.js"></script>-->
+		<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script> 
 		<script>
 			window.mobilecheck = function() {
 				var check = false;
@@ -326,9 +325,9 @@ export default class AddArticle extends React.Component<Props> {
 					this.loading = false;
 					Toast.fail('网络异常', 2);
 					Router.pop();
-				} else this.onWebViewPostMsg({ action: 'ready' });
+				} 
 			}
-		}, 1000 * 15);
+		}, 1000 * 20);
 		BackHandler.addEventListener('hardwareBackPress', this.onBack);
 	}
 

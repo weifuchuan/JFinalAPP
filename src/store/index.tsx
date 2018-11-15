@@ -1,8 +1,9 @@
-import Storage from '@/storage';
+import Storage from 'react-native-storage';
 import { AsyncStorage, NativeEventEmitter } from 'react-native';
 import { Account, Remind, RemindList } from './types';
 import { toJS, observable, runInAction, action } from 'mobx';
 import { req } from './web';
+import { retryDo } from '@/kit';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 // global state store & event bus
@@ -29,7 +30,7 @@ export class Store extends NativeEventEmitter {
 		return storage;
 	}
 
-	async init() {
+	async init() { 
 		this.onLogged(async () => {
 			this.me && this.parseRemids(cheerio.load(await req.GET_HTML('/my')));
 		});
@@ -38,27 +39,45 @@ export class Store extends NativeEventEmitter {
 		});
 		try {
 			const me = await storage.load<Account>({ key: 'me' });
+			console.log(me);
+			const $ = cheerio.load(await retryDo(async () => await req.GET_HTML('/my'), 3));
+			global.$ = $; 
+			const avatar = $('div.user-info.clearfix > a > img').attr('src');
+			const nickName = $('.nick-name').text().trim();
+			console.log(avatar, nickName);
+			let id = 0;
 			if (me) {
-				const $ = cheerio.load(await req.GET_HTML('/my'));
-				const avatar = $(
-					'body > div.jf-body-box.clearfix > div.jf-sidebar-box.jf-pull-left > div.jf-sidebar.user-info-box > div.user-info.clearfix > a > img'
-				).attr('src');
-				if (
-					$(
-						'body > div.jf-body-box.clearfix > div.jf-sidebar-box.jf-pull-left > div.jf-sidebar.user-info-box > div.user-info.clearfix > div > span.nick-name'
-					)
-						.text()
-						.trim() === me.nickName.trim()
-				) {
+				if (nickName === me.nickName.trim()) {
 					// logged
 					me.avatar = avatar.substring('/upload/avatar/'.length) + '?donotCache=' + new Date().getTime();
 					runInAction(() => {
 						this.me = observable(me);
-						this.parseRemids($);
 					});
+					this.parseRemids($);
+				}
+			} else if (avatar && nickName) {
+				let res;
+				if ((res = /\/\d+\./.exec(avatar))) {
+					id = Number.parseInt(res[0].substring(1, res[0].length - 1));
+					runInAction(() => {
+						this.me = observable({
+							id,
+							avatar,
+							nickName,
+							userName: '',
+							createAt: '',
+							ip: '',
+							likeCount: 0,
+							sessionId: '',
+							status: 0
+						});
+					});
+					this.parseRemids($);
 				}
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	@action
@@ -157,7 +176,7 @@ export class Store extends NativeEventEmitter {
 	};
 }
 
-const store = new Store();
+const store = new Store(); 
 export default store;
 
 const storage = new Storage({

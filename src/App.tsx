@@ -19,9 +19,8 @@ import App from './pages';
 import store from './store';
 import { req } from './store/web';
 const _updateConfig = require('./../update.json');
-
 const { appKey } = _updateConfig['android'];
-const {
+let {
 	isFirstTime,
 	isRolledBack,
 	packageVersion,
@@ -31,7 +30,18 @@ const {
 	switchVersion,
 	switchVersionLater,
 	markSuccess
-} = require('react-native-update');
+} = {} as any;
+if (!__DEV__) {
+	isFirstTime = require('react-native-update').isFirstTime;
+	isRolledBack = require('react-native-update').isRolledBack;
+	packageVersion = require('react-native-update').packageVersion;
+	currentVersion = require('react-native-update').currentVersion;
+	checkUpdate = require('react-native-update').checkUpdate;
+	downloadUpdate = require('react-native-update').downloadUpdate;
+	switchVersion = require('react-native-update').switchVersion;
+	switchVersionLater = require('react-native-update').switchVersionLater;
+	markSuccess = require('react-native-update').markSuccess;
+}
 
 export default class extends React.Component {
 	render() {
@@ -43,16 +53,19 @@ export default class extends React.Component {
 	}
 
 	componentWillMount() {
-		if (isRolledBack) {
-			Alert.alert('提示', '刚刚更新失败了, 版本被回滚.');
+		if (!__DEV__) {
+			if (isRolledBack) {
+				Alert.alert('提示', '刚刚更新失败了, 版本被回滚.');
+			}
 		}
 	}
 
 	componentDidMount() {
-		try {
-			this.checkUpdate();
-		} catch (e) {} 
+		store.init(); 
 		if (!__DEV__) {
+			try {
+				this.checkUpdate();
+			} catch (e) {}
 			try {
 				(async () => {
 					const html = await req.GET_HTML_PC_REQUEST('https://github.com/weifuchuan/JFinalAPP/releases');
@@ -160,4 +173,3 @@ export default class extends React.Component {
 			});
 	};
 }
- 

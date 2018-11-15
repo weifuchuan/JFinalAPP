@@ -297,8 +297,7 @@ export default class App extends React.Component<{
 				notification.finish(PushNotificationIOS.FetchResult.NoData);
 			}
 		});
-
-		this.props.store!.init();
+ 
 	}
 
 	close?: IReactionDisposer;
