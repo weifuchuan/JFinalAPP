@@ -66,6 +66,18 @@ TypeScript。
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/home_me_drawer.png)
 
+首页/我/操作
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/my_options.png)
+
+文档
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/doc.png)
+
+文档目录
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/doc_list.png)
+
 项目页
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/project_page.png)
@@ -88,11 +100,27 @@ TypeScript。
 
 私信列表
 
-![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_list.jpg)
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/msg_list.png)
 
 发送私信
 
 ![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/message.png)
+
+我的收藏
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/my_fav.png)
+
+我的关注
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/my_follow.png)
+
+我的项目
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/my_project.png)
+
+上传头像
+
+![image](https://github.com/weifuchuan/JFinal/blob/master/_preview/upload_avatar.png)
 
 推送通知
 
