@@ -64,7 +64,7 @@ export default class extends React.Component {
 		store.init(); 
 		if (!__DEV__) {
 			try {
-				this.checkUpdate();
+				// this.checkUpdate();
 			} catch (e) {}
 			try {
 				(async () => {
