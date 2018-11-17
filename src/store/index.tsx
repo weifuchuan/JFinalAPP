@@ -181,7 +181,9 @@ export default store;
 
 const storage = new Storage({
 	size: 100000000,
-	storageBackend: AsyncStorage
+	storageBackend: AsyncStorage,
+	defaultExpires: null, 
+	enableCache: false, 
 });
 
 declare var global: any;
