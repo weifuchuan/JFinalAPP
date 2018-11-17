@@ -3,16 +3,26 @@ import WebView from '@/components/WebView';
 import Router from '@/router';
 import { Store } from '@/store';
 import { ICON_BLUE, BACK_WHITE } from '@/themes/color';
-import { Drawer, Modal } from 'antd-mobile-rn';
+import { Drawer, Modal, ActionSheet } from 'antd-mobile-rn';
 import { observable, IReactionDisposer, autorun, runInAction } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { ActivityIndicator, SectionList, StyleSheet, Text, View, ViewStyle, SectionListData } from 'react-native';
+import {
+	ActivityIndicator,
+	SectionList,
+	StyleSheet,
+	Text,
+	View,
+	ViewStyle,
+	SectionListData,
+	Platform
+} from 'react-native';
 import { Toolbar } from 'react-native-material-ui';
-import { GET_HTML } from '@/kit/req';
+import { GET_HTML, baseUrl } from '@/kit/req';
 import Touchable from '@/components/Touchable';
 import StatusBar from '@/components/StatusBar';
 import { Observer } from 'mobx-react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const cheerio: CheerioAPI = require('react-native-cheerio');
 
 interface Props {
@@ -74,6 +84,32 @@ export default class Doc extends React.Component<Props> {
 													}}
 												>
 													<Text style={{ fontSize: 14, marginLeft: 28 }}>{item.title}</Text>
+													{item.active ? (
+														<Touchable
+															onPress={() => {
+																if (Platform.OS === 'ios') {
+																	ActionSheet.showShareActionSheetWithOptions({
+																		url: `${baseUrl}${item.uri}`,
+																		message: item.title,
+																		title: '分享'
+																	});
+																} else {
+																	ActionSheet.showShareActionSheetWithOptions({
+																		message: `${item.title} ${baseUrl}${item.uri}`,
+																		title: '分享'
+																	});
+																}
+															}}
+														>
+															<View style={{ position: 'absolute', right: 4 }}>
+																<MaterialIcons
+																	name="share"
+																	color={ICON_BLUE}
+																	size={28}
+																/>
+															</View>
+														</Touchable>
+													) : null}
 												</View>
 											</Touchable>
 										)}
