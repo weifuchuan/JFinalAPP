@@ -2,7 +2,14 @@ import { Toast } from 'antd-mobile-rn';
 import { action, observable } from 'mobx';
 import { inject, observer } from 'mobx-react/native';
 import React from 'react';
-import { ActivityIndicator, BackHandler, StyleSheet, View, ViewStyle, NetInfo } from 'react-native';
+import {
+	ActivityIndicator,
+	BackHandler,
+	StyleSheet,
+	View,
+	ViewStyle,
+	NetInfo
+} from 'react-native';
 import { Toolbar } from 'react-native-material-ui';
 import { retryDo } from '@/kit';
 import { Store } from '@/store';
@@ -39,7 +46,8 @@ export default class AddArticle extends React.Component<Props> {
 			<View style={styles.container}>
 				<Toolbar
 					leftElement={'arrow-back'}
-					centerElement={`${this.props.isEdit ? '编辑' : '创建'}${this.props.type === 'project'
+					centerElement={`${this.props.isEdit ? '编辑' : '创建'}${this
+						.props.type === 'project'
 						? '项目'
 						: this.props.type === 'share' ? '分享' : '反馈'}`}
 					onLeftElementPress={async () => {
@@ -51,12 +59,19 @@ export default class AddArticle extends React.Component<Props> {
 				<View style={{ flex: 1 }}>
 					<WebView
 						ref={(r) => (this.webview = r)}
-						source={{ html: this.html, baseUrl: 'http://www.jfinal.com' }}
+						source={{
+							html: this.html,
+							baseUrl: 'http://www.jfinal.com'
+						}}
 						on={this.onWebViewPostMsg}
 						handler={this.webviewHandler}
 					/>
 				</View>
-				<ActivityIndicator animating={this.loading} style={styles.loading} color={ICON_BLUE} />
+				<ActivityIndicator
+					animating={this.loading}
+					style={styles.loading}
+					color={ICON_BLUE}
+				/>
 			</View>
 		);
 	}
@@ -87,7 +102,10 @@ export default class AddArticle extends React.Component<Props> {
 			}
 			Toast.hide();
 			if (ret.isOk) {
-				this.props.store!.localStorage.remove({ key: 'draft', id: this.props.type });
+				this.props.store!.localStorage.remove({
+					key: 'draft',
+					id: this.props.type
+				});
 				this.props.store!.emitEditArticleOk(this.props.type);
 				Router.pop();
 			} else {
@@ -109,7 +127,11 @@ export default class AddArticle extends React.Component<Props> {
 	saveDraft = async () => {
 		if (this.props.isEdit || this.loading) return;
 		const localStore = this.props.store!.localStorage;
-		await localStore.save({ key: 'draft', id: this.props.type, data: await this.fetchArticle() });
+		await localStore.save({
+			key: 'draft',
+			id: this.props.type,
+			data: await this.fetchArticle()
+		});
 	};
 
 	loadDraft = async (draft?: Draft) => {
@@ -119,8 +141,12 @@ export default class AddArticle extends React.Component<Props> {
 				if (draft) {
 					this.webview!.post({ action: 'loadDraft', draft });
 				} else {
-					draft = await localStore.load({ key: 'draft', id: this.props.type });
-					if (draft) this.webview!.post({ action: 'loadDraft', draft });
+					draft = await localStore.load({
+						key: 'draft',
+						id: this.props.type
+					});
+					if (draft)
+						this.webview!.post({ action: 'loadDraft', draft });
 				}
 			} catch (e) {}
 		};
@@ -187,7 +213,12 @@ export default class AddArticle extends React.Component<Props> {
 					<label for="project">关联项目</label>
 					<select id="project">
 						<option value="">请选择</option>
-						${projects.reduce((prev, curr) => prev + `<option value="${curr[1]}">${curr[0]}</option>`, '')}
+						${projects.reduce(
+							(prev, curr) =>
+								prev +
+								`<option value="${curr[1]}">${curr[0]}</option>`,
+							''
+						)}
 					</select>
 					<span class="am-form-caret"></span>
 				</div>
@@ -199,10 +230,11 @@ export default class AddArticle extends React.Component<Props> {
 				<button id="submit" class="am-btn am-btn-primary">提交</button>
 			</fieldset>
 		</div>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-module/2.0.6/simple-module.js"></script>
-		<script src="https://cdn.bootcss.com/mycolorway-simple-hotkeys/1.0.3/hotkeys.min.js"></script>
+		<script src="https://cdn.bootcss.com/simple-module/2.0.6/simple-module.js"></script>
+		<script>simple = SimpleModule;</script>
+		<script src="https://cdn.bootcss.com/mycolorway-simple-hotkeys/1.0.0/hotkeys.min.js"></script>
 		<script src="https://cdn.bootcss.com/simditor/2.3.6/lib/simditor.min.js"></script>
-		<script>
+		<script>		
 			$(document).ready(function () {
 				try{
 					window.editor = new Simditor({
@@ -272,25 +304,47 @@ export default class AddArticle extends React.Component<Props> {
 			if (this.props.isEdit)
 				try {
 					const html = await retryDo(
-						async () => await req.GET_HTML(`/my/${this.props.type}/edit?id=${this.props.id}`),
+						async () =>
+							await req.GET_HTML(
+								`/my/${this.props.type}/edit?id=${this.props
+									.id}`
+							),
 						3
 					);
 					const $ = cheerio.load(html);
-					const draft: Draft = { title: '', content: '', project: '' };
-					draft.title = $(`input[name="${this.props.type}.title"]`).attr('value');
-					draft.content = $(`script[name="${this.props.type}.content"]`).html()!;
+					const draft: Draft = {
+						title: '',
+						content: '',
+						project: ''
+					};
+					draft.title = $(
+						`input[name="${this.props.type}.title"]`
+					).attr('value');
+					draft.content = $(
+						`script[name="${this.props.type}.content"]`
+					).html()!;
 					if (this.props.type === 'project') {
-						draft.project = $(`input[name="${this.props.type}.name"]`).attr('value');
+						draft.project = $(
+							`input[name="${this.props.type}.name"]`
+						).attr('value');
 						this.html = this.htmlBuild();
 					} else {
-						draft.project = Number.parseInt($('.related-project-name option[selected]').attr('value'));
+						draft.project = Number.parseInt(
+							$('.related-project-name option[selected]').attr(
+								'value'
+							)
+						);
 						this.html = this.htmlBuild(
-							$('.related-project-name').find('option').toArray().slice(1).map((elem): [
-								string,
-								number
-							] => {
-								return [ $(elem).text(), Number.parseInt($(elem).attr('value')) ];
-							})
+							$('.related-project-name')
+								.find('option')
+								.toArray()
+								.slice(1)
+								.map((elem): [string, number] => {
+									return [
+										$(elem).text(),
+										Number.parseInt($(elem).attr('value'))
+									];
+								})
 						);
 					}
 					this.loadDraft(draft);
@@ -302,15 +356,22 @@ export default class AddArticle extends React.Component<Props> {
 					if (this.props.type === 'project') {
 						this.html = this.htmlBuild();
 					} else {
-						const html = await retryDo(async () => await req.GET_HTML('/my/share/add'), 3);
+						const html = await retryDo(
+							async () => await req.GET_HTML('/my/share/add'),
+							3
+						);
 						const $ = cheerio.load(html);
 						this.html = this.htmlBuild(
-							$('.related-project-name').find('option').toArray().slice(1).map((elem): [
-								string,
-								number
-							] => {
-								return [ $(elem).text(), Number.parseInt($(elem).attr('value')) ];
-							})
+							$('.related-project-name')
+								.find('option')
+								.toArray()
+								.slice(1)
+								.map((elem): [string, number] => {
+									return [
+										$(elem).text(),
+										Number.parseInt($(elem).attr('value'))
+									];
+								})
 						);
 					}
 					this.loadDraft();
@@ -321,11 +382,14 @@ export default class AddArticle extends React.Component<Props> {
 		setTimeout(async () => {
 			if (this.loading) {
 				const info = await NetInfo.getConnectionInfo();
-				if ((info.type === 'unknown' || info.type === 'none') && this.loading) {
+				if (
+					(info.type === 'unknown' || info.type === 'none') &&
+					this.loading
+				) {
 					this.loading = false;
 					Toast.fail('网络异常', 2);
 					Router.pop();
-				} 
+				}
 			}
 		}, 1000 * 20);
 		BackHandler.addEventListener('hardwareBackPress', this.onBack);
@@ -336,8 +400,8 @@ export default class AddArticle extends React.Component<Props> {
 	}
 
 	onBack = async () => {
-		if (!this.loading) await this.saveDraft();
-		Router.pop();
+		if (!this.loading) this.saveDraft();
+		setTimeout(() => Router.pop(), 300);
 	};
 }
 

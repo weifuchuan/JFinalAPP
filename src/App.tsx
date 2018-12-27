@@ -1,14 +1,26 @@
 declare var global: any;
 if (__DEV__) {
-	console.ignoredYellowBox = [ 'Warning: isMounted(...) is deprecated', 'Require cycle' ];
+	console.ignoredYellowBox = [
+		'Warning: isMounted(...) is deprecated',
+		'Require cycle'
+	];
 	// ignore yellow box
-	YellowBox.ignoreWarnings([ 'Warning: isMounted(...) is deprecated', 'Require cycle' ]);
+	YellowBox.ignoreWarnings([
+		'Warning: isMounted(...) is deprecated',
+		'Require cycle'
+	]);
 	// debug network
-	global.XMLHttpRequest = global.originalXMLHttpRequest ? global.originalXMLHttpRequest : global.XMLHttpRequest;
-	global.FormData = global.originalFormData ? global.originalFormData : global.FormData;
+	global.XMLHttpRequest = global.originalXMLHttpRequest
+		? global.originalXMLHttpRequest
+		: global.XMLHttpRequest;
+	global.FormData = global.originalFormData
+		? global.originalFormData
+		: global.FormData;
 	fetch;
 	global.Blob = global.originalBlob ? global.originalBlob : global.Blob;
-	global.FileReader = global.originalFileReader ? global.originalFileReader : global.FileReader;
+	global.FileReader = global.originalFileReader
+		? global.originalFileReader
+		: global.FileReader;
 }
 
 import { Modal } from 'antd-mobile-rn';
@@ -65,8 +77,9 @@ export default class extends React.Component {
 		store.init();
 		if (!__DEV__) {
 			try {
-				// this.checkUpdate();
+				this.checkUpdate();
 			} catch (e) {}
+			/*
 			(async () => {
 				const html = await req.GET_HTML_PC_REQUEST('https://github.com/weifuchuan/JFinalAPP/releases');
 				const $ = cheerio.load(html);
@@ -100,6 +113,7 @@ export default class extends React.Component {
 					}
 				}
 			})();
+			*/
 		}
 
 		(async () => {
@@ -107,7 +121,10 @@ export default class extends React.Component {
 				const isOpened = await NotificationOpener.isOpened();
 				if (!isOpened) {
 					Modal.alert('您似乎没有开启通知权限', '开启通知权限将能向您推送通知。', [
-						{ text: '开启', onPress: () => NotificationOpener.openIfNotOpened() },
+						{
+							text: '开启',
+							onPress: () => NotificationOpener.openIfNotOpened()
+						},
 						{ text: '取消', onPress: () => null }
 					]);
 				}
@@ -134,7 +151,8 @@ export default class extends React.Component {
 							{
 								text: '确定',
 								onPress: () => {
-									info.downloadUrl && Linking.openURL(info.downloadUrl);
+									info.downloadUrl &&
+										Linking.openURL(info.downloadUrl);
 								}
 							},
 							{
@@ -145,15 +163,22 @@ export default class extends React.Component {
 					} else if (info.upToDate) {
 						// Alert.alert('提示', '您的应用版本已是最新.');
 					} else {
-						Alert.alert('提示', '检查到新的版本' + info.name + ', 是否下载?\n' + info.description, [
-							{
-								text: '是',
-								onPress: () => {
-									this.doUpdate(info);
-								}
-							},
-							{ text: '否' }
-						]);
+						Alert.alert(
+							'提示',
+							'检查到新的版本' +
+								info.name +
+								', 是否下载(将在后台下载)?\n' +
+								info.description,
+							[
+								{
+									text: '是',
+									onPress: () => {
+										this.doUpdate(info);
+									}
+								},
+								{ text: '否' }
+							]
+						);
 					}
 				}
 			)

@@ -64,3 +64,7 @@ file-server.exe
 
 # code hot update
 .update
+
+# yarn npm 
+*.log
+*.lock
