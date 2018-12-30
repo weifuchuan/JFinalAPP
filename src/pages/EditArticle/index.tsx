@@ -287,7 +287,7 @@ export default class AddArticle extends React.Component<Props> {
 					}else{
 						setTimeout(function(){
 							f(f); 
-						}, 100);
+						}, 60);
 					}
 				}
 				f(f);

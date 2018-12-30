@@ -226,7 +226,7 @@ export default class App extends React.Component<{
 	}
 
 	private exit: boolean = false;
-	private doubleBackThenExit = (): boolean => {
+	private doubleBackThenExit = () => {
 		const currentScene = (Actions.currentScene as string).substring(1);
 		if (
 			currentScene === 'project' ||

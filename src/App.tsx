@@ -28,8 +28,7 @@ import { Provider } from 'mobx-react';
 import * as React from 'react';
 import { Alert, Linking, YellowBox } from 'react-native';
 import App from './pages';
-import store from './store';
-import { req } from './store/web';
+import store from './store'; 
 import { NotificationOpener } from './cnm';
 const _updateConfig = require('./../update.json');
 const { appKey } = _updateConfig['android'];
@@ -78,42 +77,7 @@ export default class extends React.Component {
 		if (!__DEV__) {
 			try {
 				this.checkUpdate();
-			} catch (e) {}
-			/*
-			(async () => {
-				const html = await req.GET_HTML_PC_REQUEST('https://github.com/weifuchuan/JFinalAPP/releases');
-				const $ = cheerio.load(html);
-				const newVersion = $(
-					'div.release-entry:nth-child(1) div.release-header > ul > li:nth-child(1) > a > span'
-				);
-				if (newVersion.length > 0) {
-					if (packageVersion && packageVersion !== newVersion.text().trim()) {
-						for (let elem of $('div.release-entry:nth-child(1) details ul > li').toArray()) {
-							try {
-								if (/\.apk$/.test($(elem).find('a').attr('href'))) {
-									Modal.alert(
-										'版本更新',
-										`发现新版本"${newVersion.text().trim()}"(本机为${packageVersion})，是否更新？`,
-										[
-											{
-												text: '更新',
-												onPress: () => {
-													Linking.openURL(
-														`https://github.com${$(elem).find('a').attr('href')}`
-													);
-												}
-											},
-											{ text: '取消', onPress: () => null }
-										]
-									);
-									break;
-								}
-							} catch (e) {}
-						}
-					}
-				}
-			})();
-			*/
+			} catch (e) {} 
 		}
 
 		(async () => {
@@ -186,7 +150,7 @@ export default class extends React.Component {
 				}
 			)
 			.catch((err: any) => {
-				Alert.alert('提示', '更新失败.');
+				Alert.alert('提示', '更新失败');
 			});
 	};
 
@@ -210,7 +174,7 @@ export default class extends React.Component {
 				]);
 			})
 			.catch((err: any) => {
-				Alert.alert('提示', '更新失败.');
+				Alert.alert('提示', '更新失败');
 			});
 	};
 }
