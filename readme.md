@@ -128,7 +128,7 @@ TypeScript。
 
 ## 更新日志  
 
-### 1.0.0-beta16
+### 1.0.0-beta18
 
 ## License 
 
