@@ -135,6 +135,9 @@ export default class extends React.Component {
 	}
 
 	checkUpdate = () => {
+		if (isFirstTime){
+			markSuccess();
+		}
 		checkUpdate(appKey)
 			.then(
 				(info: {
